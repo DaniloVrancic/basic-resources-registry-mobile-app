@@ -4,16 +4,16 @@ import ParallaxScrollView from "@/components/ParallaxScrollView"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ListOfAssets() {
     return (
-        <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
+      <SafeAreaView>
         <ThemedView style={styles.titleContainer}>
             <ThemedText type="title">List of Assets</ThemedText>
         </ThemedView>
-        </ParallaxScrollView>
+      </SafeAreaView>
+
     )
 
     

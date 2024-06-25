@@ -4,22 +4,30 @@ import ParallaxScrollView from "@/components/ParallaxScrollView"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { SearchBar } from 'react-native-screens';
+import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 
 export default function Employees() {
     return (
-        <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
+      <SafeAreaView>
+        <SearchBarWithAdd />
         <ThemedView style={styles.titleContainer}>
             <ThemedText type="title">Employees</ThemedText>
         </ThemedView>
-        </ParallaxScrollView>
+      </SafeAreaView>
     )
 
     
 }
 
+
+
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    padding: 2,
+  },
     headerImage: {
       color: '#808080',
       bottom: -90,
@@ -28,6 +36,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
       flexDirection: 'row',
-      gap: 8,
+      gap: 12,
     },
+    
   });

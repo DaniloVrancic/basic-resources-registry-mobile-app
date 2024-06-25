@@ -7,15 +7,18 @@ import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from 'react-native-screens';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Employees() {
     return (
-      <SafeAreaView>
-        <SearchBarWithAdd />
-        <ThemedView style={styles.titleContainer}>
-            <ThemedText type="title">Employees</ThemedText>
-        </ThemedView>
-      </SafeAreaView>
+      <GestureHandlerRootView>
+        <SafeAreaView style={styles.safeArea}>
+          <SearchBarWithAdd />
+          <ThemedView style={styles.titleContainer}>
+              <ThemedText type="title">Employees</ThemedText>
+          </ThemedView>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     )
 
     

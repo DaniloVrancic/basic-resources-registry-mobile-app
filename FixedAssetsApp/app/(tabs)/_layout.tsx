@@ -17,18 +17,45 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Fixed Assets',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="employees"
         options={{
-          title: 'Explore',
+          title: 'Employees',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="location"
+        options={{
+          title: 'Location',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'location' : 'location-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="list-of-assets"
+        options={{
+          title: 'List of Assets',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'list-circle' : 'list-circle-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
         }}
       />

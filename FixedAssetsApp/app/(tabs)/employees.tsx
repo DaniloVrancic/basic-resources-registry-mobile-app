@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,51 +10,49 @@ import { EmployeeSearchCriteria } from '../search_criteria_interfaces/employee-s
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function Employees() {
-    return (
-      <GestureHandlerRootView>
-        <SafeAreaView style={styles.safeArea}>
+  return (
+    <GestureHandlerRootView>
+      <SafeAreaView style={styles.safeArea}>
         <SearchBarWithAdd 
           onAddClick={() => {console.log("Employees default click")}} 
           filterChildren={employeeAdvancedFiltering()}
           renderAddButton={true}
           renderAdvancedFilterButton={true}
-          />
-          <ThemedView style={styles.titleContainer}>
-              <ThemedText type="title">Employees</ThemedText>
-          </ThemedView>
-        </SafeAreaView>
-      </GestureHandlerRootView>
-    )
-
+        />
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Employees</ThemedText>
+        </ThemedView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
+  )
 }
 
-function handleAddEmployee(){
-  
-}
+function handleAddEmployee() {}
 
 function employeeAdvancedFiltering() {
-  const currentSearchCriteria: EmployeeSearchCriteria = {name: undefined, income_min:undefined, income_max: undefined};
-
+  const currentSearchCriteria: EmployeeSearchCriteria = {name: undefined, income_min: undefined, income_max: undefined};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
+  const [minIncome, setMinIncome] = useState(800);
+  const [maxIncome, setMaxIncome] = useState(8000); // Assume a maximum income of 8000 for the slider
+  
+  const textColor = useThemeColor({}, 'text');
 
   const handleNameChange = (text: string) => {
     searchCriteria.name = text;
-    setSearchCriteria(searchCriteria);
-    //onFilterChange(text, minIncome, maxIncome);
+    setSearchCriteria({ ...searchCriteria });
   };
 
   const handleMinIncomeChange = (value: number) => {
+    searchCriteria.income_min = value;
+    setSearchCriteria({ ...searchCriteria });
     setMinIncome(value);
   };
 
   const handleMaxIncomeChange = (value: number) => {
+    searchCriteria.income_max = value;
+    setSearchCriteria({ ...searchCriteria });
     setMaxIncome(value);
   };
-
-  const [minIncome, setMinIncome] = useState(800);
-  const [maxIncome, setMaxIncome] = useState(8000); // Assume a maximum income of 100000 for the slider
-  
-  const textColor = useThemeColor({}, 'text');
 
   return (
     <ThemedView style={[styles.advancedFiltercontainer]}>
@@ -71,9 +68,9 @@ function employeeAdvancedFiltering() {
         <ThemedText>{minIncome}</ThemedText>
         <Slider
           style={styles.advancedFilterSlider}
-          minimumValue={0}
-          maximumValue={100000}
-          step={1000}
+          minimumValue={800}
+          maximumValue={8000}
+          step={100}
           value={minIncome}
           onValueChange={handleMinIncomeChange}
           minimumTrackTintColor={textColor}
@@ -83,10 +80,10 @@ function employeeAdvancedFiltering() {
         <ThemedText>{maxIncome}</ThemedText>
         <Slider
           style={styles.advancedFilterSlider}
-          minimumValue={0}
-          maximumValue={100000}
-          step={1000}
-          value={searchCriteria.income_max}
+          minimumValue={800}
+          maximumValue={8000}
+          step={100}
+          value={maxIncome}
           onValueChange={handleMaxIncomeChange}
           minimumTrackTintColor={textColor}
           maximumTrackTintColor={textColor}
@@ -97,51 +94,43 @@ function employeeAdvancedFiltering() {
   )
 }
 
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     padding: 2,
   },
-    headerImage: {
-      color: '#808080',
-      bottom: -90,
-      left: -35,
-      position: 'absolute',
-    },
-    titleContainer: {
-      flexDirection: 'row',
-      gap: 12,
-      padding: 6,
-      textAlign: 'center'
-    },
-    advancedFiltercontainer: {
-      padding: 16,
-      borderRadius: 8,
-      borderWidth: 1,
-      marginBottom: 16,
-    },
-    advancedFilterinput: {
-      height: 40,
-      borderColor: '#ddd',
-      borderWidth: 1,
-      borderRadius: 8,
-      marginBottom: 16,
-      paddingHorizontal: 8,
-    },
-    advancedFilterLabel: {
-      marginBottom: 8,
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    advancedFilterSlider: {
-      flex: 1,
-      marginHorizontal: 8,
-    },
-    advancedFilterSliderContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    
-  });
+  titleContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 6,
+    textAlign: 'center',
+  },
+  advancedFiltercontainer: {
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  advancedFilterinput: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  advancedFilterLabel: {
+    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  advancedFilterSlider: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  advancedFilterSliderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});

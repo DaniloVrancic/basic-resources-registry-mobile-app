@@ -33,15 +33,14 @@ interface SearchBarWithAddProps {
 
 const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   onAddClick = () => {
-    console.log("Default add button clicked"); //Default value of onAddClick
+    console.log("Default add button clicked");
   },
-  filterChildren = null, //Default value of filterChildren
+  filterChildren = null,
   renderAddButton = true,
   renderAdvancedFilterButton = true
 }) => {
-
   const [searchText, setSearchText] = useState('');
-  const [showModal, setShowModal] = useState(false); // Going to be set to true if the Modal needs to be shown
+  const [showModal, setShowModal] = useState(false);
 
   const textColor = useThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
@@ -52,7 +51,6 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   const handleFilterPress = () => {
     openModal();
   };
-
 
   return (
     <ThemedView style={[styles.searchContainer, { backgroundColor }]}>
@@ -68,14 +66,16 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         value={searchText}
         onChangeText={setSearchText}
       />
-      {renderAddButton && <TouchableOpacity style={[styles.addButton, { backgroundColor: textColor}]} onPress={onAddClick}>
-        <Ionicons name="add" size={24} color={backgroundColor} />
-      </TouchableOpacity>}
-
-      {renderAdvancedFilterButton && <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
-        <Ionicons name="filter" size={24} color={textColor} />
-      </TouchableOpacity>}
-
+      {renderAddButton && (
+        <TouchableOpacity style={[styles.addButton, { backgroundColor: textColor }]} onPress={onAddClick}>
+          <Ionicons name="add" size={24} color={backgroundColor} />
+        </TouchableOpacity>
+      )}
+      {renderAdvancedFilterButton && (
+        <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+          <Ionicons name="filter" size={24} color={textColor} />
+        </TouchableOpacity>
+      )}
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <ThemedView style={styles.modalContainer}>
           <ThemedView style={styles.modalHeader}>
@@ -84,6 +84,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalSpaceFill} onPress={closeModal}></TouchableOpacity>
           </ThemedView>
+          {filterChildren}
         </ThemedView>
       </Modal>
     </ThemedView>

@@ -13,7 +13,7 @@ export default function Employees() {
     return (
       <GestureHandlerRootView>
         <SafeAreaView style={styles.safeArea}>
-          <SearchBarWithAdd />
+          <SearchBarWithAdd onAddClick={() => {console.log("Employees default click")}} filterChildren={null}/>
           <ThemedView style={styles.titleContainer}>
               <ThemedText type="title">Employees</ThemedText>
           </ThemedView>
@@ -21,7 +21,6 @@ export default function Employees() {
       </GestureHandlerRootView>
     )
 
-    
 }
 
 
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
     titleContainer: {
       flexDirection: 'row',
       gap: 12,
+      padding: 3
     },
     
   });

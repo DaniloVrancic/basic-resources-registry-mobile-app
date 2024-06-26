@@ -10,14 +10,19 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 
 export default function Location() {
     return (
-      <GestureHandlerRootView>
+
         <SafeAreaView style={styles.safeArea}>
-          <SearchBarWithAdd onAddClick={() => {console.log("Employees default click")}} filterChildren={null}/>
+          <SearchBarWithAdd 
+          onAddClick={() => {console.log("location default click")}} 
+          filterChildren={null}
+          renderAddButton={true}
+          renderAdvancedFilterButton={true}
+          />
           <ThemedView style={styles.titleContainer}>
               <ThemedText type="title">Location</ThemedText>
           </ThemedView>
         </SafeAreaView>
-      </GestureHandlerRootView>
+
         
     )
 
@@ -38,6 +43,7 @@ const styles = StyleSheet.create({
     titleContainer: {
       flexDirection: 'row',
       gap: 12,
-      padding: 6
+      padding: 6,
+      textAlign: 'center'
     },
   });

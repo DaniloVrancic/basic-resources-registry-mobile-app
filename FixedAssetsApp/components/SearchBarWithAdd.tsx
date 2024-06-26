@@ -19,6 +19,16 @@ interface SearchBarWithAddProps {
   and it will build it into the Modal
   */
   filterChildren: React.ReactNode;
+
+  /*
+  Will determine if the Add button will even be rendered 
+  */
+  renderAddButton: boolean;
+
+  /*
+  Will determine if the advanced filter button will be rendered
+  */
+  renderAdvancedFilterButton: boolean;
 }
 
 const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
@@ -26,6 +36,8 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
     console.log("Default add button clicked"); //Default value of onAddClick
   },
   filterChildren = null, //Default value of filterChildren
+  renderAddButton = true,
+  renderAdvancedFilterButton = true
 }) => {
 
   const [searchText, setSearchText] = useState('');
@@ -56,12 +68,13 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         value={searchText}
         onChangeText={setSearchText}
       />
-      <TouchableOpacity style={[styles.addButton, { backgroundColor: textColor }]} onPress={onAddClick}>
+      {renderAddButton && <TouchableOpacity style={[styles.addButton, { backgroundColor: textColor}]} onPress={onAddClick}>
         <Ionicons name="add" size={24} color={backgroundColor} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+      </TouchableOpacity>}
+
+      {renderAdvancedFilterButton && <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
         <Ionicons name="filter" size={24} color={textColor} />
-      </TouchableOpacity>
+      </TouchableOpacity>}
 
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <ThemedView style={styles.modalContainer}>
@@ -101,6 +114,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 8,
+    padding: 5,
   },
   addButton: {
     backgroundColor: '#007AFF',

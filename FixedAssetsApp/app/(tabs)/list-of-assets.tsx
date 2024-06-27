@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
-import ParallaxScrollView from "@/components/ParallaxScrollView"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -10,11 +9,11 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 
 export default function ListOfAssets() {
     return (
-      
+      <GestureHandlerRootView>
         <SafeAreaView style={styles.safeArea}>
           <SearchBarWithAdd 
           onAddClick={() => {console.log("List of assets default click")}} 
-          filterChildren={null}
+          filterChildren={<Text style={{backgroundColor: 'white', color: 'black'}}>Filter Options</Text>}
           renderAddButton={true}
           renderAdvancedFilterButton={true}
           />
@@ -22,7 +21,7 @@ export default function ListOfAssets() {
               <ThemedText type="title">List of Assets</ThemedText>
           </ThemedView>
         </SafeAreaView>
-
+      </GestureHandlerRootView>
 
     )
 

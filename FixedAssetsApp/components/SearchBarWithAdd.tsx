@@ -2,8 +2,8 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "./ThemedView";
 import { useState, ReactNode } from "react";
-import { StyleSheet, Modal } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, Modal, Pressable } from "react-native";
+import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface SearchBarWithAddProps {
@@ -53,6 +53,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   };
 
   return (
+    <GestureHandlerRootView>
     <ThemedView style={[styles.searchContainer, { backgroundColor }]}>
       <Ionicons
         name="search-sharp"
@@ -67,27 +68,28 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         onChangeText={setSearchText}
       />
       {renderAddButton && (
-        <TouchableOpacity style={[styles.addButton, { backgroundColor: textColor }]} onPress={onAddClick}>
+        <Pressable style={[styles.addButton, { backgroundColor: textColor }]} onPress={onAddClick}>
           <Ionicons name="add" size={24} color={backgroundColor} />
-        </TouchableOpacity>
+        </Pressable>
       )}
       {renderAdvancedFilterButton && (
-        <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+        <Pressable style={styles.filterButton} onPress={handleFilterPress}>
           <Ionicons name="filter" size={24} color={textColor} />
-        </TouchableOpacity>
+        </Pressable>
       )}
       <Modal visible={showModal} animationType="slide" transparent={true}>
         <ThemedView style={styles.modalContainer}>
           <ThemedView style={styles.modalHeader}>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
+            <Pressable style={styles.modalCloseButton} onPress={closeModal}>
               <Ionicons name="close" size={24} color={textColor} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalSpaceFill} onPress={closeModal}></TouchableOpacity>
+            </Pressable>
+            <Pressable style={styles.modalSpaceFill} onPress={closeModal}></Pressable>
           </ThemedView>
           {filterChildren}
         </ThemedView>
       </Modal>
     </ThemedView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -136,6 +138,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
     flexDirection: 'row',
+    paddingBottom: 40
   },
   modalSpaceFill: {
     flex: 10,
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
   modalCloseButton: {
     justifyContent: 'flex-end',
     flex: 1,
-    padding: 16,
+    padding: 12,
     borderRadius: 50,
     backgroundColor: 'rgba(200,200,200, 0.8)',
   },

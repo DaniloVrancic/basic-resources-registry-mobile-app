@@ -10,7 +10,7 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 
 export default function Location() {
     return (
-
+      <GestureHandlerRootView>
         <SafeAreaView style={styles.safeArea}>
           <SearchBarWithAdd 
           onAddClick={() => {console.log("location default click")}} 
@@ -22,8 +22,7 @@ export default function Location() {
               <ThemedText type="title">Location</ThemedText>
           </ThemedView>
         </SafeAreaView>
-
-        
+      </GestureHandlerRootView>
     )
 
     

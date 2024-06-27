@@ -7,11 +7,11 @@ import RangeSlider from 'rn-range-slider';
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { EmployeeSearchCriteria } from '../search_criteria_interfaces/employee-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import Thumb from '../../components/slider_components/Thumb';
-import Notch from '../../components/slider_components/Notch';
-import Label from '../../components/slider_components/Label';
-import Rail from '../../components/slider_components/Rail';
-import RailSelected from '../../components/slider_components/RailSelected';
+import Thumb from '@/components/slider_components/Thumb';
+import Rail from '@/components/slider_components/Rail';
+import RailSelected from '@/components/slider_components/RailSelected';
+import Label from '@/components/slider_components/Label';
+import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Employees() {

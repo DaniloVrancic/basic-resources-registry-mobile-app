@@ -12,7 +12,7 @@ import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inventory-list-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import CheckBox from '@react-native-community/checkbox';
+import { CheckBox } from '@rneui/themed/dist/CheckBox';
 
 export default function ListOfAssets() {
   return (
@@ -27,7 +27,7 @@ export default function ListOfAssets() {
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:12}]}>
-            <ThemedText type="title">Location</ThemedText>
+            <ThemedText type="title">List of Assets</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -193,20 +193,56 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Filters:</ThemedText>
         
         <ThemedView style={styles.checkboxContainer}>
-        <ThemedText style={styles.checkboxLabel}>Changing Employee</ThemedText>
         <CheckBox
-          value={searchChangingEmployee}
-          //onValueChange={setSearchChangingEmployee}
-        />
-      </ThemedView>
+            checked={searchChangingEmployee as boolean}
+            checkedColor="#A0C"
+            containerStyle={{ width: "75%", backgroundColor: 'rgba(0,0,0,0)' }}
+            onIconPress={() => {
+              setSearchChangingEmployee(!searchChangingEmployee);
+              currentSearchCriteria.isChangingLocation = searchChangingEmployee;
+            }}
+            onLongIconPress={() =>
+              console.log("onLongIconPress()")
+            }
+            onLongPress={() => console.log("onLongPress()")}
+            onPress={() => {
+              setSearchChangingEmployee(!searchChangingEmployee);
+              currentSearchCriteria.isChangingLocation = searchChangingEmployee;
+            }}
+            size={40}
+            textStyle={{}}
+            title="Show Changing Employees"
+            titleProps={{}}
+            uncheckedColor="#F00"
+            style={{backgroundColor: 'rgba(0,0,0,1)'}}
+          />
+        </ThemedView>
   
       <ThemedView style={styles.checkboxContainer}>
-        <ThemedText style={styles.checkboxLabel}>Changing Location</ThemedText>
-        <CheckBox
-          value={searchChangingLocation}
-          //onValueChange={setSearchChangingLocation}
-        />
-
+      <CheckBox
+            checked={searchChangingLocation as boolean}
+            checkedColor="#A0C"
+            containerStyle={{ width: "75%", backgroundColor: 'rgba(0,0,0,0)'}}
+            onIconPress={() => {
+              setSearchChangingLocation(!searchChangingLocation);
+              console.log(searchChangingLocation);
+              currentSearchCriteria.isChangingLocation = searchChangingLocation;
+            }}
+            onLongIconPress={() =>
+              console.log("onLongIconPress()")
+            }
+            onLongPress={() => console.log("onLongPress()")}
+            onPress={() => {
+              setSearchChangingLocation(!searchChangingLocation);
+              console.log(searchChangingLocation);
+              currentSearchCriteria.isChangingLocation = searchChangingLocation;
+            }}
+            size={40}
+            textStyle={{}}
+            title="Show Changing Location"
+            titleProps={{}}
+            uncheckedColor="#F00"
+          />
       </ThemedView>
         <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
           <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />

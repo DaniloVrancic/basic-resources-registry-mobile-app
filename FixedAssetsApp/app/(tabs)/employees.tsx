@@ -1,10 +1,9 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import RangeSlider from 'rn-range-slider';
-import { GestureHandlerRootView, TextInput } from 'react-native-gesture-handler';
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { EmployeeSearchCriteria } from '../search_criteria_interfaces/employee-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -17,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function Employees() {
   return (
-    <GestureHandlerRootView>
+    
       <SafeAreaView style={styles.safeArea}>
         <SearchBarWithAdd
           onAddClick={() => { console.log("Employees default click") }}
@@ -29,7 +28,7 @@ export default function Employees() {
           <ThemedText type="title">Employees</ThemedText>
         </ThemedView>
       </SafeAreaView>
-    </GestureHandlerRootView>
+    
   )
 }
 
@@ -72,7 +71,7 @@ const advancedFilter = () => {
 };
 
   return (
-    <GestureHandlerRootView>
+
     <ThemedView style={[styles.advancedFilterContainer]}>
       <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
       <TextInput
@@ -106,7 +105,7 @@ const advancedFilter = () => {
         <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
       </Pressable>
     </ThemedView>
-    </GestureHandlerRootView>
+
   )
 }
 
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     paddingHorizontal: 8,
-    paddingVertical: 16,
+    paddingVertical: 32,
     color: 'white',
     backgroundColor: 'rgba(0,0,0,0.8)'
     

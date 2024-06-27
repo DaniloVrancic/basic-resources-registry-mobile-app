@@ -38,6 +38,9 @@ export default function Employees() {
               <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 4</ThemedText>
               <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 5</ThemedText>
               <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 6</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 7</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 8</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 9</ThemedText>
               {/* Add more employees or your dynamic list here */}
         </ScrollView>
           </ThemedView>
@@ -95,7 +98,7 @@ const advancedFilter = () => {
       <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
       <TextInput
         style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-        placeholder="Search by name..."
+        placeholder="Search by name of employee..."
         value={employeeName}
         onChangeText={handleNameChange}
         placeholderTextColor={'rgba(160, 160, 160, 1)'}

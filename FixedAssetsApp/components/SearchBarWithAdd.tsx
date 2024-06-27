@@ -138,6 +138,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
     flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
     paddingBottom: 40
   },
   modalSpaceFill: {
@@ -145,8 +148,12 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     flex: 1,
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 50,
     backgroundColor: 'rgba(200,200,200, 0.8)',
   },

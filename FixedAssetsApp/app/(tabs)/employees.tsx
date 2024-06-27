@@ -35,16 +35,17 @@ export default function Employees() {
 function handleAddEmployee() {}
 
 function employeeAdvancedFiltering() {
-  const currentSearchCriteria: EmployeeSearchCriteria = {name: "", income_min: 800, income_max: 8000};
+  const currentSearchCriteria: EmployeeSearchCriteria = {name: "" as string, income_min: 800 as number, income_max: 8000 as number};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
-  const [minIncome, setMinIncome] = useState("800");
-  const [maxIncome, setMaxIncome] = useState("8000"); // Assume a maximum income of 8000 for the slider
+  const [employeeName, setEmployeeName] = useState(currentSearchCriteria.name);
+  const [minIncome, setMinIncome] = useState(currentSearchCriteria.income_min);
+  const [maxIncome, setMaxIncome] = useState(currentSearchCriteria.income_max); // Assume a maximum income of 8000 for the slider
 
   const textColor = useThemeColor({}, 'text');
 
-  const handleNameChange = (text: string) => {
-    searchCriteria.name = text;
-    setSearchCriteria({ ...searchCriteria });
+  const handleNameChange = (newName: string) => {
+    setEmployeeName(newName)
+    searchCriteria.name = newName;
   };
 
   
@@ -59,9 +60,9 @@ const [rangeDisabled, setRangeDisabled] = useState(false);
 const [floatingLabel, setFloatingLabel] = useState(false);
 
 const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
-  setMinIncome(low.toString());
+  setMinIncome(low as number);
   currentSearchCriteria.income_min = low as number;
-  setMaxIncome(high.toString());
+  setMaxIncome(high as number);
   currentSearchCriteria.income_max = high as number;
 }, []);
 
@@ -70,6 +71,8 @@ const advancedFilter = () => {
   console.log('Advanced filter applied:', searchCriteria);
 };
 
+
+
   return (
 
     <ThemedView style={[styles.advancedFilterContainer]}>
@@ -77,13 +80,13 @@ const advancedFilter = () => {
       <TextInput
         style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
         placeholder="Search by name..."
-        value={searchCriteria.name}
+        value={employeeName}
         onChangeText={handleNameChange}
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
       <ThemedText style={[styles.advancedFilterLabel]}>Income Range:</ThemedText>
       <ThemedView style={styles.advancedFilterSliderContainer}>
-        <ThemedText>{minIncome.toString()}</ThemedText>
+        <ThemedText>{minIncome?.toString()}</ThemedText>
         <RangeSlider
           style={styles.advancedFilterSlider}
           min={800}
@@ -98,7 +101,7 @@ const advancedFilter = () => {
           renderLabel={renderLabel}
           renderNotch={renderNotch}
         />
-        <ThemedText>{maxIncome.toString()}</ThemedText>
+        <ThemedText>{maxIncome?.toString()}</ThemedText>
       </ThemedView>
       <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
         <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
@@ -129,16 +132,15 @@ const styles = StyleSheet.create({
     borderColor: 'ghostwhite'
   },
   advancedFilterInput: {
-    height: 40,
+    height: 40, // Maintain height or adjust as necessary
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 16,
-    paddingHorizontal: 8,
-    paddingVertical: 32,
+    paddingHorizontal: 8, // Horizontal padding is usually fine
+    paddingVertical: 5, // Don't increase to avoid text clipping
     color: 'white',
     backgroundColor: 'rgba(0,0,0,0.8)'
-    
   },
   advancedFilterLabel: {
     marginBottom: 8,

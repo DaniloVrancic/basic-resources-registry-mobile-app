@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,19 +18,35 @@ export default function Employees() {
   return (
     
       <SafeAreaView style={styles.safeArea}>
-        <SearchBarWithAdd
-          onAddClick={() => { console.log("Employees default click") }}
-          filterChildren={employeeAdvancedFiltering()}
-          renderAddButton={true}
-          renderAdvancedFilterButton={true}
-        />
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Employees</ThemedText>
-        </ThemedView>
+          <ThemedView style={{flex: 18}}>
+            <SearchBarWithAdd
+              onAddClick={() => { console.log("Employees default click") }}
+              filterChildren={employeeAdvancedFiltering()}
+              renderAddButton={true}
+              renderAdvancedFilterButton={true}
+            />
+          </ThemedView>
+          <ThemedView style={[styles.titleContainer, {flex:12}]}>
+            <ThemedText type="title">Employees</ThemedText>
+          </ThemedView>
+          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+              {/* Replace the content below with your actual list components */}
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 1</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 2</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 3</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 4</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 5</ThemedText>
+              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 6</ThemedText>
+              {/* Add more employees or your dynamic list here */}
+        </ScrollView>
+          </ThemedView>
       </SafeAreaView>
     
   )
 }
+
+
 
 function handleAddEmployee() {}
 
@@ -116,6 +132,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     padding: 2,
+    flexDirection: 'column'
   },
   titleContainer: {
     flexDirection: 'row',
@@ -170,5 +187,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  scrollViewContent: {
+    padding: 10,
+    // Add additional styling as needed
   },
 });

@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   });
 
   function listOfAssetsAdvancedFiltering() {
-    const currentSearchCriteria: InventoryListSearchCriteria = {isChangingEmployee: true, isChangingLocation: true};
+    const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "",isChangingEmployee: true, isChangingLocation: true};
 
     
     const [searchChangingEmployee, setSearchChangingEmployee] = useState(currentSearchCriteria.isChangingEmployee);
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
   
     const handleNameChange = (newName: string) => {
       setKeywordToSearch(newName);
+      currentSearchCriteria.keywordToSearch = keywordToSearch;
     };
   
     

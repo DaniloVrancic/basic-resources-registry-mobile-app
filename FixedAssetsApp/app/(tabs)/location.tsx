@@ -15,6 +15,8 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import RnRangeSlider from 'rn-range-slider';
+import { TestLocations } from '@/constants/TestLocations';
+import LocationCard from '@/components/LocationCard';
 
 export default function Location() {
   return (
@@ -28,21 +30,15 @@ export default function Location() {
               renderAdvancedFilterButton={true}
             />
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:12}]}>
+          <ThemedView style={[styles.titleContainer, {flex:12, paddingHorizontal: 12}]}>
             <ThemedText type="title">Location</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               {/* Replace the content below with your actual list components */}
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 1</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 2</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 3</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 4</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 5</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 6</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 7</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 8</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Location 9</ThemedText>
+              {TestLocations.map(location => 
+                <LocationCard key={location.id} {...location}/>
+              )}
               {/* Add more employees or your dynamic list here */}
         </ScrollView>
           </ThemedView>

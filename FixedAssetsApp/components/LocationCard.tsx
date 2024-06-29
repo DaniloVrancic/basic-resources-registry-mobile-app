@@ -28,7 +28,6 @@ const LocationCard: React.FC<any> = ({
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type='title'>{name}</ThemedText>
             <ThemedText type="defaultSemiBold">Size of area: {size} m2</ThemedText>
-
             <ThemedView style={styles.coordinatesContainer}>
                 <Ionicons name="pin-outline" size={32} color={textColor} style={styles.coordinateText}/>
                 <ThemedText style={styles.coordinateText}>Latitude: {latitude}</ThemedText>

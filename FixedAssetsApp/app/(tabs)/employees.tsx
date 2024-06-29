@@ -13,6 +13,8 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
+import { testEmployees } from '@/constants/TestEmployees';
+import EmployeeCard from '@/components/EmployeeCard';
 
 export default function Employees() {
   return (
@@ -31,16 +33,10 @@ export default function Employees() {
           </ThemedView>
           <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {/* Replace the content below with your actual list components */}
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 1</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 2</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 3</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 4</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 5</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 6</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 7</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 8</ThemedText>
-              <ThemedText style={{paddingVertical: 30, color: 'red'}}>Employee 9</ThemedText>
+             
+              {testEmployees.map(employee => 
+                <EmployeeCard key={employee.id} {...employee}/>
+              )}
               {/* Add more employees or your dynamic list here */}
         </ScrollView>
           </ThemedView>

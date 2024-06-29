@@ -1,27 +1,31 @@
 import React from "react";
-import { Location } from "@/app/data_interfaces/location";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Location } from "@/app/data_interfaces/location";
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from "@react-navigation/stack";
 
 
-const LocationCard: React.FC<any> = ({
+const LocationCard: React.FC<Location> = ({
     id,
     name,
     size,
     latitude,
-    longitude,
-    navigation
+    longitude
 }) => {
     const textColor = useThemeColor({}, 'text');
 
+    type RootStackParamList = {
+        LocationMap: { name: string; latitude: number; longitude: number };
+        // other routes can be defined here
+      };
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'LocationMap'>>();
+
     const handleShowOnMap = () => {
-        
-        navigation.navigate('LocationMap', { latitude, longitude });
+        navigation.navigate('LocationMap', { name, latitude, longitude });
     };
 
     return (

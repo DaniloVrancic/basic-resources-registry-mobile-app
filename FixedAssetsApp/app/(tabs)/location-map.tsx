@@ -1,47 +1,59 @@
 import React from 'react';
-import { StyleSheet, Platform } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
-type LocationMapRouteProp = RouteProp<{ LocationMap: { latitude: number; longitude: number } }, 'LocationMap'>;
 
-const LocationMap: React.FC = () => {
-    const route = useRoute<LocationMapRouteProp>();
-    const { latitude, longitude } = route.params;
-    var myMapView = null;
+interface LocationMapProps {
+    route: {
+        params: {
+            name: string;
+            latitude: number;
+            longitude: number;
+        };
+    };
+}
 
-    if(Platform.OS != 'web'){
-        /*
-        const Marker = require('react-native-maps');
-        const MapView = require('react-native-maps').default;
-        myMapView = <MapView
-        style={styles.map}
-        initialRegion={{
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        }}
-    >
-        <Marker coordinate={{ latitude, longitude }} />
-    </MapView>
-    */
-    }
+const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
+    const { name, latitude, longitude } = route.params;
 
     return (
         <ThemedView style={styles.container}>
-            {myMapView}
+            <ThemedText style={styles.title}>Chosen Location</ThemedText>
+            <MapView
+                style={styles.map}
+                initialRegion={{
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }}
+            >
+                <Marker
+                    coordinate={{ latitude, longitude }}
+                    title={name}
+                />
+            </MapView>
         </ThemedView>
     );
 };
 
+export default LocationMap;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginVertical: 10,
     },
     map: {
-        ...StyleSheet.absoluteFillObject,
+        width: '100%',
+        height: '80%',
     },
 });
-
-export default LocationMap;

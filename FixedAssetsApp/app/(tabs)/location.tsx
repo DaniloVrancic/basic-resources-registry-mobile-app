@@ -20,7 +20,6 @@ import LocationCard from '@/components/LocationCard';
 
 export default function Location() {
   return (
-    
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd

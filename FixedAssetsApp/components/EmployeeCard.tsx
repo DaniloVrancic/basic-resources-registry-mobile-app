@@ -7,6 +7,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Employee } from "@/app/data_interfaces/employee";
+import { hideAsync } from "expo-splash-screen";
 
 
 
@@ -25,7 +26,7 @@ const EmployeeCard: React.FC<Employee> = ({
                 <ThemedView style={styles.imageContainer}>
                 <Image
                     style={{ height: '100%', width: '100%' }}
-                    resizeMode="stretch"
+                    resizeMode="cover"
                     defaultSource={{uri: defaultPhotoUrl}}
                     onError={() => {console.log('Failed to load image');}} // Optional error handler
                 />
@@ -34,12 +35,12 @@ const EmployeeCard: React.FC<Employee> = ({
                     <ThemedText type='title'>{name}</ThemedText>
 
                     <ThemedView style={{flexDirection: 'row'}}>
-                    <Ionicons name="mail" size={32} color={textColor} style={styles.coordinateText}/>
-                    <ThemedText type="defaultSemiBold">E-mail: {email}</ThemedText>
+                        <Ionicons name="mail" size={16} color={textColor} style={{fontSize: 16, paddingRight: 5}}/>
+                        <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">E-mail: {email}</ThemedText>
                     </ThemedView>
 
                     <ThemedView>
-                        <ThemedText style={styles.coordinateText}>Income: ${income}/month</ThemedText>
+                        <ThemedText style={{fontSize: 10}}>Income: ${income}/month</ThemedText>
                     </ThemedView>
 
                     <Pressable
@@ -56,18 +57,18 @@ export default EmployeeCard;
 
 const styles = StyleSheet.create({
     cardContainer: {
-        maxHeight: 200,
+        maxHeight: 300,
+        paddingLeft: 5,
         flexDirection: 'row',
         borderWidth: 1,
         borderColor: 'grey',
         borderRadius: 5, 
-        padding: 10,
+        padding: 12,
+        margin: 5,
+        flexWrap: 'wrap',
         marginVertical: 5,
-        margin: 5
-    },
-    coordinateText: {
-        gap: 12,
-        paddingHorizontal: 6
+        marginLeft: 10,
+        overflow: 'scroll'
     },
     showOnEmployeeButton: {
         backgroundColor: 'rgb(106, 27, 154)', // Purple-blueish color

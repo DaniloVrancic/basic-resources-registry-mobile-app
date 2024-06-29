@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 
@@ -18,25 +18,39 @@ interface LocationMapProps {
 const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
     const { name, latitude, longitude } = route.params;
 
-    return (
-        <ThemedView style={styles.container}>
-            <ThemedText style={styles.title}>Chosen Location</ThemedText>
-            <MapView
-                style={styles.map}
-                initialRegion={{
-                    latitude,
-                    longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-            >
-                <Marker
-                    coordinate={{ latitude, longitude }}
-                    title={name}
-                />
-            </MapView>
-        </ThemedView>
-    );
+    if(Platform.OS != 'web')
+        {
+            var MapView = require('react-native-maps');
+            var Marker = require('react-native-maps');
+
+            return (
+                <ThemedView style={styles.container}>
+                    <ThemedText style={styles.title}>Chosen Location</ThemedText>
+                    
+                    /*
+                    <MapView
+                        style={styles.map}
+                        initialRegion={{
+                            latitude,
+                            longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                    >
+                        <Marker
+                            coordinate={{ latitude, longitude }}
+                            title={name}
+                        />
+                    </MapView>
+                    */
+                </ThemedView>
+            );
+        }
+    else{
+        return (<ThemedText>Map is not supported on Web</ThemedText>)
+    }
+
+    
 };
 
 export default LocationMap;

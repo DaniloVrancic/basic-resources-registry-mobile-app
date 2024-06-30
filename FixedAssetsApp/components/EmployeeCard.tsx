@@ -4,10 +4,7 @@ import { ThemedText } from "./ThemedText";
 import { Image, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from "@react-navigation/stack";
 import { Employee } from "@/app/data_interfaces/employee";
-import { hideAsync } from "expo-splash-screen";
 
 
 

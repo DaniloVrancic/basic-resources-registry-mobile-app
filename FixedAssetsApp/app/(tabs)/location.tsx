@@ -1,11 +1,8 @@
 import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
-
-import ParallaxScrollView from "@/components/ParallaxScrollView"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import { SetStateAction, useCallback, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -17,6 +14,7 @@ import Notch from '@/components/slider_components/Notch';
 import RnRangeSlider from 'rn-range-slider';
 import { TestLocations } from '@/constants/TestLocations';
 import LocationCard from '@/components/LocationCard';
+import MapView from 'react-native-maps';
 
 export default function Location() {
   return (
@@ -39,7 +37,7 @@ export default function Location() {
                 <LocationCard key={location.id} {...location}/>
               )}
               {/* Add more employees or your dynamic list here */}
-        </ScrollView>
+             </ScrollView>
           </ThemedView>
       </SafeAreaView>
     
@@ -161,6 +159,7 @@ const styles = StyleSheet.create({
     return (
   
       <ThemedView style={[styles.advancedFilterContainer]}>
+
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}

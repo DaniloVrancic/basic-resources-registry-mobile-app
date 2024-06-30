@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
-
-import { ThemedView } from '@/components/ThemedView';
+import { StyleSheet, Platform } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 
 
@@ -20,14 +18,14 @@ const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
 
     if(Platform.OS != 'web')
         {
-            var MapView = require('react-native-maps');
-            var Marker = require('react-native-maps');
-
+            //var MapView = require('react-native-maps');
+            //var Marker = require('react-native-maps');
+            /*
             return (
                 <ThemedView style={styles.container}>
                     <ThemedText style={styles.title}>Chosen Location</ThemedText>
                     
-                    /*
+                 
                     <MapView
                         style={styles.map}
                         initialRegion={{
@@ -42,9 +40,9 @@ const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
                             title={name}
                         />
                     </MapView>
-                    */
+                    
                 </ThemedView>
-            );
+            );*/
         }
     else{
         return (<ThemedText>Map is not supported on Web</ThemedText>)

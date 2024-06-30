@@ -13,6 +13,8 @@ import Notch from '@/components/slider_components/Notch';
 import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inventory-list-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
+import { testInventoryList1 } from '@/constants/TestInventoryLists';
+import InventoryItemCard from '@/components/InventoryItemCard';
 
 export default function ListOfAssets() {
   return (
@@ -23,44 +25,22 @@ export default function ListOfAssets() {
               onAddClick={() => { console.log("Location default click") }}
               filterChildren={listOfAssetsAdvancedFiltering()}
               renderAddButton={true}
-              renderAdvancedFilterButton={true}
-            />
+              renderAdvancedFilterButton={true}/>
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:12}]}>
             <ThemedText type="title">List of Assets</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {/* Replace the content below with your actual list components */}
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 1 -&gt Employee 2</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 1 -&gt Location 2</ThemedText>
-              </ThemedView>
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 5 -&gt Employee 3</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 2 -&gt Location 3</ThemedText>
-              </ThemedView>
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 6 -&gt Employee 1</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 6 -&gt Location 2</ThemedText>
-              </ThemedView>
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 21 -&gt Employee 5</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 3 -&gt Location 7</ThemedText>
-              </ThemedView>
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 7 -&gt Employee 1</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 5 -&gt Location 8</ThemedText>
-              </ThemedView>
-              <ThemedView style={{paddingVertical: 30}}>
-                <ThemedText style={{color: 'red'}}>Employee 1 -&gt Employee 8</ThemedText>
-                <ThemedText style={{color: 'red'}}>Location 6 -&gt Location 12</ThemedText>
-              </ThemedView>
-              {/* Add more employees or your dynamic list here */}
-        </ScrollView>
+             
+             {
+              testInventoryList1.map(inventoryAsset => 
+                <InventoryItemCard key={inventoryAsset.fixedAssetId} {...inventoryAsset}/>
+              )
+             }
+            </ScrollView>
           </ThemedView>
       </SafeAreaView>
-    
   )
 }
 const styles = StyleSheet.create({

@@ -16,7 +16,7 @@ const EmployeeCard: React.FC<Employee> = ({
     photoUrl
 }) => {
     const textColor = useThemeColor({}, 'text');
-    const defaultPhotoUrl: string = 'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg';
+    const defaultPhotoUrl: string = '@/assets/images/defaultUserPhoto.png';
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
@@ -24,7 +24,7 @@ const EmployeeCard: React.FC<Employee> = ({
                 <Image
                     style={{ height: '100%', width: '100%' }}
                     resizeMode="cover"
-                    defaultSource={{uri: defaultPhotoUrl}}
+                    defaultSource={require(defaultPhotoUrl)}
                     onError={() => {console.log('Failed to load image');}} // Optional error handler
                 />
                 </ThemedView>

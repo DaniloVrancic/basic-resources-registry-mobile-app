@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, SafeAreaView } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -8,12 +8,20 @@ import { ThemedView } from '@/components/ThemedView';
 export default function HomeScreen() {
   console.log(Platform.OS);
   return (
+    
+    <SafeAreaView style={styles.safeArea}>
       <ThemedText type='title'>Welcome to Home Screen (For fixed assets)</ThemedText>
+    </SafeAreaView>
 
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    padding: 2,
+    flexDirection: 'column'
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -28,7 +28,7 @@ const InventoryItemCard: React.FC<InventoryItem> = ({
                 <ThemedText style={styles.transferText}>{newEmployeeId}</ThemedText>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
-                <ThemedText style={styles.transferText}>:Location of Asset: {currentLocationId}</ThemedText>
+                <ThemedText style={styles.transferText}>Location of Asset: {currentLocationId}</ThemedText>
                 <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
                 <ThemedText style={styles.transferText}>{newLocationId}</ThemedText>
             </ThemedView>

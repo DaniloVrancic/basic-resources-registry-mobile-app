@@ -27,6 +27,8 @@ interface SearchBarWithAddProps {
 
   /*
   Will determine if the advanced filter button will be rendered
+  set to true for render,
+  false to ommit
   */
   renderAdvancedFilterButton: boolean;
 }

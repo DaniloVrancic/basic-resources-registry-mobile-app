@@ -14,6 +14,7 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
+import testFixedAssets from '@/constants/TestFixedAssets';
 
 export default function HomeScreen() {
   console.log(Platform.OS);
@@ -34,10 +35,13 @@ export default function HomeScreen() {
             <ThemedText type="title">Fixed Assets:</ThemedText>
       </ThemedView>
 
-      <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               {/* Add more employees or your dynamic list here */}
-        </ScrollView>
+                {testFixedAssets.map(fixedAsset => 
+                  <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                )}
+            </ScrollView>
           </ThemedView>
       
     </SafeAreaView>
@@ -67,6 +71,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   scrollViewContent: {
+    flexDirection: 'column',
     padding: 10,
     // Add additional styling as needed
   },
@@ -108,6 +113,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgb(106, 27, 154)', // Blue-purple color
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  advancedBarCodeButton: {
+    flexDirection: 'row',
+    textAlign: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgb(255, 60, 30)', // orange-reddish button color
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -167,19 +182,19 @@ const advancedFilter = () => {
       <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
       <TextInput
         style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-        placeholder="Search by name of employee..."
+        placeholder="Search by asset name..."
         value={nameToSearch}
         onChangeText={handleNameChange}
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
-      <ThemedText style={[styles.advancedFilterLabel]}>Income Range:</ThemedText>
+      <ThemedText style={[styles.advancedFilterLabel]}>Value of Asset Range:</ThemedText>
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minPrice?.toString()}</ThemedText>
         <RangeSlider
           style={styles.advancedFilterSlider}
-          min={800}
-          max={8000}
-          step={100}
+          min={0}
+          max={10_000}
+          step={20}
           onValueChanged={handleValueChange}
           disableRange={rangeDisabled}
           floatingLabel={floatingLabel}
@@ -191,6 +206,10 @@ const advancedFilter = () => {
         />
         <ThemedText>{maxPrice?.toString()}</ThemedText>
       </ThemedView>
+      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilter}>
+        <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
+        <ThemedText style={styles.advancedFilterButtonText}>Scan Code</ThemedText>
+      </Pressable>
       <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
         <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
         <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>

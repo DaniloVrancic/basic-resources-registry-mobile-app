@@ -1,6 +1,6 @@
 import React from "react";
-import { ThemedView } from "./ThemedView";
-import { ThemedText } from "./ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemedView } from "./ThemedView";
+import { ThemedView } from "@/components/ThemedView";
 import { useState, ReactNode } from "react";
 import { StyleSheet, Modal, Pressable } from "react-native";
 import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";

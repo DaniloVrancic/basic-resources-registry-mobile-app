@@ -16,7 +16,7 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'center', //aligns all items to the center
     justifyContent: 'center',
   },
   title: {

@@ -15,8 +15,29 @@ import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 import { testEmployees } from '@/constants/TestEmployees';
 import EmployeeCard from '@/components/EmployeeCard';
+import { connectToDatabase, createTables } from '@/db/db';
 
 export default function Employees() {
+
+  const loadData = useCallback(async () => {
+    try {
+      const db = await connectToDatabase();
+      if (!db) {
+        throw new Error("Database connection returned null or undefined");
+      }
+      await createTables(db);
+    } catch (error: any) {
+      console.error("Couldn't connect to database");
+      console.error(error.message);
+      console.error(error.stack);
+    }
+  }, []);
+  
+  useEffect(() => {
+    loadData()
+  }, [loadData])
+
+
   return (
     
       <SafeAreaView style={styles.safeArea}>

@@ -29,10 +29,7 @@
       },
       "plugins": [
         "expo-router",
-        "expo-document-picker",
-        {
-          "iCloudContainerEnvironment": "Development"
-        }
+        "expo-document-picker"
       ],
       "experiments": {
         "typedRoutes": true

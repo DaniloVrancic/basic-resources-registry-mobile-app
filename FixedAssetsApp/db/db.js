@@ -10,7 +10,7 @@ import {
   export const connectToDatabase = async () => {
     return openDatabase(
       { name: MY_DATABASE_NAME, location: "default" },
-      () => {},
+      () => {console.log("SUCCESSFULLY CONNECTED TO DATABASE!")},
       ((error) => {
         console.error(error)
         throw Error("Could not connect to database");
@@ -118,10 +118,11 @@ import {
 
     try {
       await db.executeSql(locationTableQuery);
-      await db.executeSql(employeeTableQuery);
-      await db.executeSql(fixedAssetTableQuery);
-      await db.executeSql(transferListQuery);
-      await db.executeSql(inventoryItemQuery);
+      console.log("created location table");
+     // await db.executeSql(employeeTableQuery);
+     // await db.executeSql(fixedAssetTableQuery);
+    //  await db.executeSql(transferListQuery);
+    //  await db.executeSql(inventoryItemQuery);
 
     } catch (error) {
       console.error(error)

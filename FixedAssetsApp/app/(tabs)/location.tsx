@@ -1,19 +1,19 @@
 import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { ThemedText } from "@/components/ThemedText"
-import { ThemedView } from "@/components/ThemedView"
+import { ThemedText } from "../../components/ThemedText"
+import { ThemedView } from "../..//components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchBarWithAdd from '@/components/SearchBarWithAdd';
+import SearchBarWithAdd from '../../components/SearchBarWithAdd';
 import { SetStateAction, useCallback, useState } from 'react';
-import { useThemeColor } from '@/hooks/useThemeColor';
-import Thumb from '@/components/slider_components/Thumb';
-import Rail from '@/components/slider_components/Rail';
-import RailSelected from '@/components/slider_components/RailSelected';
-import Label from '@/components/slider_components/Label';
-import Notch from '@/components/slider_components/Notch';
+import { useThemeColor } from '../../hooks/useThemeColor';
+import Thumb from '../../components/slider_components/Thumb';
+import Rail from '../../components/slider_components/Rail';
+import RailSelected from '../../components/slider_components/RailSelected';
+import Label from '../../components/slider_components/Label';
+import Notch from '../../components/slider_components/Notch';
 import RnRangeSlider from 'rn-range-slider';
-import { TestLocations } from '@/constants/TestLocations';
-import LocationCard from '@/components/LocationCard';
+import { TestLocations } from '../../constants/TestLocations';
+import LocationCard from '../../components/LocationCard';
 import MapView from 'react-native-maps';
 
 export default function Location() {

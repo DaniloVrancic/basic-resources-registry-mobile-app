@@ -1,12 +1,8 @@
 import { FixedAsset } from "../app/data_interfaces/fixed-asset";
 import { useThemeColor } from "../hooks/useThemeColor";
 import { Image, StyleSheet } from "react-native";
-<<<<<<< HEAD
-import { ThemedView } from "../components/ThemedView";
-=======
 import { ThemedView } from "@/components/ThemedView";
->>>>>>> fbd2a4c (MP 1.4.22: Finished Fixed Asset Card)
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "@/components/ThemedText";
 
 const FixedAssetCard: React.FC<FixedAsset> = ({
     id,

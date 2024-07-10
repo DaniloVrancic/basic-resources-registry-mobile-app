@@ -2,7 +2,7 @@ import * as SQLite from 'expo-sqlite';
 
   const MY_DATABASE_NAME = "my_fixed_assets.db";
 
-  export const connectToDatabase = () => {
+  export const connectToDatabase = async () => {
     const db = SQLite.openDatabaseAsync(MY_DATABASE_NAME);
     return db;
   }
@@ -19,45 +19,32 @@ import * as SQLite from 'expo-sqlite';
   `;
     const locationTableQuery = `
     CREATE TABLE IF NOT EXISTS 'location' (
-     'id' INTEGER NOT NULL AUTO_INCREMENT,
+     'id' INTEGER PRIMARY KEY AUTOINCREMENT,
       'name' TEXT NOT NULL,
       'size' INTEGER NOT NULL,
-      'latitude' DECIMAL(10,8) NOT NULL,
-      'longitude' DECIMAL(11,8) NOT NULL,
-      PRIMARY KEY ('id'))
+      'latitude' REAL NOT NULL,
+      'longitude' REAL NOT NULL
      );
     `
 
     const fixedAssetTableQuery = `
       CREATE TABLE IF NOT EXISTS 'fixed_asset' (
-     'id' INTEGER NOT NULL AUTOINCREMENT,
+     'id' INTEGER PRIMARY KEY AUTOINCREMENT,
      'name' TEXT NOT NULL,
-     'description' TEXT NULL,
-     'barcode' TEXT NULL,
-     'price' DECIMAL(7,2) NOT NULL,
+     'description' TEXT,
+     'barcode' TEXT NOT NULL,
+     'price' REAL NOT NULL,
      'creationDate' TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
      'location_id' INTEGER NOT NULL,
      'employee_id' INTEGER NULL,
      'photoUrl' TEXT NULL,
-     PRIMARY KEY ('id'),
-     INDEX 'fk_fixed_asset_location_idx' ('location_id' ASC) VISIBLE,
-     INDEX 'fk_fixed_asset_employee1_idx' ('employee_id' ASC) VISIBLE,
-     CONSTRAINT 'fk_fixed_asset_location'
-       FOREIGN KEY ('location_id')
-       REFERENCES 'my_fixed_assets'.'location' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_fixed_asset_employee1'
-       FOREIGN KEY ('employee_id')
-       REFERENCES 'my_fixed_assets'.'employee' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION);
+      FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+      FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION
     `
 
     const transferListQuery = `
     CREATE TABLE IF NOT EXISTS 'transfer_list' (
-    'id' INTEGER NOT NULL AUTOINCREMENT,
-    PRIMARY KEY ('id'));
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT);
     `
 
     const inventoryItemQuery = `
@@ -69,41 +56,19 @@ import * as SQLite from 'expo-sqlite';
     'currentLocationId' INTEGER NOT NULL,
     'newLocationId' INTEGER NOT NULL,
     PRIMARY KEY ('fixed_asset_id', 'transfer_list_id'),
-    INDEX 'fk_inventory_item_transfer_list1_idx' ('transfer_list_id' ASC) VISIBLE,
-    INDEX 'fk_inventory_item_employee1_idx' ('currentEmployeeId' ASC) VISIBLE,
-    INDEX 'fk_inventory_item_employee2_idx' ('new_employee_id' ASC) VISIBLE,
-    INDEX 'fk_inventory_item_location1_idx' ('currentLocationId' ASC) VISIBLE,
-    INDEX 'fk_inventory_item_location2_idx' ('newLocationId' ASC) VISIBLE,
-     CONSTRAINT 'fk_inventory_item_fixed_asset1'
-       FOREIGN KEY ('fixed_asset_id')
-       REFERENCES 'my_fixed_assets'.'fixed_asset' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_inventory_item_transfer_list1'
-       FOREIGN KEY ('transfer_list_id')
-       REFERENCES 'my_fixed_assets'.'transfer_list' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_inventory_item_employee1'
-       FOREIGN KEY ('currentEmployeeId')
-       REFERENCES 'my_fixed_assets'.'employee' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_inventory_item_employee2'
-       FOREIGN KEY ('new_employee_id')
-       REFERENCES 'my_fixed_assets'.'employee' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_inventory_item_location1'
-       FOREIGN KEY ('currentLocationId')
-       REFERENCES 'my_fixed_assets'.'location' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION,
-     CONSTRAINT 'fk_inventory_item_location2'
-       FOREIGN KEY ('newLocationId')
-       REFERENCES 'my_fixed_assets'.'location' ('id')
-       ON DELETE NO ACTION
-       ON UPDATE NO ACTION);
+    FOREIGN KEY ('fixed_asset_id') REFERENCES 'fixed_asset' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY ('transfer_list_id') REFERENCES 'transfer_list' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentEmployeeId') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY ('new_employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY ('newLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+    CREATE INDEX IF NOT EXISTS 'fk_inventory_item_transfer_list1_idx' ON 'inventory_item' ('transfer_list_id');
+    CREATE INDEX IF NOT EXISTS 'fk_inventory_item_employee1_idx' ON 'inventory_item' ('currentEmployeeId');
+    CREATE INDEX IF NOT EXISTS 'fk_inventory_item_employee2_idx' ON 'inventory_item' ('new_employee_id');
+    CREATE INDEX IF NOT EXISTS 'fk_inventory_item_location1_idx' ON 'inventory_item' ('currentLocationId');
+    CREATE INDEX IF NOT EXISTS 'fk_inventory_item_location2_idx' ON 'inventory_item' ('newLocationId');
     `
 
     try {

@@ -1,0 +1,4 @@
+INSERT INTO 'fixed_asset' ('name', 'description', 'barcode', 'price', 'location_id', 'employee_id') VALUES 
+('Dinner Table', 'Indeed very good table, going to take you out for dinner here', '535993', 400, 1, 2);
+
+# For inserting into fixed_asset

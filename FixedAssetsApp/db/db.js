@@ -36,15 +36,17 @@ import * as SQLite from 'expo-sqlite';
      'price' REAL NOT NULL,
      'creationDate' TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
      'location_id' INTEGER NOT NULL,
-     'employee_id' INTEGER NULL,
-     'photoUrl' TEXT NULL,
+     'employee_id' INTEGER NOT NULL,
+     'photoUrl' TEXT,
       FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
       FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION
     `
 
     const transferListQuery = `
     CREATE TABLE IF NOT EXISTS 'transfer_list' (
-    'id' INTEGER PRIMARY KEY AUTOINCREMENT);
+    'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+    'name' TEXT NOT NULL
+    );
     `
 
     const inventoryItemQuery = `

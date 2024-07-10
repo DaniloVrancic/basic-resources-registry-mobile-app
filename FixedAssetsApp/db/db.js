@@ -1,53 +1,43 @@
-import {
-    enablePromise,
-    openDatabase,
-  } from "react-native-sqlite-storage";
-
-  enablePromise(true);
+import * as SQLite from 'expo-sqlite';
 
   const MY_DATABASE_NAME = "my_fixed_assets.db";
 
-  export const connectToDatabase = async () => {
-    return openDatabase(
-      { name: MY_DATABASE_NAME, location: "default" },
-      () => {console.log("SUCCESSFULLY CONNECTED TO DATABASE!")},
-      ((error) => {
-        console.error(error)
-        throw Error("Could not connect to database");
-      }
-    ))
+  export const connectToDatabase = () => {
+    const db = SQLite.openDatabaseAsync(MY_DATABASE_NAME);
+    return db;
   }
 
   export const createTables = async (db) => {
     const employeeTableQuery = `
       CREATE TABLE IF NOT EXISTS 'employee' (
-       'id' INT NOT NULL AUTOINCREMENT,
-       'name' TEXT NOT NULL,
-       'email' TEXT NOT NULL,
-       'income' INT NOT NULL,
-       'photoUrl' TEXT NULL,
-       PRIMARY KEY ('id'))
-    `
+        'id' INTEGER PRIMARY KEY AUTOINCREMENT,
+        'name' TEXT NOT NULL,
+        'email' TEXT NOT NULL,
+        'income' INTEGER NOT NULL,
+        'photoUrl' TEXT
+    );
+  `;
     const locationTableQuery = `
-     'id' INT NOT NULL AUTO_INCREMENT,
+    CREATE TABLE IF NOT EXISTS 'location' (
+     'id' INTEGER NOT NULL AUTO_INCREMENT,
       'name' TEXT NOT NULL,
-      'size' INT NOT NULL,
+      'size' INTEGER NOT NULL,
       'latitude' DECIMAL(10,8) NOT NULL,
       'longitude' DECIMAL(11,8) NOT NULL,
       PRIMARY KEY ('id'))
-     )
+     );
     `
 
     const fixedAssetTableQuery = `
       CREATE TABLE IF NOT EXISTS 'fixed_asset' (
-     'id' INT NOT NULL AUTOINCREMENT,
+     'id' INTEGER NOT NULL AUTOINCREMENT,
      'name' TEXT NOT NULL,
      'description' TEXT NULL,
      'barcode' TEXT NULL,
      'price' DECIMAL(7,2) NOT NULL,
      'creationDate' TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-     'location_id' INT NOT NULL,
-     'employee_id' INT NULL,
+     'location_id' INTEGER NOT NULL,
+     'employee_id' INTEGER NULL,
      'photoUrl' TEXT NULL,
      PRIMARY KEY ('id'),
      INDEX 'fk_fixed_asset_location_idx' ('location_id' ASC) VISIBLE,
@@ -61,23 +51,23 @@ import {
        FOREIGN KEY ('employee_id')
        REFERENCES 'my_fixed_assets'.'employee' ('id')
        ON DELETE NO ACTION
-       ON UPDATE NO ACTION)
+       ON UPDATE NO ACTION);
     `
 
     const transferListQuery = `
     CREATE TABLE IF NOT EXISTS 'transfer_list' (
-    'id' INT NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY ('id'))
+    'id' INTEGER NOT NULL AUTOINCREMENT,
+    PRIMARY KEY ('id'));
     `
 
     const inventoryItemQuery = `
     CREATE TABLE IF NOT EXISTS 'inventory_item' (
-    'fixed_asset_id' INT NOT NULL,
-    'transfer_list_id' INT NOT NULL,
-    'currentEmployeeId' INT NOT NULL,
-    'new_employee_id' INT NOT NULL,
-    'currentLocationId' INT NOT NULL,
-    'newLocationId' INT NOT NULL,
+    'fixed_asset_id' INTEGER NOT NULL,
+    'transfer_list_id' INTEGER NOT NULL,
+    'currentEmployeeId' INTEGER NOT NULL,
+    'new_employee_id' INTEGER NOT NULL,
+    'currentLocationId' INTEGER NOT NULL,
+    'newLocationId' INTEGER NOT NULL,
     PRIMARY KEY ('fixed_asset_id', 'transfer_list_id'),
     INDEX 'fk_inventory_item_transfer_list1_idx' ('transfer_list_id' ASC) VISIBLE,
     INDEX 'fk_inventory_item_employee1_idx' ('currentEmployeeId' ASC) VISIBLE,
@@ -113,19 +103,29 @@ import {
        FOREIGN KEY ('newLocationId')
        REFERENCES 'my_fixed_assets'.'location' ('id')
        ON DELETE NO ACTION
-       ON UPDATE NO ACTION)
+       ON UPDATE NO ACTION);
     `
 
     try {
-      await db.executeSql(locationTableQuery);
-      console.log("created location table");
-     // await db.executeSql(employeeTableQuery);
-     // await db.executeSql(fixedAssetTableQuery);
-    //  await db.executeSql(transferListQuery);
-    //  await db.executeSql(inventoryItemQuery);
+      await db.execAsync('PRAGMA journal_mode = WAL');
+      await db.execAsync('PRAGMA foreign_keys = ON');
+
+      await db.runAsync(locationTableQuery);
+      console.log("after Location table");
+      await db.runAsync(employeeTableQuery);
+       console.log("after Employee table");
+      await db.runAsync(fixedAssetTableQuery);
+       console.log("after Fixed Asset table");
+      await db.runAsync(transferListQuery);
+       console.log("after Transfer List table");
+      await db.runAsync(inventoryItemQuery);
+       console.log("after Inventory Item table");
+
+
+      
 
     } catch (error) {
-      console.error(error)
-      throw Error(`Failed to create tables`)
+      console.error(error);
+      throw Error(`Failed to create tables`);
     }
   }

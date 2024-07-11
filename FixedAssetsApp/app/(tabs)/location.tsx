@@ -85,16 +85,16 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
-    advancedFilterSlider: {
+    advancedFilterSlider: { //slider going to be seperated from other elements
       flex: 1,
       marginHorizontal: 8,
     },
-    advancedFilterSliderContainer: {
+    advancedFilterSliderContainer: { //center all elements inside slider
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
     },
-    advancedFilterButton: {
+    advancedFilterButton: { //center the button and assign color to it
       flexDirection: 'row',
       textAlign: 'center',
       justifyContent: 'center',

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     advancedFilterSliderContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'space-between', //for easier hitting the button, leave some space between elements
     },
     advancedFilterButton: {
       flexDirection: 'row',

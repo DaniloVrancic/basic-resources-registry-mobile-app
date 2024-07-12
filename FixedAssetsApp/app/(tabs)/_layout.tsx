@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 
 import { TabBarIcon } from '../../components/navigation/TabBarIcon';
@@ -7,11 +7,36 @@ import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '../../hooks/useColorScheme';
 
 import { createStackNavigator } from '@react-navigation/stack';
+import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
+import { connectToDatabase, createTables } from '@/db/db';
+
+import * as FileSystem from 'expo-file-system';
 
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  const loadData = useCallback(async () => {
+    try {
+      const db = await connectToDatabase();
+      if (!db) {
+        throw new Error("Database connection returned null or undefined");
+      }
+      await createTables(db);
+    } catch (error: any) {
+      console.error(error.message);
+      console.error(error.stack);
+    }
+  }, []);
+
+  const findSystemPathMethod = async () => {
+    console.log(FileSystem.documentDirectory)   
+}
+
+  useEffect(() => {
+    loadData(),
+    findSystemPathMethod();
+  }, [loadData])
 
   return (
       <Tabs
@@ -67,3 +92,5 @@ export default function TabLayout() {
       </Tabs>
   );
 }
+
+

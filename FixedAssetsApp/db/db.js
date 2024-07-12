@@ -106,9 +106,10 @@ import * as SQLite from 'expo-sqlite';
   const insertTestDataIfEmpty = async (db) => {
     const tables = ['employee', 'location', 'fixed_asset', 'transfer_list', 'inventory_item']; //all the table names
     for (const table of tables) {
-      const rowCount = await db.execAsync(`SELECT COUNT(*) as count FROM ${table}`);
-      console.log(`In table: ${table} there are ${rowCount} rows!`);
-      if (rowCount[0].count === 0) {
+      
+      const rowCount = await db.getFirstAsync(`SELECT COUNT(*) as 'count' FROM '${table}'`);
+      console.log(`In table: ${table} there are ${rowCount["count"]} rows!`);
+      if (rowCount["count"] === 0) {
         await insertTestData(db, table);
       }
     }

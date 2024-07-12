@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import RangeSlider from 'rn-range-slider';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
+import { SetStateAction, Suspense, useCallback, useEffect, useState } from 'react';
 import { EmployeeSearchCriteria } from '../search_criteria_interfaces/employee-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Thumb from '@/components/slider_components/Thumb';
@@ -15,12 +15,37 @@ import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 import { testEmployees } from '@/constants/TestEmployees';
 import EmployeeCard from '@/components/EmployeeCard';
-import { connectToDatabase, createTables } from '@/db/db';
+import LoadingAnimation from '@/components/fallback/LoadingAnimation';
+import { SQLiteDatabase, SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
+import { Employee } from '../data_interfaces/employee';
+import { useNavigatorContext } from 'expo-router/build/views/Navigator';
+import { getAllEmployees } from '@/db/db';
 
+let db: SQLiteDatabase;
 export default function Employees() {
+  
+
+  db = useSQLiteContext();
+  const [loadedEmployees, setLoadedEmployees] = useState([]);
+  
+  const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedEmployees(await getAllEmployees(db));
+    } catch (error) {
+      console.error('Error loading employees:', error);
+      // Handle error state or retry mechanism
+    }
+  };
+  
+
+  useEffect(() => {
+    
+    loadEmployeesFromDatabase(db);
+  }, [db]);
+
 
   return (
-    
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
@@ -34,16 +59,21 @@ export default function Employees() {
             <ThemedText type="title">Employees</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-             
-              {testEmployees.map(employee => 
-                <EmployeeCard key={employee.id} {...employee}/>
-              )}
-              {/* Add more employees or your dynamic list here */}
-        </ScrollView>
+            <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
+              
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                
+                  {
+                  loadedEmployees.map((employee: Employee) => 
+                    <EmployeeCard key={employee.id} {...employee}/>
+                  )}
+                  {/* Add more employees or your dynamic list here */}
+                  
+                </ScrollView>
+                
+            </Suspense>
           </ThemedView>
       </SafeAreaView>
-    
   )
 }
 

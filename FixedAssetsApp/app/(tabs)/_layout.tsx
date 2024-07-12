@@ -6,11 +6,11 @@ import { TabBarIcon } from '../../components/navigation/TabBarIcon';
 import { Colors } from '../../constants/Colors';
 import { useColorScheme } from '../../hooks/useColorScheme';
 
-import { createStackNavigator } from '@react-navigation/stack';
-import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
 import { connectToDatabase, createTables } from '@/db/db';
 
 import * as FileSystem from 'expo-file-system';
+import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
+import { SQLiteProvider } from 'expo-sqlite';
 
 
 export default function TabLayout() {
@@ -39,6 +39,7 @@ export default function TabLayout() {
   }, [loadData])
 
   return (
+    <SQLiteProvider databaseName={MY_DATABASE_NAME}>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -90,6 +91,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      </SQLiteProvider>
   );
 }
 

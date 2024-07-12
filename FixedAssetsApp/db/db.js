@@ -1,6 +1,6 @@
+import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
 import * as SQLite from 'expo-sqlite';
 
-  const MY_DATABASE_NAME = "my_fixed_assets.db";
 
   export const connectToDatabase = async () => {
     const db = SQLite.openDatabaseAsync(MY_DATABASE_NAME);
@@ -189,3 +189,20 @@ import * as SQLite from 'expo-sqlite';
       await db.runAsync(query);
     }
   };
+
+
+
+  export const getAllEmployees = async (db) => {
+    return new Promise((resolve, reject) => {
+      console.log("HELLO FROM PROMISE!");
+      db.withTransactionAsync( async () => {
+        await db.getAllAsync(getAllEmployeesQuery, [], (_, { rows }) => {
+          console.log(rows._array);
+          resolve(rows._array);
+        }, error => {
+          reject(error);
+        });
+      });
+    });
+  };
+

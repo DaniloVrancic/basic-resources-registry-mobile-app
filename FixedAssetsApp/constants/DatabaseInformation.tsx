@@ -1,0 +1,1 @@
+export const MY_DATABASE_NAME = "my_fixed_assets.db";

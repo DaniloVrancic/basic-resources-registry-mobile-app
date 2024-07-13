@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
-import { SetStateAction, useCallback, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import Thumb from '@/components/slider_components/Thumb';
 import Rail from '@/components/slider_components/Rail';
 import RailSelected from '@/components/slider_components/RailSelected';
@@ -15,10 +15,30 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
 import { testInventoryList1 } from '@/constants/TestInventoryLists';
 import InventoryItemCard from '@/components/InventoryItemCard';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
+import { getAllInventoryLists } from '@/db/db';
+import InventoryItemList from '@/components/InventoryItemList';
+import { InventoryList } from '../data_interfaces/inventory-list';
 
+let db: SQLiteDatabase;
 export default function ListOfAssets() {
+
+  db = useSQLiteContext();
+  const [loadedLists, setLoadedLists] = useState([]);
+
+  useEffect(() => {
+    loadInventoryTransferLists(db);
+  }, []);
+
+  const loadInventoryTransferLists = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedLists(await getAllInventoryLists(db));
+    } catch (error) {
+      console.error('Error loading locations: ', error);
+    }
+  };
+
   return (
-    
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
@@ -32,11 +52,10 @@ export default function ListOfAssets() {
           </ThemedView>
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
-             
              {
-              testInventoryList1.map(inventoryAsset => 
-                <InventoryItemCard key={inventoryAsset.fixedAssetId} {...inventoryAsset}/>
-              )
+                loadedLists.map((inventoryList: InventoryList) => 
+                   <InventoryItemList key={inventoryList.id} {...inventoryList}/>
+                )
              }
             </ScrollView>
           </ThemedView>

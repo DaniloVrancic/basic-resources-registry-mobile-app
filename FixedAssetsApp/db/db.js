@@ -190,16 +190,102 @@ import * as SQLite from 'expo-sqlite';
     }
   };
 
+  ///////////////////////////////////////// SELECT COMMANDS //////////////////////////////////////////
+
+  //GETTING ALL EMPLOYEES FROM DB ////////////////////////////////////////////////////////////////////
+
   const getAllEmployeesQuery = "SELECT * FROM 'employee';";
 
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
       
       db.withTransactionAsync( async () => {
-        console.log("HELLO FROM TRANSACTION!");
         try{
-
           let rows = await db.getAllAsync(getAllEmployeesQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
+
+  const getAllLocationsQuery = "SELECT * FROM 'location';";
+
+  export const getAllLocations = async (db) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllLocationsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
+  
+  const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
+
+  export const getAllFixedAssets = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllFixedAssetsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  // GETTING INVENTORY ITEMS ////////////////////////////////////////////////////////////////////
+
+  const getInventoryItemsForList = "SELECT * FROM 'inventory_item' WHERE transfer_list_id = "; //raw statement
+
+  export const getItemsForList = async (db, id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          const allRows = await db.getAllAsync(getInventoryItemsForList + id + ";");
+          console.log(getInventoryItemsForList + id + ";");
+          console.log(allRows);
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
+
+  const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
+  export const getAllInventoryLists = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getInventoryListsQuery, []);
+          console.log(rows);
           resolve(rows);
         }
         catch(error){

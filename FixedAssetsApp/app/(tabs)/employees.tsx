@@ -13,13 +13,10 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
-import { testEmployees } from '@/constants/TestEmployees';
 import EmployeeCard from '@/components/EmployeeCard';
 import LoadingAnimation from '@/components/fallback/LoadingAnimation';
-import { SQLiteDatabase, SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Employee } from '../data_interfaces/employee';
-import { useNavigatorContext } from 'expo-router/build/views/Navigator';
 import { getAllEmployees } from '@/db/db';
 
 let db: SQLiteDatabase;

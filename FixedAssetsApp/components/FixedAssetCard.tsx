@@ -36,7 +36,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                     <ThemedText>Description: {description}</ThemedText>
                     <ThemedText>Barcode: {barcode}</ThemedText>
                     <ThemedText>Price: {price}</ThemedText>
-                    <ThemedText>Creation Date: {creationDate.toUTCString()}</ThemedText>
+                    <ThemedText>Creation Date: {creationDate.toString()}</ThemedText>
                 </ThemedView>
             </ThemedView>
         </ThemedView>

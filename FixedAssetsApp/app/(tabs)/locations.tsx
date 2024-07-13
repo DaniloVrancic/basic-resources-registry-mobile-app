@@ -4,7 +4,7 @@ import { ThemedView } from "../..//components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '../../components/SearchBarWithAdd';
-import { SetStateAction, useCallback, useState } from 'react';
+import { SetStateAction, Suspense, useCallback, useEffect, useState } from 'react';
 import { useThemeColor } from '../../hooks/useThemeColor';
 import Thumb from '../../components/slider_components/Thumb';
 import Rail from '../../components/slider_components/Rail';
@@ -12,11 +12,31 @@ import RailSelected from '../../components/slider_components/RailSelected';
 import Label from '../../components/slider_components/Label';
 import Notch from '../../components/slider_components/Notch';
 import RnRangeSlider from 'rn-range-slider';
-import { TestLocations } from '../../constants/TestLocations';
 import LocationCard from '../../components/LocationCard';
 import MapView from 'react-native-maps';
+import LoadingAnimation from '@/components/fallback/LoadingAnimation';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
+import { getAllLocations } from '@/db/db';
+import { Location } from '../data_interfaces/location';
 
-export default function Location() {
+let db: SQLiteDatabase;
+export default function Locations() {
+
+  db = useSQLiteContext();
+  const [loadedLocations, setLoadedLocations] = useState([]);
+
+  useEffect(() => {
+    loadLocationsFromDatabase(db);
+  }, []);
+
+  const loadLocationsFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedLocations(await getAllLocations(db));
+    } catch (error) {
+      console.error('Error loading locations: ', error);
+    }
+  };
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
@@ -31,13 +51,17 @@ export default function Location() {
             <ThemedText type="title">Location</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {/* Replace the content below with your actual list components */}
-              {TestLocations.map(location => 
-                <LocationCard key={location.id} {...location}/>
-              )}
-              {/* Add more employees or your dynamic list here */}
-             </ScrollView>
+
+          <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
+              <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                {/* Replace the content below with your actual list components */}
+                {
+                 loadedLocations.map((location: Location) => 
+                  <LocationCard key={location.id} {...location}/>
+                )}
+                {/* Add more employees or your dynamic list here */}
+              </ScrollView>
+          </Suspense>
           </ThemedView>
       </SafeAreaView>
     

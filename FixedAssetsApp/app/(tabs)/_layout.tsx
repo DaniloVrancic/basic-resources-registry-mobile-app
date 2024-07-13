@@ -64,9 +64,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="location"
+          name="locations"
           options={{
-            title: 'Location',
+            title: 'Locations',
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'location' : 'location-outline'} color={color} />
             ),

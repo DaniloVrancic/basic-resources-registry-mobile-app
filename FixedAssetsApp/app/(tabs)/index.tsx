@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -6,7 +6,7 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import FixedAssetCard from '@/components/FixedAssetCard';
 import RangeSlider from 'rn-range-slider';
 import { FixedAssetSearchCriteria } from '../search_criteria_interfaces/fixed-asset-search-criteria';
-import { SetStateAction, useCallback, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Thumb from '@/components/slider_components/Thumb';
 import Rail from '@/components/slider_components/Rail';
@@ -14,9 +14,28 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
-import testFixedAssets from '@/constants/TestFixedAssets';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
+import { getAllFixedAssets } from '@/db/db';
+import { FixedAsset } from '../data_interfaces/fixed-asset';
 
+let db: SQLiteDatabase;
 export default function HomeScreen() {
+  db = useSQLiteContext();
+  const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
+
+  useEffect(() => {
+    loadFixedAssetsFromDatabase(db);
+  }, []);
+
+  const loadFixedAssetsFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedFixedAssets(await getAllFixedAssets(db));
+    } catch (error) {
+      console.error('Error loading locations: ', error);
+    }
+  };
+
+
   return (
     
     <SafeAreaView style={styles.safeArea}>
@@ -37,7 +56,7 @@ export default function HomeScreen() {
           <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               {/* Add more employees or your dynamic list here */}
-                {testFixedAssets.map(fixedAsset => 
+                {loadedFixedAssets.map((fixedAsset: FixedAsset) => 
                   <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
                 )}
             </ScrollView>

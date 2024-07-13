@@ -7,6 +7,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Location } from "@/app/data_interfaces/location";
+import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 
 
 const LocationCard: React.FC<Location> = ({
@@ -30,17 +31,21 @@ const LocationCard: React.FC<Location> = ({
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
-            <ThemedText type='title'>{name}</ThemedText>
-            <ThemedText type="defaultSemiBold">Size of area: {size} m2</ThemedText>
-            <ThemedView style={styles.coordinatesContainer}>
-                <Ionicons name="pin-outline" size={32} color={textColor} style={styles.coordinateText}/>
-                <ThemedText style={styles.coordinateText}>Latitude: {latitude}</ThemedText>
-                <ThemedText style={styles.coordinateText}>Longitude: {longitude}</ThemedText>
+            <ThemedText style={styles.centerTextContainer} type='title'>{name}</ThemedText>
+            <ThemedText style={styles.centerTextContainer} type="defaultSemiBold">Size of area: {size} m2</ThemedText>
+
+            <ThemedView style={styles.fullCoordinatesSection}>
+             <Ionicons name="earth" size={32} color={useThemeColor({}, 'text')} style={{textAlign: 'center'}}/>
+                <ThemedView style={styles.coordinatesContainer}>
+                    <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Latitude:</ThemedText> {latitude}</ThemedText>
+                    <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Longitude:</ThemedText> {longitude}</ThemedText>
+                </ThemedView>
             </ThemedView>
 
             <Pressable
                 style={styles.showOnMapButton}
                 onPress={handleShowOnMap}>
+                <Ionicons name="pin-outline" size={32} color={useOppositeThemeColor({}, 'text')} style={styles.coordinateText}/>
                 <ThemedText style={styles.showOnMapButtonText}>Show on Map</ThemedText>
             </Pressable>
         </ThemedView>
@@ -53,25 +58,29 @@ const styles = StyleSheet.create({
     cardContainer: {
         borderWidth: 1,
         borderColor: 'grey',
-        borderRadius: 5, 
+        borderRadius: 10, 
         padding: 10,
         marginVertical: 5,
-        margin: 5
+        margin: 5,
     },
     coordinatesContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
+        textAlign: 'center',
         justifyContent: 'center',
         alignContent: 'center',
         fontSize: 10,
         fontWeight: 300
     },
     coordinateText: {
+        textAlign: 'center',
         gap: 12,
         paddingHorizontal: 6
     },
     showOnMapButton: {
+        flexDirection: 'row',
         backgroundColor: 'rgb(106, 27, 154)', // Purple-blueish color
-        padding: 12,
+        paddingVertical: 5,
+        paddingRight: 12,
         marginTop: 10,
         borderRadius: 5,
         justifyContent: 'center',
@@ -83,4 +92,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    centerTextContainer: {
+        textAlign: 'center'
+    },
+    fullCoordinatesSection: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 24,
+        margin: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginTop: 15,
+        marginVertical: 5,
+    }
 });

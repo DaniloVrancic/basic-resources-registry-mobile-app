@@ -78,15 +78,15 @@ import * as SQLite from 'expo-sqlite';
       await db.execAsync('PRAGMA foreign_keys = ON');
 
       await db.runAsync(locationTableQuery);
-      console.log("after Location table");
+      // console.log("after Location table");
       await db.runAsync(employeeTableQuery);
-       console.log("after Employee table");
+      // console.log("after Employee table");
       await db.runAsync(fixedAssetTableQuery);
-       console.log("after Fixed Asset table");
+      // console.log("after Fixed Asset table");
       await db.runAsync(transferListQuery);
-       console.log("after Transfer List table");
+      // console.log("after Transfer List table");
       await db.runAsync(inventoryItemQuery);
-       console.log("after Inventory Item table");
+      // console.log("after Inventory Item table");
       
 
     } catch (error) {
@@ -108,7 +108,6 @@ import * as SQLite from 'expo-sqlite';
     for (const table of tables) {
       
       const rowCount = await db.getFirstAsync(`SELECT COUNT(*) as 'count' FROM '${table}'`);
-      console.log(`In table: ${table} there are ${rowCount["count"]} rows!`);
       if (rowCount["count"] === 0) {
         await insertTestData(db, table);
       }
@@ -254,16 +253,15 @@ import * as SQLite from 'expo-sqlite';
 
   // GETTING INVENTORY ITEMS ////////////////////////////////////////////////////////////////////
 
-  const getInventoryItemsForList = "SELECT * FROM 'inventory_item' WHERE transfer_list_id = "; //raw statement
+  const getInventoryItemsForList = "SELECT * FROM 'inventory_item' WHERE transfer_list_id = $id"; //raw statement
 
   export const getItemsForList = async (db, id) => {
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
-          const allRows = await db.getAllAsync(getInventoryItemsForList + id + ";");
-          console.log(getInventoryItemsForList + id + ";");
-          console.log(allRows);
+          
+          const allRows = await db.getAllAsync(getInventoryItemsForList, { $id: id });
           resolve(allRows);
         }
         catch(error){

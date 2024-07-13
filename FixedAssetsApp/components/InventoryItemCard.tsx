@@ -19,18 +19,19 @@ const InventoryItemCard: React.FC<InventoryItem> = ({
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
-            <ThemedText type='title'>Inventory List</ThemedText>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
             <ThemedText type="subtitle">{fixed_asset_id}</ThemedText>
             <ThemedView style={styles.transferContainer}>
-                <ThemedText style={styles.transferText}>Person in Charge: {currentEmployeeId}</ThemedText>
-                <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
-                <ThemedText style={styles.transferText}>{new_employee_id}</ThemedText>
+                <ThemedText style={styles.transferText}>Person in Charge:</ThemedText>
+                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeId}</ThemedText>
+                <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
+                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{new_employee_id}</ThemedText>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
-                <ThemedText style={styles.transferText}>Location of Asset: {currentLocationId}</ThemedText>
+            <ThemedText style={styles.transferText}>Location of Asset:</ThemedText>
+            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationId}</ThemedText>
                 <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
-                <ThemedText style={styles.transferText}>{newLocationId}</ThemedText>
+                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newLocationId}</ThemedText>
             </ThemedView>
         </ThemedView>
     );
@@ -55,8 +56,13 @@ const styles = StyleSheet.create({
         fontWeight: 300
     },
     transferText: {
+        textAlign: 'right',
         gap: 12,
-        paddingHorizontal: 6
+        paddingHorizontal: 6,
+    },
+    transferTextValue: {
+        fontSize: 20,
+        paddingTop: 4
     },
     showOnMapButton: {
         backgroundColor: 'rgb(106, 27, 154)', // Purple-blueish color

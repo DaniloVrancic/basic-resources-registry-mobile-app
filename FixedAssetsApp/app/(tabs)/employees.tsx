@@ -35,7 +35,6 @@ export default function Employees() {
   const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
     try {
       setLoadedEmployees(await getAllEmployees(db));
-      console.log(loadedEmployees);
     } catch (error) {
       console.error('Error loading employees:', error);
     }

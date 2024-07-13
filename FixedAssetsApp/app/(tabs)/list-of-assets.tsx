@@ -34,7 +34,7 @@ export default function ListOfAssets() {
     try {
       setLoadedLists(await getAllInventoryLists(db));
     } catch (error) {
-      console.error('Error loading locations: ', error);
+      console.error('Error loading Inventory Lists: ', error);
     }
   };
 
@@ -53,8 +53,10 @@ export default function ListOfAssets() {
           <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
              {
-                loadedLists.map((inventoryList: InventoryList) => 
-                   <InventoryItemList key={inventoryList.id} {...inventoryList}/>
+                loadedLists.map((inventoryList: InventoryList) =>
+                  <ThemedView key={inventoryList.id} style={{marginVertical: 10, borderRadius: 15}}>
+                    <InventoryItemList key={inventoryList.id} {...inventoryList}/>
+                  </ThemedView>
                 )
              }
             </ScrollView>

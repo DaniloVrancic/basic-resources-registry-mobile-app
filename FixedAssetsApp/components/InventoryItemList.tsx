@@ -5,9 +5,10 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { getAllInventoryLists, getItemsForList } from '@/db/db';
+import { getItemsForList } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
+import { StyleSheet } from 'react-native';
 
 let db: SQLiteDatabase;
 const InventoryItemList: React.FC<InventoryList> = ({
@@ -27,25 +28,37 @@ const InventoryItemList: React.FC<InventoryList> = ({
         try {
             setLoadedItems(await getItemsForList(db, id));
         } catch (error) {
-          console.error('Error loading locations: ', error);
+          console.error('Error loading Items For List: ', error);
         }
       };
 
 
     return (
-        <ThemedView>
-            <ThemedText type='subtitle'>{name}</ThemedText>
+        <ThemedView style={styles.listContainer}>
+            <ThemedText style={styles.listTitle} type='subtitle'>{name}</ThemedText>
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
                 <ThemedView>
                     {
-                    loadedItems.map((element: InventoryItem) => 
-                        <InventoryItemCard key={element.fixed_asset_id} {...element}/>
-                    )
+                        loadedItems.map((element: InventoryItem) => 
+                            <InventoryItemCard key={element.fixed_asset_id} {...element}/>
+                        )
                     }
                 </ThemedView>
             </Suspense>
         </ThemedView>
     );
 }
+
+const styles = StyleSheet.create({
+    listContainer: {
+        borderColor: 'black',
+        borderRadius: 15,
+        paddingVertical: 12,
+        paddingHorizontal: 5,
+    },
+    listTitle: {
+        textAlign: 'center'
+    }
+})
 
 export default InventoryItemList;

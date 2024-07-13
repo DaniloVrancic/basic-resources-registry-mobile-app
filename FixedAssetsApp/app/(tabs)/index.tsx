@@ -31,7 +31,7 @@ export default function HomeScreen() {
     try {
       setLoadedFixedAssets(await getAllFixedAssets(db));
     } catch (error) {
-      console.error('Error loading locations: ', error);
+      console.error('Error loading Fixed Assets: ', error);
     }
   };
 

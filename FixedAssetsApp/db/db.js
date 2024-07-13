@@ -283,7 +283,6 @@ import * as SQLite from 'expo-sqlite';
       db.withTransactionAsync( async () => {
         try{
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
-          console.log(rows);
           resolve(rows);
         }
         catch(error){

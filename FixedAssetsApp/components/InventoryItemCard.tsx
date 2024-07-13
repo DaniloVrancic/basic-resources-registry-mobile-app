@@ -10,8 +10,8 @@ import { InventoryItem } from "@/app/data_interfaces/inventory-item";
 const InventoryItemCard: React.FC<InventoryItem> = ({
     currentEmployeeId,
     currentLocationId,
-    fixedAssetId,
-    newEmployeeId,
+    fixed_asset_id,
+    new_employee_id,
     newLocationId
 }) => {
     const textColor = useThemeColor({}, 'text');
@@ -21,11 +21,11 @@ const InventoryItemCard: React.FC<InventoryItem> = ({
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type='title'>Inventory List</ThemedText>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
-            <ThemedText type="subtitle">{fixedAssetId}</ThemedText>
+            <ThemedText type="subtitle">{fixed_asset_id}</ThemedText>
             <ThemedView style={styles.transferContainer}>
                 <ThemedText style={styles.transferText}>Person in Charge: {currentEmployeeId}</ThemedText>
                 <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
-                <ThemedText style={styles.transferText}>{newEmployeeId}</ThemedText>
+                <ThemedText style={styles.transferText}>{new_employee_id}</ThemedText>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
                 <ThemedText style={styles.transferText}>Location of Asset: {currentLocationId}</ThemedText>

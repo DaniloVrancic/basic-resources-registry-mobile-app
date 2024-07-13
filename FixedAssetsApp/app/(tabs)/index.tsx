@@ -17,7 +17,6 @@ import { Ionicons } from '@expo/vector-icons';
 import testFixedAssets from '@/constants/TestFixedAssets';
 
 export default function HomeScreen() {
-  console.log(Platform.OS);
   return (
     
     <SafeAreaView style={styles.safeArea}>

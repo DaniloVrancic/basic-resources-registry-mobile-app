@@ -29,20 +29,20 @@ export default function Employees() {
   db = useSQLiteContext();
   const [loadedEmployees, setLoadedEmployees] = useState([]);
   
-  const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
-    try {
-      setLoadedEmployees(await getAllEmployees(db));
-    } catch (error) {
-      console.error('Error loading employees:', error);
-      // Handle error state or retry mechanism
-    }
-  };
   
 
   useEffect(() => {
-    
     loadEmployeesFromDatabase(db);
-  }, [db]);
+  }, []);
+
+  const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedEmployees(await getAllEmployees(db));
+      console.log(loadedEmployees);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
+  };
 
 
   return (

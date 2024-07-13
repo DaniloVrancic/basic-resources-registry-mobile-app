@@ -190,18 +190,21 @@ import * as SQLite from 'expo-sqlite';
     }
   };
 
-
+  const getAllEmployeesQuery = "SELECT * FROM 'employee';";
 
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
-      console.log("HELLO FROM PROMISE!");
+      
       db.withTransactionAsync( async () => {
-        await db.getAllAsync(getAllEmployeesQuery, [], (_, { rows }) => {
-          console.log(rows._array);
-          resolve(rows._array);
-        }, error => {
+        console.log("HELLO FROM TRANSACTION!");
+        try{
+
+          let rows = await db.getAllAsync(getAllEmployeesQuery, []);
+          resolve(rows);
+        }
+        catch(error){
           reject(error);
-        });
+        }
       });
     });
   };

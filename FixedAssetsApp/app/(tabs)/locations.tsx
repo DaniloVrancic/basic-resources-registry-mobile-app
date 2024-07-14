@@ -47,17 +47,19 @@ export default function Locations() {
               renderAdvancedFilterButton={true}
             />
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:12, paddingHorizontal: 12}]}>
+          <ThemedView style={[styles.titleContainer, {flex:8, paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
             <ThemedText type="title">Location</ThemedText>
           </ThemedView>
-          <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
+          <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
 
           <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
               <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {/* Replace the content below with your actual list components */}
                 {
-                 loadedLocations.map((location: Location) => 
-                  <LocationCard key={location.id} {...location}/>
+                 loadedLocations.map((location: Location) =>
+                  <ThemedView key={location.id} style={{paddingVertical: 20, backgroundColor: 'rgba(0,0,0,0.0)'}}>
+                    <LocationCard key={location.id} {...location}/>
+                  </ThemedView>
                 )}
                 {/* Add more employees or your dynamic list here */}
               </ScrollView>

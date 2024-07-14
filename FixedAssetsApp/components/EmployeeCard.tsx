@@ -16,16 +16,16 @@ const EmployeeCard: React.FC<Employee> = ({
     photoUrl
 }) => {
     const textColor = useThemeColor({}, 'text');
-    const defaultPhotoUrl: string = '@/assets/images/defaultUserPhoto.png';
+    const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
                     <Image
-                        style={{ }}
+                        style={styles.imageTag}
                         resizeMode="cover"
-                        defaultSource={require(defaultPhotoUrl)}
+                        source={defaultImage}
                         onError={() => {console.log('Failed to load image');}} // Optional error handler
                     />
                     </ThemedView>
@@ -35,8 +35,8 @@ const EmployeeCard: React.FC<Employee> = ({
                 <ThemedView style={styles.informationContainer}>
                     <ThemedView style={styles.emailContainer}>
                         <ThemedView style={{flexDirection: 'row'}}>
-                            <Ionicons name="mail" size={16} color={textColor} style={{fontSize: 20, paddingRight: 5, paddingTop: 2}}/>
-                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">E-mail:</ThemedText>
+                            <Ionicons name="mail" size={16} color={'purple'} style={{fontSize: 20, paddingRight: 5, paddingTop: 2}}/>
+                            <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">E-mail:</ThemedText>
                         </ThemedView>
                         <ThemedView style={{paddingHorizontal: 10, flexWrap:'wrap'}}>
                             <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{email}</ThemedText>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
         maxHeight: 450,
         flexDirection: 'column',
         borderWidth: 1,
-        borderColor: 'grey',
+        borderColor: 'purple',
         borderRadius: 5, 
         paddingBottom: 12,
         flexWrap: 'wrap',
@@ -108,13 +108,20 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     imageContainer: {
+
+        marginVertical: 10,
+        borderColor: 'grey',
+        backgroundColor: 'rgba(0,0,0,0.0)',
+        
+    },
+    imageTag: {
         width: 80,
         height: 80,
         marginVertical: 10,
         borderColor: 'grey',
-        backgroundColor: 'red',
+        borderWidth: 2,
+        backgroundColor: 'ghostwhite',
         borderRadius: 100,
-        
     },
     emailContainer:{
         borderWidth: 1,

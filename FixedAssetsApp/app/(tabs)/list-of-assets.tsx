@@ -47,10 +47,10 @@ export default function ListOfAssets() {
               renderAddButton={true}
               renderAdvancedFilterButton={true}/>
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:12}]}>
-            <ThemedText type="title">List of Assets</ThemedText>
+          <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
+            <ThemedText style={{paddingHorizontal: 20}} type="title">List of Assets</ThemedText>
           </ThemedView>
-          <ThemedView style={{backgroundColor: 'lime', flex: 80}}>
+          <ThemedView lightColor='ghostwhite' darkColor='black' style={{ flex: 84}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
              {
                 loadedLists.map((inventoryList: InventoryList) =>

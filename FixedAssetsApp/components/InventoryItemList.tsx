@@ -9,6 +9,7 @@ import { getItemsForList } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 import { StyleSheet } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 let db: SQLiteDatabase;
 const InventoryItemList: React.FC<InventoryList> = ({
@@ -34,10 +35,10 @@ const InventoryItemList: React.FC<InventoryList> = ({
 
 
     return (
-        <ThemedView style={styles.listContainer}>
-            <ThemedText style={styles.listTitle} type='subtitle'>{name}</ThemedText>
+        <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
+            <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.listTitle} type='subtitle'>{name}</ThemedText>
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
-                <ThemedView>
+                <ThemedView style={{borderRadius: 10}}>
                     {
                         loadedItems.map((element: InventoryItem) => 
                             <InventoryItemCard key={element.fixed_asset_id} {...element}/>

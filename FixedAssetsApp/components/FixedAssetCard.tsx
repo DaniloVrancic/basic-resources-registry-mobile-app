@@ -1,6 +1,6 @@
 import { FixedAsset } from "../app/data_interfaces/fixed-asset";
 import { useThemeColor } from "../hooks/useThemeColor";
-import { Image, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 
@@ -21,9 +21,11 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
 
     return (
         <ThemedView style={styles.fixedAssetCardContainer}>
-            <ThemedView style={styles.cardImageTextSeperator}>
+        <ThemedView lightColor="#17153B" darkColor="ghostwhite" style={styles.cardHeader}>
+            <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{name}</ThemedText>
+        </ThemedView>
 
-            
+            <ThemedView style={styles.cardImageTextSeperator}>
                 <ThemedView style={{flex: 1}}>
                     <Image src={defaultImageUrl}
                         resizeMode="cover"
@@ -32,11 +34,14 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                         />
                 </ThemedView>
                 <ThemedView style={{flex: 3}}>
-                    <ThemedText>Name: {name}</ThemedText>
-                    <ThemedText>Description: {description}</ThemedText>
-                    <ThemedText>Barcode: {barcode}</ThemedText>
-                    <ThemedText>Price: {price}</ThemedText>
-                    <ThemedText>Creation Date: {creationDate.toString()}</ThemedText>
+                    <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
+                    <ThemedView style={styles.creationDateContainer}>
+                        <ThemedText>Creation Date: </ThemedText>
+                        <ThemedText style={{fontWeight: 600}}>{creationDate.toString()}</ThemedText>
+                    </ThemedView>
+                    <Pressable>
+                        
+                    </Pressable>
                 </ThemedView>
             </ThemedView>
         </ThemedView>
@@ -50,14 +55,31 @@ const styles = StyleSheet.create({
     fixedAssetCardContainer: {
         borderWidth: 1,
         borderColor: 'grey',
-        borderRadius: 5, 
-        padding: 10,
-        marginVertical: 5,
-        margin: 5,
+        borderRadius: 15, 
+        paddingBottom: 10,
         flexDirection: 'column',
+        overflow: 'hidden'
+    },
+    cardHeader: {
+        borderWidth: 2,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        marginBottom: 15
+    },
+    cardHeaderText: {
+        fontSize: 18,
+        fontWeight: 700
     },
     cardImageTextSeperator: {
+        paddingHorizontal: 10,
         flexDirection: 'row'
     },
+    creationDateContainer:{
+        marginTop: 10,
+        flexDirection: 'row',
+        maxWidth: "100%",
+        flexWrap: 'wrap'
+    }
     
 });

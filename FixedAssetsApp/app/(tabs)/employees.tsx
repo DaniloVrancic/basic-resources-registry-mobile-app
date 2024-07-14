@@ -51,10 +51,10 @@ export default function Employees() {
               renderAdvancedFilterButton={true}
             />
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:12}]}>
-            <ThemedText type="title">Employees</ThemedText>
+          <ThemedView style={[styles.titleContainer, {flex:8}]}>
+            <ThemedText type="title" style={{paddingHorizontal: 12}}>Employees</ThemedText>
           </ThemedView>
-          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+          <ThemedView style={{backgroundColor: '#433D8B', flex: 84}}>
             <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
               
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>

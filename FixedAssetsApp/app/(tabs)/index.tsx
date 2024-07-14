@@ -40,7 +40,7 @@ export default function HomeScreen() {
     
     <SafeAreaView style={styles.safeArea}>
 
-      <ThemedView style={{flex: 18}}>
+      <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
                 onAddClick={() => { console.log("Employees default click") }}
                 filterChildren={fixedAssetAdvancedFiltering()}
@@ -49,7 +49,7 @@ export default function HomeScreen() {
               />
       </ThemedView>
 
-      <ThemedView style={[styles.titleContainer, {flex:12}]}>
+      <ThemedView style={[styles.titleContainer]}>
             <ThemedText type="title">Fixed Assets:</ThemedText>
       </ThemedView>
 
@@ -69,12 +69,19 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    padding: 2,
+    paddingTop: '7%',
     flexDirection: 'column'
   },
+  searchBarContainer:{
+    flex: 12,
+    padding: 2,
+  },
   titleContainer: {
+    flex: 12,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 6,
+    paddingHorizontal: 16,
     gap: 8,
   },
   stepContainer: {

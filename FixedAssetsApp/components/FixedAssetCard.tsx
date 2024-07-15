@@ -14,8 +14,8 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
     barcode,
     price,
     creationDate,
-    assignedEmployeeId, // Reference to Employee
-    assignedLocationId, // Reference to Location
+    employee_id, // Reference to Employee
+    location_id, // Reference to Location
     photoUrl
 }) => {
     const textColor = useThemeColor({}, 'text');
@@ -24,7 +24,11 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
 
     const [showModal, setShowModal] = useState(false);
     const [fixedAssetDetails, setFixedAssetDetails] = useState({id: id, name: name, description: description, barcode: barcode,
-        price: price, creationDate: creationDate, assignedEmployeeId: assignedEmployeeId, assignedLocationId: assignedLocationId, photoUrl: photoUrl
+        price: price, 
+        creationDate: creationDate, 
+        employee_id: employee_id, 
+        location_id: location_id, 
+        photoUrl: photoUrl
     });
 
     const openModal = () => setShowModal(true);

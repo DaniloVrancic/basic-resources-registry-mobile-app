@@ -12,8 +12,8 @@ const FixedAssetCardDetailedCard: React.FC<FixedAsset> = ({
     barcode,
     price,
     creationDate,
-    assignedEmployeeId, // Reference to Employee
-    assignedLocationId, // Reference to Location
+    employee_id, // Reference to Employee
+    location_id, // Reference to Location
     photoUrl
 }) => {
 
@@ -53,8 +53,8 @@ const FixedAssetCardDetailedCard: React.FC<FixedAsset> = ({
                         <ThemedView style={styles.itemsInColumn}>
                             <ThemedText>Barcode: {barcode}</ThemedText>
                             <ThemedText>Creation Date: {creationDate.toString()}</ThemedText>
-                            <ThemedText>Assigned Employee (ID): {assignedEmployeeId}</ThemedText>
-                            <ThemedText>Assigned Location (ID): {assignedLocationId}</ThemedText>
+                            <ThemedText>Assigned Employee (ID): {employee_id}</ThemedText>
+                            <ThemedText>Assigned Location (ID): {location_id}</ThemedText>
                         </ThemedView>
                         
                         

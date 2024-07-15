@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   modalHeader: {
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0.0)',
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',

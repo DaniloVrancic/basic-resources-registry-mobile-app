@@ -128,6 +128,7 @@ const advancedFilter = () => {
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
       <ThemedText style={[styles.advancedFilterLabel]}>Income Range:</ThemedText>
+      
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minIncome?.toString()}</ThemedText>
         <RangeSlider

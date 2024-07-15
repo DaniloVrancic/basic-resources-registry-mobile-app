@@ -49,15 +49,17 @@ export default function HomeScreen() {
               />
       </ThemedView>
 
-      <ThemedView style={[styles.titleContainer]}>
+      <ThemedView style={[styles.fixedAssetHeader]}>
             <ThemedText type="title">Fixed Assets:</ThemedText>
       </ThemedView>
 
-          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+          <ThemedView style={styles.fixedAssetContent} lightColor='ghostwhite' darkColor='#17153B'>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               {/* Add more employees or your dynamic list here */}
-                {loadedFixedAssets.map((fixedAsset: FixedAsset) => 
-                  <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                {loadedFixedAssets.map((fixedAsset: FixedAsset) =>
+                  <ThemedView key={fixedAsset.id} style={styles.fixedAssetCardContainer}>
+                    <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                  </ThemedView> 
                 )}
             </ScrollView>
           </ThemedView>
@@ -76,29 +78,28 @@ const styles = StyleSheet.create({
     flex: 12,
     padding: 2,
   },
-  titleContainer: {
+  scrollViewContent: {
+    flexDirection: 'column',
+    padding: 10,
+    // Add additional styling as needed
+  },
+  fixedAssetCardContainer: {
+    marginVertical: 15,
+    paddingHorizontal: 5,
+    backgroundColor: 'rgba(0,0,0,0.0)',
+  },
+  fixedAssetHeader: {
     flex: 12,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 6,
     paddingHorizontal: 16,
     gap: 8,
+    borderBottomColor: 'grey', 
+    borderBottomWidth: 2
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  scrollViewContent: {
-    flexDirection: 'column',
-    padding: 10,
-    // Add additional styling as needed
+  fixedAssetContent: {
+    flex: 82
   },
   advancedFilterContainer: {
     padding: 16,

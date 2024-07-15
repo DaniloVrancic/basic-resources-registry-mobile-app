@@ -42,11 +42,12 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
 
             <ThemedView style={styles.cardImageTextSeperator}>
                 <ThemedView style={{flex: 2}}>
-                    <Image src={defaultImageUrl}
-                        resizeMode="cover"
-                        onError={() => {console.log('Failed to load image.');}}
-                        style={{width: '100%'}}
-                        />
+                        <Image style={styles.imageTag}
+                            resizeMode="cover"
+                            source={{uri: 'https://picsum.photos/200'}}
+                            onError={() => {console.log('Failed to load image');}} // Optional error handler
+                            >
+                        </Image>
                 </ThemedView>
                 <ThemedView style={{flex: 3}}>
                     <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
@@ -130,6 +131,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    imageTag: {
+        width: 100,
+        height: 100,
+        borderColor: 'grey',
+        borderWidth: 2,
+        backgroundColor: 'ghostwhite',
+        borderRadius: 10,
+        alignSelf: 'center',
+    }
     
     
 });

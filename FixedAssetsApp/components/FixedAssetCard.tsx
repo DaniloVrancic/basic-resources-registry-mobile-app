@@ -49,7 +49,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                         <Image style={styles.imageTag}
                             resizeMode="cover"
                             source={{uri: 'https://picsum.photos/200'}}
-                            onError={() => {console.log('Failed to load image');}} // Optional error handler
+                            onError={() => {console.error('Failed to load image');}} // Optional error handler
                             >
                         </Image>
                 </ThemedView>

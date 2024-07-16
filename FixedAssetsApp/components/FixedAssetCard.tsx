@@ -44,26 +44,26 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
             <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{name}</ThemedText>
         </ThemedView>
 
-            <ThemedView style={styles.cardImageTextSeperator}>
-                <ThemedView style={{flex: 2}}>
-                        <Image style={styles.imageTag}
-                            resizeMode="cover"
-                            source={{uri: 'https://picsum.photos/200'}}
-                            onError={() => {console.error('Failed to load image');}} // Optional error handler
-                            >
-                        </Image>
-                </ThemedView>
-                <ThemedView style={{flex: 3}}>
-                    <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
-                    <ThemedView style={styles.creationDateContainer}>
-                        <ThemedText>Creation Date: </ThemedText>
-                        <ThemedText style={{fontWeight: 600}}>{creationDate.toString()}</ThemedText>
+            <Pressable style={styles.buttonDesign} onPress={handleDetailsPress}>
+                <ThemedView style={styles.cardImageTextSeperator}>
+                    <ThemedView style={{flex: 2}}>
+                            <Image style={styles.imageTag}
+                                resizeMode="cover"
+                                source={{uri: 'https://picsum.photos/200'}}
+                                onError={() => {console.error('Failed to load image');}} // Optional error handler
+                                >
+                            </Image>
                     </ThemedView>
-                    <Pressable style={styles.buttonDesign} onPress={handleDetailsPress}>
-                        <ThemedText style={styles.buttonText}>More Details</ThemedText>
-                    </Pressable>
+                    <ThemedView style={{flex: 3}}>
+                        <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
+                        <ThemedView style={styles.creationDateContainer}>
+                            <ThemedText>Creation Date: </ThemedText>
+                            <ThemedText style={{fontWeight: 600}}>{creationDate.toString()}</ThemedText>
+                        </ThemedView>
+                            
+                    </ThemedView>
                 </ThemedView>
-            </ThemedView>
+            </Pressable>
 
             <Modal visible={showModal} animationType="slide" transparent={true}>
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
@@ -120,15 +120,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     buttonDesign: {
-        flexDirection: 'row',
-        backgroundColor: 'rgb(106, 27, 154)', // Purple-blueish color
-        paddingVertical: 5,
-        paddingRight: 12,
-        marginTop: 10,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
+        
     },
     buttonText: {
         color: 'white',

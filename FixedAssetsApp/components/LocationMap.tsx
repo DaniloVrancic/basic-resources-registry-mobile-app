@@ -41,10 +41,12 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
             return (
                 <GestureHandlerRootView>
                 <ThemedView style={styles.container}>
-                    <ThemedText style={styles.title}>Location: {name}</ThemedText>
-                    <ThemedText style={styles.title}>Size: {size}m2</ThemedText>
+                    <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
+                        <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Location: {name}</ThemedText>
+                        <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Size: {size}m2</ThemedText>
+                    </ThemedView>
                     
-                 
+              
                     <MapView
                         style={styles.map}
                         initialRegion={{
@@ -62,7 +64,8 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
                             />
                         
                     </MapView>
-
+                  
+                   
 
                     <Modal visible={showAssetList} animationType="slide">
                         <ThemedView style={modalStyles.modalContainer}>
@@ -103,6 +106,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0,0,0,0.0)'
+    },
+    header: {
+        width: '100%',
+        padding: 20,
+        alignItems: 'center',
+        borderColor: 'grey',
+        borderWidth: 2,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
     },
     title: {
         fontSize: 20,

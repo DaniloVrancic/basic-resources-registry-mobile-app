@@ -28,6 +28,10 @@ const LocationCard: React.FC<Location> = (
         setShowMapModal(true);
     };
 
+    const closeModal = () => {
+        setShowMapModal(false);
+    }
+
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedView style={[styles.cardHeader]}>
@@ -54,10 +58,18 @@ const LocationCard: React.FC<Location> = (
 
                 <Modal visible={showMapModal} animationType="slide">
                     <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
-                        <LocationMap id={id} name={name} size={size} latitude={latitude} longitude={longitude}></LocationMap>
-                    
+
+                        <ThemedView style={modalStyles.modalHeader}>
+                                <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
+                                    <Ionicons name="close" size={24} color={textColor} />
+                                </Pressable>
+                                <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
+                        </ThemedView>
+
+                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+                            <LocationMap id={id} name={name} size={size} latitude={latitude} longitude={longitude}></LocationMap>
+                        </ThemedView>
                     </ThemedView>
-                    
                 </Modal>
         </ThemedView>
     );
@@ -137,6 +149,32 @@ const styles = StyleSheet.create({
 
 const modalStyles = StyleSheet.create({
     modalContainer: {
-
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
     },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
     })

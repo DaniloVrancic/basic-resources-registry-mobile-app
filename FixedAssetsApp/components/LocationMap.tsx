@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Platform, Modal, Pressable, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from './ThemedView';
@@ -9,20 +9,34 @@ import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import FixedAssetCard from './FixedAssetCard';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { getFixedItemsForLocationId } from '@/db/db';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 
 
-
+let db: SQLiteDatabase;
 const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} ) => {
 
+            db = useSQLiteContext();
             const textColor = useThemeColor({}, 'text');
   
             const currentLocation = {id, name, size, latitude, longitude};
             const [showAssetList, setShowAssetList] = useState(false);
+            const [loadedAssets, setLoadedAssets] = useState([]);
             
-            const fixedAssets: FixedAsset[] = [];
+
+            const loadAssetsForThisLocation= async (db: SQLiteDatabase, id: number) => {
+                try{
+                    setLoadedAssets(await getFixedItemsForLocationId(db, id));
+                }
+                catch(error){
+                    console.error("Failed to load Assets for this location (ID = " + id + ")");
+                    console.error(error);
+                }
+            }
 
             const handlePinClick = () => {
                 setShowAssetList(true);
+                loadAssetsForThisLocation(db, id);
             };
             return (
                 <GestureHandlerRootView>
@@ -36,8 +50,8 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
                         initialRegion={{
                             latitude,
                             longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
+                            latitudeDelta: 0.0920,
+                            longitudeDelta: 0.0420,
                         }}
                     >
                         
@@ -51,22 +65,25 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
 
 
                     <Modal visible={showAssetList} animationType="slide">
+                        <ThemedView style={modalStyles.modalContainer}>
                             <ThemedView style={modalStyles.modalHeader}>
                                     <Pressable style={modalStyles.modalCloseButton} onPress={() => {setShowAssetList(false)}}>
                                         <Ionicons name="close" size={24} color={textColor} />
                                     </Pressable>
                                     <Pressable style={[modalStyles.modalSpaceFill]} onPress={() => setShowAssetList(false)}></Pressable>
                             </ThemedView>
-                        <ThemedView style={styles.assetListContainer}>
-                            <ThemedText style={styles.assetListTitle}>Assets at {name}</ThemedText>
-                            <ScrollView>
-                                {fixedAssets.map((asset) => (
-                                    <ThemedView key={asset.id} style={styles.assetItem}>
-                                        <FixedAssetCard key={asset.id} {...asset}></FixedAssetCard>
-                                    </ThemedView>
-                                ))}
-                            </ScrollView>
-                            
+
+                                <ThemedText style={styles.assetListTitle}>Assets at {name}</ThemedText>
+                            <ThemedView style={modalStyles.modalContent}>
+                                <ScrollView>
+                                    {loadedAssets.map((asset: FixedAsset) => 
+                                        <ThemedView key={asset.id} style={{paddingVertical: 20}}>
+                                            <FixedAssetCard key={asset.id} {...asset}></FixedAssetCard>
+                                        </ThemedView>
+                                    )}
+                                </ScrollView>
+                                
+                            </ThemedView>
                         </ThemedView>
                      </Modal>
                     
@@ -85,6 +102,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.0)'
     },
     title: {
         fontSize: 20,
@@ -95,16 +113,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '80%',
     },
-    assetListContainer: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     assetListTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+        borderBottomWidth: 2,
+        borderColor: 'grey',
+        width: '100%',
+        paddingLeft: '5%'
     },
     assetItem: {
         padding: 10,
@@ -131,6 +147,8 @@ const modalStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         padding: 8,
+        width: '100%',
+
     },
     modalHeader: {
         display: 'flex',
@@ -140,7 +158,7 @@ const modalStyles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
         paddingBottom: 40,
-        marginRight: 20
+        marginRight: 20,
     },
     modalCloseButton: {
         justifyContent: 'flex-end',
@@ -155,7 +173,12 @@ const modalStyles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: 'rgba(200,200,200, 0.8)',
     },
+    modalContent : {
+        width: '90%',
+        alignSelf: 'center'
+    },
     modalSpaceFill: {
         flex: 10,
     }
+
     })

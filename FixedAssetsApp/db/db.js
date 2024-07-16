@@ -232,16 +232,31 @@ import * as SQLite from 'expo-sqlite';
   //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
+  const getAllFixedAssetsQueryWhereLocationId = "SELECT * FROM 'fixed_asset' WHERE location_id=$location_id;";
 
   export const getAllFixedAssets = async (db) => {
 
-
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllFixedAssetsQuery, []);
           resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getFixedItemsForLocationId = async (db, location_id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          const allRows = await db.getAllAsync(getAllFixedAssetsQueryWhereLocationId, { $location_id: location_id });
+          resolve(allRows);
         }
         catch(error){
           reject(error);

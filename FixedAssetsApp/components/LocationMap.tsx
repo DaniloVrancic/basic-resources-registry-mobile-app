@@ -1,26 +1,17 @@
 import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from './ThemedView';
+import { Location } from '@/app/data_interfaces/location';
+import MapView, { Marker } from 'react-native-maps';
 
 
-interface LocationMapProps {
-    route: {
-        params: {
-            name: string;
-            latitude: number;
-            longitude: number;
-        };
-    };
-}
 
-const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
-    const { name, latitude, longitude } = route.params;
+const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} ) => {
 
-    if(Platform.OS != 'web')
-        {
-            //var MapView = require('react-native-maps');
-            //var Marker = require('react-native-maps');
-            /*
+  
+            const currentLocation = {id, name, size, latitude, longitude};
+            
             return (
                 <ThemedView style={styles.container}>
                     <ThemedText style={styles.title}>Chosen Location</ThemedText>
@@ -38,15 +29,13 @@ const LocationMap: React.FC<LocationMapProps> = ({ route }) => {
                         <Marker
                             coordinate={{ latitude, longitude }}
                             title={name}
+
                         />
                     </MapView>
                     
                 </ThemedView>
-            );*/
-        }
-    else{
-        return (<ThemedText>Map is not supported on Web</ThemedText>)
-    }
+            );
+        
 
     
 };

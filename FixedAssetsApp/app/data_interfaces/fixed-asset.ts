@@ -5,7 +5,7 @@ export interface FixedAsset {
     barcode: number;
     price: number;
     creationDate: Date; //Represents the date of the asset getting input in database
-    assignedEmployeeId: number; // Reference to Employee
-    assignedLocationId: number; // Reference to Location
+    employee_id: number; // Reference to Employee
+    location_id: number; // Reference to Location
     photoUrl: string; // URL to the asset's photo
   }

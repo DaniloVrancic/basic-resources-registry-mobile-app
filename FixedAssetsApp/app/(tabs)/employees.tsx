@@ -13,13 +13,10 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
-import { testEmployees } from '@/constants/TestEmployees';
 import EmployeeCard from '@/components/EmployeeCard';
 import LoadingAnimation from '@/components/fallback/LoadingAnimation';
-import { SQLiteDatabase, SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Employee } from '../data_interfaces/employee';
-import { useNavigatorContext } from 'expo-router/build/views/Navigator';
 import { getAllEmployees } from '@/db/db';
 
 let db: SQLiteDatabase;
@@ -29,20 +26,19 @@ export default function Employees() {
   db = useSQLiteContext();
   const [loadedEmployees, setLoadedEmployees] = useState([]);
   
+  
+
+  useEffect(() => {
+    loadEmployeesFromDatabase(db);
+  }, []);
+
   const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
     try {
       setLoadedEmployees(await getAllEmployees(db));
     } catch (error) {
       console.error('Error loading employees:', error);
-      // Handle error state or retry mechanism
     }
   };
-  
-
-  useEffect(() => {
-    
-    loadEmployeesFromDatabase(db);
-  }, [db]);
 
 
   return (
@@ -55,10 +51,10 @@ export default function Employees() {
               renderAdvancedFilterButton={true}
             />
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:12}]}>
-            <ThemedText type="title">Employees</ThemedText>
+          <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
+            <ThemedText type="title" style={{paddingHorizontal: 12}}>Employees</ThemedText>
           </ThemedView>
-          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+          <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
             <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
               
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -132,6 +128,7 @@ const advancedFilter = () => {
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
       <ThemedText style={[styles.advancedFilterLabel]}>Income Range:</ThemedText>
+      
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minIncome?.toString()}</ThemedText>
         <RangeSlider

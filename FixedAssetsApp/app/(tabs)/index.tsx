@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -6,7 +6,7 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import FixedAssetCard from '@/components/FixedAssetCard';
 import RangeSlider from 'rn-range-slider';
 import { FixedAssetSearchCriteria } from '../search_criteria_interfaces/fixed-asset-search-criteria';
-import { SetStateAction, useCallback, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Thumb from '@/components/slider_components/Thumb';
 import Rail from '@/components/slider_components/Rail';
@@ -14,15 +14,33 @@ import RailSelected from '@/components/slider_components/RailSelected';
 import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
-import testFixedAssets from '@/constants/TestFixedAssets';
+import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
+import { getAllFixedAssets } from '@/db/db';
+import { FixedAsset } from '../data_interfaces/fixed-asset';
 
+let db: SQLiteDatabase;
 export default function HomeScreen() {
-  console.log(Platform.OS);
+  db = useSQLiteContext();
+  const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
+
+  useEffect(() => {
+    loadFixedAssetsFromDatabase(db);
+  }, []);
+
+  const loadFixedAssetsFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+      setLoadedFixedAssets(await getAllFixedAssets(db));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  };
+
+
   return (
     
     <SafeAreaView style={styles.safeArea}>
 
-      <ThemedView style={{flex: 18}}>
+      <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
                 onAddClick={() => { console.log("Employees default click") }}
                 filterChildren={fixedAssetAdvancedFiltering()}
@@ -31,15 +49,17 @@ export default function HomeScreen() {
               />
       </ThemedView>
 
-      <ThemedView style={[styles.titleContainer, {flex:12}]}>
+      <ThemedView style={[styles.fixedAssetHeader]}>
             <ThemedText type="title">Fixed Assets:</ThemedText>
       </ThemedView>
 
-          <ThemedView style={{backgroundColor: 'yellow', flex: 80}}>
+          <ThemedView style={styles.fixedAssetContent} lightColor='ghostwhite' darkColor='#17153B'>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               {/* Add more employees or your dynamic list here */}
-                {testFixedAssets.map(fixedAsset => 
-                  <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                {loadedFixedAssets.map((fixedAsset: FixedAsset) =>
+                  <ThemedView key={fixedAsset.id} style={styles.fixedAssetCardContainer}>
+                    <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                  </ThemedView> 
                 )}
             </ScrollView>
           </ThemedView>
@@ -51,29 +71,35 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    padding: 2,
+    paddingTop: '7%',
     flexDirection: 'column'
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  searchBarContainer:{
+    flex: 12,
+    padding: 2,
   },
   scrollViewContent: {
     flexDirection: 'column',
     padding: 10,
     // Add additional styling as needed
+  },
+  fixedAssetCardContainer: {
+    marginVertical: 15,
+    paddingHorizontal: 5,
+    backgroundColor: 'rgba(0,0,0,0.0)',
+  },
+  fixedAssetHeader: {
+    flex: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 6,
+    paddingHorizontal: 16,
+    gap: 8,
+    borderBottomColor: 'grey', 
+    borderBottomWidth: 2
+  },
+  fixedAssetContent: {
+    flex: 82
   },
   advancedFilterContainer: {
     padding: 16,

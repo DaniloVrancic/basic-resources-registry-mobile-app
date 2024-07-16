@@ -78,15 +78,15 @@ import * as SQLite from 'expo-sqlite';
       await db.execAsync('PRAGMA foreign_keys = ON');
 
       await db.runAsync(locationTableQuery);
-      console.log("after Location table");
+      // console.log("after Location table");
       await db.runAsync(employeeTableQuery);
-       console.log("after Employee table");
+      // console.log("after Employee table");
       await db.runAsync(fixedAssetTableQuery);
-       console.log("after Fixed Asset table");
+      // console.log("after Fixed Asset table");
       await db.runAsync(transferListQuery);
-       console.log("after Transfer List table");
+      // console.log("after Transfer List table");
       await db.runAsync(inventoryItemQuery);
-       console.log("after Inventory Item table");
+      // console.log("after Inventory Item table");
       
 
     } catch (error) {
@@ -108,7 +108,6 @@ import * as SQLite from 'expo-sqlite';
     for (const table of tables) {
       
       const rowCount = await db.getFirstAsync(`SELECT COUNT(*) as 'count' FROM '${table}'`);
-      console.log(`In table: ${table} there are ${rowCount["count"]} rows!`);
       if (rowCount["count"] === 0) {
         await insertTestData(db, table);
       }
@@ -190,18 +189,105 @@ import * as SQLite from 'expo-sqlite';
     }
   };
 
+  ///////////////////////////////////////// SELECT COMMANDS //////////////////////////////////////////
 
+  //GETTING ALL EMPLOYEES FROM DB ////////////////////////////////////////////////////////////////////
+
+  const getAllEmployeesQuery = "SELECT * FROM 'employee';";
 
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
-      console.log("HELLO FROM PROMISE!");
+      
       db.withTransactionAsync( async () => {
-        await db.getAllAsync(getAllEmployeesQuery, [], (_, { rows }) => {
-          console.log(rows._array);
-          resolve(rows._array);
-        }, error => {
+        try{
+          let rows = await db.getAllAsync(getAllEmployeesQuery, []);
+          resolve(rows);
+        }
+        catch(error){
           reject(error);
-        });
+        }
+      });
+    });
+  };
+
+  //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
+
+  const getAllLocationsQuery = "SELECT * FROM 'location';";
+
+  export const getAllLocations = async (db) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllLocationsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
+  
+  const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
+
+  export const getAllFixedAssets = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllFixedAssetsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  // GETTING INVENTORY ITEMS ////////////////////////////////////////////////////////////////////
+
+  const getInventoryItemsForList = "SELECT * FROM 'inventory_item' WHERE transfer_list_id = $id"; //raw statement
+
+  export const getItemsForList = async (db, id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          
+          const allRows = await db.getAllAsync(getInventoryItemsForList, { $id: id });
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
+
+  const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
+  export const getAllInventoryLists = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getInventoryListsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
       });
     });
   };

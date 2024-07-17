@@ -15,12 +15,17 @@ import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllFixedAssets } from '@/db/db';
+import { getAllFixedAssets, getAllFixedAssetsWithNameAndBetweenRange, getFixedItemsForContainsName } from '@/db/db';
 import { FixedAsset } from '../data_interfaces/fixed-asset';
 
 let db: SQLiteDatabase;
 export default function HomeScreen() {
   db = useSQLiteContext();
+
+  const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
+  const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
+
+  
   const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
 
   useEffect(() => {
@@ -35,6 +40,8 @@ export default function HomeScreen() {
     }
   };
 
+  
+
 
   return (
     
@@ -46,6 +53,7 @@ export default function HomeScreen() {
                 filterChildren={fixedAssetAdvancedFiltering()}
                 renderAddButton={true}
                 renderAdvancedFilterButton={true}
+               
               />
       </ThemedView>
 

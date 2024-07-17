@@ -5,6 +5,7 @@ import { useState, ReactNode } from "react";
 import { StyleSheet, Modal, Pressable } from "react-native";
 import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { SQLiteDatabase } from "expo-sqlite";
 
 interface SearchBarWithAddProps {
   /*
@@ -31,6 +32,8 @@ interface SearchBarWithAddProps {
   false to ommit
   */
   renderAdvancedFilterButton: boolean;
+
+  searchHandler?: ((name?: any) => void) | undefined;
 }
 
 const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
@@ -39,7 +42,8 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   },
   filterChildren = null,
   renderAddButton = true,
-  renderAdvancedFilterButton = true
+  renderAdvancedFilterButton = true,
+  searchHandler = (x) => {console.log(x);}
 }) => {
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -68,6 +72,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         placeholder="Search..."
         value={searchText}
         onChangeText={setSearchText}
+        onSubmitEditing={(event) => {searchHandler(event.nativeEvent.text)}}
       />
       {renderAddButton && (
         <Pressable style={[styles.addButton, { backgroundColor: textColor }]} onPress={onAddClick}>

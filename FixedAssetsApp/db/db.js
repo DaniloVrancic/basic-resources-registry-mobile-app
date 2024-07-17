@@ -263,8 +263,9 @@ import * as SQLite from 'expo-sqlite';
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
   const getAllFixedAssetsQueryWhereLocationId = "SELECT * FROM 'fixed_asset' WHERE location_id=$location_id;";
+  const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE name LIKE $name;"
   const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
-  const getAllFixedAssetsQueryWithContainsNameNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE name=$name AND (price BETWEEN $lower AND $upper) ;";
+  const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE name LIKE $name AND (price BETWEEN $lower AND $upper) ;";
 
   export const getAllFixedAssets = async (db) => {
 
@@ -297,6 +298,21 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  export const getFixedItemsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          const allRows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsName, { $name: `%${name}%`});
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
   export const getAllFixedAssetsWithNameAndBetweenRange = async (db, name, lower, upper) => {
 
     return new Promise((resolve, reject) => {
@@ -309,7 +325,7 @@ import * as SQLite from 'expo-sqlite';
             rows = await db.getAllAsync(getAllFixedAssetsQueryWithBetween, { $lower: lower, $upper: upper});
           }
           else{
-            rows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsNameNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+            rows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
           }
           resolve(rows);
         }

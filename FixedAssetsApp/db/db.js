@@ -263,9 +263,10 @@ import * as SQLite from 'expo-sqlite';
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
   const getAllFixedAssetsQueryWhereLocationId = "SELECT * FROM 'fixed_asset' WHERE location_id=$location_id;";
-  const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE name LIKE $name;"
+  const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE `name` LIKE $name;"
   const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
-  const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE name LIKE $name AND (price BETWEEN $lower AND $upper) ;";
+  const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE (name LIKE $name AND (price BETWEEN $lower AND $upper)) ;";
+  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE (barcode=$barcode) ;";
 
   export const getAllFixedAssets = async (db) => {
 
@@ -303,7 +304,14 @@ import * as SQLite from 'expo-sqlite';
       
       db.withTransactionSync( async () => {
         try{
-          const allRows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsName, { $name: `%${name}%`});
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllFixedAssetsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsName, { $name: `%${name}%`});
+          }
           resolve(allRows);
         }
         catch(error){
@@ -327,6 +335,23 @@ import * as SQLite from 'expo-sqlite';
           else{
             rows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
           }
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllFixedAssetsWithBarcode = async (db, barcode) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllFixedAssetsQueryWithBarcode, { $barcode: barcode});
+
           resolve(rows);
         }
         catch(error){

@@ -40,7 +40,13 @@ export default function HomeScreen() {
     }
   };
 
-  
+  const handleFixedAssetSearch = async (name: string) => {
+    try {
+      setLoadedFixedAssets(await getFixedItemsForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  }
 
 
   return (
@@ -50,10 +56,10 @@ export default function HomeScreen() {
       <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
                 onAddClick={() => { console.log("Employees default click") }}
-                filterChildren={fixedAssetAdvancedFiltering()}
+                filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
                 renderAddButton={true}
                 renderAdvancedFilterButton={true}
-               
+                searchHandler={handleFixedAssetSearch}
               />
       </ThemedView>
 
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
 });
 
 
-function fixedAssetAdvancedFiltering() {
+function fixedAssetAdvancedFiltering(assets: any, setAssets: any) {
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
   const [nameToSearch, setNameToSearch] = useState(currentSearchCriteria.name);
@@ -203,9 +209,19 @@ const handleValueChange = useCallback((low: SetStateAction<number>, high: SetSta
   currentSearchCriteria.price_max = high as number;
 }, []);
 
-const advancedFilter = () => {
-  // Implement the advanced filter logic here
-  console.log('Advanced filter applied:', searchCriteria);
+const advancedFilter = async () => {
+  try {
+    console.log(nameToSearch);
+    setAssets(await getAllFixedAssetsWithNameAndBetweenRange(db, nameToSearch, currentSearchCriteria.price_min, currentSearchCriteria.price_max));
+  } catch (error) {
+    console.error('Error loading Fixed Assets: ', error);
+  }
+
+};
+
+const advancedFilterBarcode = () => {
+  
+  
 };
 
 
@@ -240,7 +256,7 @@ const advancedFilter = () => {
         />
         <ThemedText>{maxPrice?.toString()}</ThemedText>
       </ThemedView>
-      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilter}>
+      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilterBarcode}>
         <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
         <ThemedText style={styles.advancedFilterButtonText}>Scan Code</ThemedText>
       </Pressable>

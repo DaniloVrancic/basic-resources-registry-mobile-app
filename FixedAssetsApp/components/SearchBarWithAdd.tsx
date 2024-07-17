@@ -43,7 +43,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   filterChildren = null,
   renderAddButton = true,
   renderAdvancedFilterButton = true,
-  searchHandler = (x) => {console.log(x);}
+  searchHandler = (x) => {console.log(2+2);}
 }) => {
   const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);

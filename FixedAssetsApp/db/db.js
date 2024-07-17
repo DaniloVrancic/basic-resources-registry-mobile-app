@@ -263,6 +263,8 @@ import * as SQLite from 'expo-sqlite';
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
   const getAllFixedAssetsQueryWhereLocationId = "SELECT * FROM 'fixed_asset' WHERE location_id=$location_id;";
+  const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
+  const getAllFixedAssetsQueryWithContainsNameNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE name=$name AND (price BETWEEN $lower AND $upper) ;";
 
   export const getAllFixedAssets = async (db) => {
 
@@ -287,6 +289,29 @@ import * as SQLite from 'expo-sqlite';
         try{
           const allRows = await db.getAllAsync(getAllFixedAssetsQueryWhereLocationId, { $location_id: location_id });
           resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllFixedAssetsWithNameAndBetweenRange = async (db, name, lower, upper) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllFixedAssetsQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsNameNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
+          resolve(rows);
         }
         catch(error){
           reject(error);

@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
 
 function fixedAssetAdvancedFiltering(assets: any, setAssets: any) {
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
-  const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
   const [nameToSearch, setNameToSearch] = useState(currentSearchCriteria.name);
   const [minPrice, setMinPrice] = useState(currentSearchCriteria.price_min);
   const [maxPrice, setMaxPrice] = useState(currentSearchCriteria.price_max); // Assume a maximum income of 8000 for the slider
@@ -188,7 +187,6 @@ function fixedAssetAdvancedFiltering(assets: any, setAssets: any) {
 
   const handleNameChange = (newName: string) => {
     setNameToSearch(newName)
-    searchCriteria.name = newName;
   };
 
   
@@ -204,15 +202,14 @@ const [floatingLabel, setFloatingLabel] = useState(false);
 
 const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
   setMinPrice(low as number);
-  currentSearchCriteria.price_min = low as number;
   setMaxPrice(high as number);
-  currentSearchCriteria.price_max = high as number;
 }, []);
 
 const advancedFilter = async () => {
   try {
-    console.log(nameToSearch);
-    setAssets(await getAllFixedAssetsWithNameAndBetweenRange(db, nameToSearch, currentSearchCriteria.price_min, currentSearchCriteria.price_max));
+      console.log(minPrice);
+      console.log(currentSearchCriteria.price_max);
+      setAssets(await getAllFixedAssetsWithNameAndBetweenRange(db, nameToSearch, minPrice, maxPrice));
   } catch (error) {
     console.error('Error loading Fixed Assets: ', error);
   }

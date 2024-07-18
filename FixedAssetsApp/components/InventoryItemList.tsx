@@ -5,11 +5,12 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { getItemsForList } from '@/db/db';
+import { getItemsForList, getItemsFromViewForListId } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 import { StyleSheet } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { TransferList } from '@/app/data_interfaces/transfer-list';
 
 let db: SQLiteDatabase;
 const InventoryItemList: React.FC<InventoryList> = ({
@@ -17,9 +18,10 @@ const InventoryItemList: React.FC<InventoryList> = ({
     name
 }) => {
     const textColor = useThemeColor({}, 'text');
+    let parametersForList;
 
     db = useSQLiteContext();
-    const [loadedItems, setLoadedItems] = useState([]);
+    const [loadedItems, setLoadedItems]: any = useState([]);
 
     useEffect(() => {
         loadItemsForList(db, id);
@@ -27,7 +29,7 @@ const InventoryItemList: React.FC<InventoryList> = ({
 
     const loadItemsForList = async (db: SQLiteDatabase, id: number) => {
         try {
-            setLoadedItems(await getItemsForList(db, id));
+            setLoadedItems(await getItemsFromViewForListId(db, id));
         } catch (error) {
           console.error('Error loading Items For List: ', error);
         }
@@ -40,8 +42,8 @@ const InventoryItemList: React.FC<InventoryList> = ({
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
                 <ThemedView style={{borderRadius: 10}}>
                     {
-                        loadedItems.map((element: InventoryItem) => 
-                            <InventoryItemCard key={element.fixed_asset_id} {...element}/>
+                        loadedItems.map((element: TransferList) => 
+                            <InventoryItemCard key={element.fixedAssetId} {...element}/>
                         )
                     }
                 </ThemedView>

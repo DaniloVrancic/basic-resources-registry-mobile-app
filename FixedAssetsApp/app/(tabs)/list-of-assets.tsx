@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -13,11 +13,10 @@ import Notch from '@/components/slider_components/Notch';
 import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inventory-list-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
-import { testInventoryList1 } from '@/constants/TestInventoryLists';
-import InventoryItemCard from '@/components/InventoryItemCard';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllInventoryLists } from '@/db/db';
+import { getAllInventoryLists, getAllInventoryListsFromView } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
+import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
 
 let db: SQLiteDatabase;
@@ -54,7 +53,7 @@ export default function ListOfAssets() {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
              {
                 loadedLists.map((inventoryList: InventoryList) =>
-                  <ThemedView key={inventoryList.id} style={{marginVertical: 10, borderRadius: 15}}>
+                  <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
                     <InventoryItemList key={inventoryList.id} {...inventoryList}/>
                   </ThemedView>
                 )
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by name of employee..."
+          placeholder="Search by name of Transfer List..."
           value={keywordToSearch}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
@@ -203,10 +202,9 @@ const styles = StyleSheet.create({
               setSearchChangingEmployee(!searchChangingEmployee);
               currentSearchCriteria.isChangingLocation = searchChangingEmployee;
             }}
-            onLongIconPress={() =>
-              console.log("onLongIconPress()")
+            onLongIconPress={() => {}
             }
-            onLongPress={() => console.log("onLongPress()")}
+            onLongPress={() => {}}
             onPress={() => {
               setSearchChangingEmployee(!searchChangingEmployee);
               currentSearchCriteria.isChangingLocation = searchChangingEmployee;
@@ -227,13 +225,12 @@ const styles = StyleSheet.create({
             containerStyle={{ width: "75%", backgroundColor: 'rgba(0,0,0,0)'}}
             onIconPress={() => {
               setSearchChangingLocation(!searchChangingLocation);
-              console.log(searchChangingLocation);
               currentSearchCriteria.isChangingLocation = searchChangingLocation;
             }}
             onLongIconPress={() =>
-              console.log("onLongIconPress()")
+            {}
             }
-            onLongPress={() => console.log("onLongPress()")}
+            onLongPress={() => {}}
             onPress={() => {
               setSearchChangingLocation(!searchChangingLocation);
               console.log(searchChangingLocation);

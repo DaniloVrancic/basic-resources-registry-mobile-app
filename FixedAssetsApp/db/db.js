@@ -73,28 +73,31 @@ import * as SQLite from 'expo-sqlite';
     CREATE INDEX IF NOT EXISTS 'fk_inventory_item_location2_idx' ON 'inventory_item' ('newLocationId');
     `
 
-    const createViewForTransferLists = 
-    `CREATE VIEW IF NOT EXISTS "transfer_list_view" AS
+    const createViewForTransferLists =
+    `
+    CREATE VIEW IF NOT EXISTS "transfer_list_view" AS
     SELECT 
-		tl.id AS "transferListId",
+	      tl.id AS "transferListId",
+        tl.name AS "transferListName",
         fa.id AS "fixedAssetId",
         fa.name AS "fixedAssetName",
         it.currentLocationId AS "currentLocationId",
         cl.name AS "currentLocationName",
         it.newLocationId AS "newLocationId",
-		nl.name AS "newLocationName",
+	      nl.name AS "newLocationName",
         it.currentEmployeeId AS "currentEmployeeId",
         ce.name AS "currentEmployeeName",
         it.new_employee_id AS "new_employee_id",
         ne.name AS "newEmployeeName"
     FROM
         ((((((inventory_item it
-        LEFT JOIN location cl ON ((cl.id = it.currentLocationId)))
-        LEFT JOIN location nl ON ((nl.id = it.newLocationId)))
-        LEFT JOIN transfer_list tl ON ((tl.id = it.transfer_list_id)))
-        LEFT JOIN fixed_asset fa ON ((fa.id = it.fixed_asset_id)))
-        LEFT JOIN employee ce ON ((ce.id = it.currentEmployeeId)))
-        LEFT JOIN employee ne ON ((ne.id = it.new_employee_id)));`
+        INNER JOIN location cl ON ((cl.id = it.currentLocationId)))
+        INNER JOIN location nl ON ((nl.id = it.newLocationId)))
+        INNER JOIN transfer_list tl ON ((tl.id = it.transfer_list_id)))
+        INNER JOIN fixed_asset fa ON ((fa.id = it.fixed_asset_id)))
+        INNER JOIN employee ce ON ((ce.id = it.currentEmployeeId)))
+        INNER JOIN employee ne ON ((ne.id = it.new_employee_id)));
+    `
 
     try {
       await db.execAsync('PRAGMA journal_mode = WAL');
@@ -491,7 +494,49 @@ import * as SQLite from 'expo-sqlite';
       db.withTransactionAsync( async () => {
         try{
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
+          
           resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  //GETTING THE ITEMS FROM THE VIEW ////////////////////////////////////////
+
+  const getInventoryListsFromViewQuery = "SELECT DISTINCT * FROM 'transfer_list_view'";
+  export const getAllInventoryListsFromView = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getInventoryListsFromViewQuery, []);
+          
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id"; //raw statement
+
+  export const getItemsFromViewForListId = async (db, id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          
+          const allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          resolve(allRows);
         }
         catch(error){
           reject(error);

@@ -13,7 +13,6 @@ import Label from '../../components/slider_components/Label';
 import Notch from '../../components/slider_components/Notch';
 import RnRangeSlider from 'rn-range-slider';
 import LocationCard from '../../components/LocationCard';
-import MapView from 'react-native-maps';
 import LoadingAnimation from '@/components/fallback/LoadingAnimation';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForContainsNameAndBetweenRange } from '@/db/db';

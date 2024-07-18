@@ -17,7 +17,7 @@ import EmployeeCard from '@/components/EmployeeCard';
 import LoadingAnimation from '@/components/fallback/LoadingAnimation';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Employee } from '../data_interfaces/employee';
-import { getAllEmployees } from '@/db/db';
+import { getAllEmployees, getAllEmployeesWithNameAndBetweenRange, getEmployeesForContainsName } from '@/db/db';
 
 let db: SQLiteDatabase;
 export default function Employees() {
@@ -40,15 +40,24 @@ export default function Employees() {
     }
   };
 
+  const handleEmployeesSearch = async (name: string) => {
+    try {
+      setLoadedEmployees(await getEmployeesForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  }
+
 
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { console.log("Employees default click") }}
-              filterChildren={employeeAdvancedFiltering()}
+              filterChildren={employeeAdvancedFiltering(loadedEmployees, setLoadedEmployees)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
+              searchHandler={handleEmployeesSearch}
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
@@ -77,9 +86,8 @@ export default function Employees() {
 
 function handleAddEmployee() {}
 
-function employeeAdvancedFiltering() {
-  const currentSearchCriteria: EmployeeSearchCriteria = {name: "" as string, income_min: 800 as number, income_max: 8000 as number};
-  const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
+function employeeAdvancedFiltering(employees: any, setEmployees: any) {
+  const currentSearchCriteria: EmployeeSearchCriteria = {name: "" as string, income_min: 20_000 as number, income_max: 100_000 as number};
   const [employeeName, setEmployeeName] = useState(currentSearchCriteria.name);
   const [minIncome, setMinIncome] = useState(currentSearchCriteria.income_min);
   const [maxIncome, setMaxIncome] = useState(currentSearchCriteria.income_max); // Assume a maximum income of 8000 for the slider
@@ -87,8 +95,7 @@ function employeeAdvancedFiltering() {
   const textColor = useThemeColor({}, 'text');
 
   const handleNameChange = (newName: string) => {
-    setEmployeeName(newName)
-    searchCriteria.name = newName;
+    setEmployeeName(newName);
   };
 
   
@@ -104,20 +111,20 @@ const [floatingLabel, setFloatingLabel] = useState(false);
 
 const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
   setMinIncome(low as number);
-  currentSearchCriteria.income_min = low as number;
   setMaxIncome(high as number);
-  currentSearchCriteria.income_max = high as number;
 }, []);
 
-const advancedFilter = () => {
-  // Implement the advanced filter logic here
-  console.log('Advanced filter applied:', searchCriteria);
+const advancedFilter = async () => {
+      try {
+        setEmployees(await getAllEmployeesWithNameAndBetweenRange(db, employeeName, minIncome, maxIncome));
+      } catch (error) {
+        console.error('Error loading Fixed Assets: ', error);
+      }
 };
 
 
 
   return (
-
     <ThemedView style={[styles.advancedFilterContainer]}>
       <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
       <TextInput
@@ -131,25 +138,27 @@ const advancedFilter = () => {
       
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minIncome?.toString()}</ThemedText>
-        <RangeSlider
-          style={styles.advancedFilterSlider}
-          min={800}
-          max={8000}
-          step={100}
-          onValueChanged={handleValueChange}
-          disableRange={rangeDisabled}
-          floatingLabel={floatingLabel}
-          renderThumb={renderThumb}
-          renderRail={renderRail}
-          renderRailSelected={renderRailSelected}
-          renderLabel={renderLabel}
-          renderNotch={renderNotch}
-        />
+          <RangeSlider
+            style={styles.advancedFilterSlider}
+            min={20_000}
+            max={100_000}
+            step={1000}
+            onValueChanged={handleValueChange}
+            disableRange={rangeDisabled}
+            floatingLabel={floatingLabel}
+            renderThumb={renderThumb}
+            renderRail={renderRail}
+            renderRailSelected={renderRailSelected}
+            renderLabel={renderLabel}
+            renderNotch={renderNotch}
+            low={minIncome}
+            high={maxIncome}
+          />
         <ThemedText>{maxIncome?.toString()}</ThemedText>
       </ThemedView>
       <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
-        <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-        <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+          <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
+          <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
       </Pressable>
     </ThemedView>
 

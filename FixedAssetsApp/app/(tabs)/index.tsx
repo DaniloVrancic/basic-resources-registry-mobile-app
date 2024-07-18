@@ -207,8 +207,6 @@ const handleValueChange = useCallback((low: SetStateAction<number>, high: SetSta
 
 const advancedFilter = async () => {
   try {
-      console.log(minPrice);
-      console.log(currentSearchCriteria.price_max);
       setAssets(await getAllFixedAssetsWithNameAndBetweenRange(db, nameToSearch, minPrice, maxPrice));
   } catch (error) {
     console.error('Error loading Fixed Assets: ', error);
@@ -250,6 +248,8 @@ const advancedFilterBarcode = () => {
           renderRailSelected={renderRailSelected}
           renderLabel={renderLabel}
           renderNotch={renderNotch}
+          low={minPrice}
+          high={maxPrice}
         />
         <ThemedText>{maxPrice?.toString()}</ThemedText>
       </ThemedView>

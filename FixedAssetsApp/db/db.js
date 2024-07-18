@@ -224,6 +224,10 @@ import * as SQLite from 'expo-sqlite';
   //GETTING ALL EMPLOYEES FROM DB ////////////////////////////////////////////////////////////////////
 
   const getAllEmployeesQuery = "SELECT * FROM 'employee';";
+  const getAllEmployeesQueryWithContainsName = "SELECT * FROM 'employee' WHERE `name` LIKE $name;"
+  const getAllEmployeesQueryWithBetween = "SELECT * FROM 'employee' WHERE income BETWEEN $lower AND $upper ;";
+  const getAllEmployeesQueryWithContainsNameAndBetween = "SELECT * FROM 'employee' WHERE (name LIKE $name AND (income BETWEEN $lower AND $upper)) ;";
+
 
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
@@ -240,9 +244,57 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  export const getEmployeesForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllEmployeesQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllEmployeesQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllEmployeesWithNameAndBetweenRange = async (db, name, lower, upper) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllEmployeesQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllEmployeesQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";
+  const getAllLocationsQueryWithContainsName = "SELECT * FROM 'location' WHERE `name` LIKE $name;"
+  const getAllLocationsQueryWithBetween = "SELECT * FROM 'location' WHERE size BETWEEN $lower AND $upper ;";
+  const getAllLocationsQueryWithContainsNameAndBetween = "SELECT * FROM 'location' WHERE (name LIKE $name AND (size BETWEEN $lower AND $upper)) ;";
 
   export const getAllLocations = async (db) => {
     return new Promise((resolve, reject) => {
@@ -250,6 +302,51 @@ import * as SQLite from 'expo-sqlite';
       db.withTransactionAsync( async () => {
         try{
           let rows = await db.getAllAsync(getAllLocationsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllLocationsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllLocationsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllLocationsQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllLocationsForContainsNameAndBetweenRange = async (db, name, lower, upper) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllLocationsQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllLocationsQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
           resolve(rows);
         }
         catch(error){

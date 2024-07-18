@@ -16,7 +16,7 @@ import LocationCard from '../../components/LocationCard';
 import MapView from 'react-native-maps';
 import LoadingAnimation from '@/components/fallback/LoadingAnimation';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllLocations } from '@/db/db';
+import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForContainsNameAndBetweenRange } from '@/db/db';
 import { Location } from '../data_interfaces/location';
 
 let db: SQLiteDatabase;
@@ -37,14 +37,23 @@ export default function Locations() {
     }
   };
 
+  const handleLocationsSearch = async (name: string) => {
+    try {
+      setLoadedLocations(await getAllLocationsForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { console.log("Location default click") }}
-              filterChildren={locationAdvancedFiltering()}
+              filterChildren={locationAdvancedFiltering(loadedLocations, setLoadedLocations)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
+              searchHandler={handleLocationsSearch}
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
@@ -143,9 +152,8 @@ const styles = StyleSheet.create({
 
 
 
-  function locationAdvancedFiltering() {
+  function locationAdvancedFiltering(locations: any, setLocations: any) {
     const currentSearchCriteria: LocationSearchCriteria = {city: "", sizeMin: 0, sizeMax: 1000};
-    const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
     const [cityName, setCityName] = useState(currentSearchCriteria.city);
     const [minSize, setMinSize] = useState(currentSearchCriteria.sizeMin);
     const [maxSize, setMaxSize] = useState(currentSearchCriteria.sizeMax); // Assume a maximum income of 8000 for the slider
@@ -154,7 +162,6 @@ const styles = StyleSheet.create({
   
     const handleNameChange = (newName: string) => {
       setCityName(newName)
-      searchCriteria.city = newName;
     };
   
     
@@ -170,15 +177,16 @@ const styles = StyleSheet.create({
   
   const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
     setMinSize(low as number);
-    currentSearchCriteria.sizeMin = low as number;
     setMaxSize(high as number);
-    currentSearchCriteria.sizeMax = high as number;
   }, []);
   
-  const advancedFilter = () => {
-    // Implement the advanced filter logic here
-    console.log('Advanced filter applied:', searchCriteria);
-  };
+  const advancedFilter = async () => {
+    try {
+      setLocations(await getAllLocationsForContainsNameAndBetweenRange(db, cityName, minSize, maxSize));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+};
   
   
   
@@ -189,7 +197,7 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by city name..."
+          placeholder="Search by location name..."
           value={cityName}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
@@ -197,20 +205,22 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Size of Area (in square meters):</ThemedText>
         <ThemedView style={styles.advancedFilterSliderContainer}>
           <ThemedText>{minSize?.toString()}</ThemedText>
-          <RnRangeSlider
-            style={styles.advancedFilterSlider}
-            min={800}
-            max={8000}
-            step={100}
-            onValueChanged={handleValueChange}
-            disableRange={rangeDisabled}
-            floatingLabel={floatingLabel}
-            renderThumb={renderThumb}
-            renderRail={renderRail}
-            renderRailSelected={renderRailSelected}
-            renderLabel={renderLabel}
-            renderNotch={renderNotch}
-          />
+              <RnRangeSlider
+                style={styles.advancedFilterSlider}
+                min={100}
+                max={5000}
+                step={100}
+                onValueChanged={handleValueChange}
+                disableRange={rangeDisabled}
+                floatingLabel={floatingLabel}
+                renderThumb={renderThumb}
+                renderRail={renderRail}
+                renderRailSelected={renderRailSelected}
+                renderLabel={renderLabel}
+                renderNotch={renderNotch}
+                low={minSize}
+                high={maxSize}
+              />
           <ThemedText>{maxSize?.toString()}</ThemedText>
         </ThemedView>
         <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>

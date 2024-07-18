@@ -14,7 +14,7 @@ import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inven
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllInventoryLists, getAllInventoryListsFromView } from '@/db/db';
+import { getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
 import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
@@ -37,6 +37,14 @@ export default function ListOfAssets() {
     }
   };
 
+  const handleSearchListOfAssets = async (name: string) => {
+    try {
+      setLoadedLists(await getAllInventoryListsForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Inventory Lists: ', error);
+    }
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
@@ -44,7 +52,10 @@ export default function ListOfAssets() {
               onAddClick={() => { console.log("Location default click") }}
               filterChildren={listOfAssetsAdvancedFiltering()}
               renderAddButton={true}
-              renderAdvancedFilterButton={true}/>
+              renderAdvancedFilterButton={true}
+              searchHandler={handleSearchListOfAssets}
+              />
+
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
             <ThemedText style={{paddingHorizontal: 20}} type="title">List of Assets</ThemedText>

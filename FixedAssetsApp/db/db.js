@@ -91,12 +91,12 @@ import * as SQLite from 'expo-sqlite';
         ne.name AS "newEmployeeName"
     FROM
         ((((((inventory_item it
-        INNER JOIN location cl ON ((cl.id = it.currentLocationId)))
-        INNER JOIN location nl ON ((nl.id = it.newLocationId)))
-        INNER JOIN transfer_list tl ON ((tl.id = it.transfer_list_id)))
-        INNER JOIN fixed_asset fa ON ((fa.id = it.fixed_asset_id)))
-        INNER JOIN employee ce ON ((ce.id = it.currentEmployeeId)))
-        INNER JOIN employee ne ON ((ne.id = it.new_employee_id)));
+        LEFT JOIN location cl ON ((cl.id = it.currentLocationId)))
+        LEFT JOIN location nl ON ((nl.id = it.newLocationId)))
+        LEFT JOIN transfer_list tl ON ((tl.id = it.transfer_list_id)))
+        LEFT JOIN fixed_asset fa ON ((fa.id = it.fixed_asset_id)))
+        LEFT JOIN employee ce ON ((ce.id = it.currentEmployeeId)))
+        LEFT JOIN employee ne ON ((ne.id = it.new_employee_id)));
     `
 
     try {
@@ -486,6 +486,8 @@ import * as SQLite from 'expo-sqlite';
   //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
 
   const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
+  const getInventoryListsQueryWithContainsName = "SELECT * FROM 'transfer_list' WHERE `name` LIKE $name;"
+
   export const getAllInventoryLists = async (db) => {
 
 
@@ -496,6 +498,28 @@ import * as SQLite from 'expo-sqlite';
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
           
           resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllInventoryListsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getInventoryListsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getInventoryListsQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
         }
         catch(error){
           reject(error);

@@ -5,7 +5,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { getItemsForList, getItemsFromViewForListId } from '@/db/db';
+import { getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 import { StyleSheet } from 'react-native';
@@ -40,7 +40,17 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
 
     const loadItemsForList = async (db: SQLiteDatabase, id: number, showChangingEmployees: boolean | undefined, showChangingLocations: boolean | undefined) => {
         try {
-            setLoadedItems(await getItemsFromViewForListId(db, id));
+            if(showChangingEmployees == undefined && showChangingLocations == undefined)
+            {
+                setLoadedItems(await getItemsFromViewForListId(db, id));
+            }
+            else if(showChangingEmployees == true && showChangingLocations == true)
+            {
+                setLoadedItems(await getItemsFromViewForListId(db, id));
+            }
+            else{
+                setLoadedItems(await getItemsFromViewForListIdWithShowFilters(db, id, showChangingEmployees, showChangingLocations));
+            }
         } catch (error) {
           console.error('Error loading Items For List: ', error);
         }

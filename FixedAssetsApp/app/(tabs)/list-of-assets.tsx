@@ -25,6 +25,12 @@ export default function ListOfAssets() {
   db = useSQLiteContext();
   const [loadedLists, setLoadedLists] = useState([]);
 
+  const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "", isChangingEmployee: true, isChangingLocation: true};
+
+    
+  const [searchChangingEmployee, setSearchChangingEmployee] = useState(currentSearchCriteria.isChangingEmployee);
+  const [searchChangingLocation, setSearchChangingLocation] = useState(currentSearchCriteria.isChangingLocation);
+
   useEffect(() => {
     loadInventoryTransferLists(db);
   }, []);
@@ -50,7 +56,7 @@ export default function ListOfAssets() {
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { console.log("Location default click") }}
-              filterChildren={listOfAssetsAdvancedFiltering()}
+              filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
               searchHandler={handleSearchListOfAssets}
@@ -153,12 +159,8 @@ const styles = StyleSheet.create({
     },
   });
 
-  function listOfAssetsAdvancedFiltering() {
-    const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "",isChangingEmployee: true, isChangingLocation: true};
+  function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any) {
 
-    
-    const [searchChangingEmployee, setSearchChangingEmployee] = useState(currentSearchCriteria.isChangingEmployee);
-    const [searchChangingLocation, setSearchChangingLocation] = useState(currentSearchCriteria.isChangingLocation);
     const [keywordToSearch, setKeywordToSearch] = useState("");
 
     const textColor = useThemeColor({}, 'text');

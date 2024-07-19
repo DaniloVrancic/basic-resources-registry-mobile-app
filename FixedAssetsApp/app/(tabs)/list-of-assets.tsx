@@ -65,7 +65,7 @@ export default function ListOfAssets() {
              {
                 loadedLists.map((inventoryList: InventoryList) =>
                   <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
-                    <InventoryItemList key={inventoryList.id} {...inventoryList}/>
+                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={undefined} showChangingLocations={undefined}/>
                   </ThemedView>
                 )
              }

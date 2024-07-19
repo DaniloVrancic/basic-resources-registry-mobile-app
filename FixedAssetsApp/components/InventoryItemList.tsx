@@ -13,9 +13,20 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
 
 let db: SQLiteDatabase;
-const InventoryItemList: React.FC<InventoryList> = ({
+
+interface InventoryItemListWithShowFilters {
+
+    id: number;
+    name: string;
+    showChangingEmployees?: boolean | undefined;
+    showChangingLocations?: boolean | undefined;
+}
+
+const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
     id,
-    name
+    name,
+    showChangingEmployees,
+    showChangingLocations
 }) => {
     const textColor = useThemeColor({}, 'text');
     let parametersForList;
@@ -24,10 +35,10 @@ const InventoryItemList: React.FC<InventoryList> = ({
     const [loadedItems, setLoadedItems]: any = useState([]);
 
     useEffect(() => {
-        loadItemsForList(db, id);
+        loadItemsForList(db, id, showChangingEmployees, showChangingLocations);
       }, [id]);
 
-    const loadItemsForList = async (db: SQLiteDatabase, id: number) => {
+    const loadItemsForList = async (db: SQLiteDatabase, id: number, showChangingEmployees: boolean | undefined, showChangingLocations: boolean | undefined) => {
         try {
             setLoadedItems(await getItemsFromViewForListId(db, id));
         } catch (error) {

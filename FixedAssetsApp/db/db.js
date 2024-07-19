@@ -551,7 +551,10 @@ import * as SQLite from 'expo-sqlite';
   };
 
 
-  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id"; //raw statement
+  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id";
+  const getInventoryItemsFromViewForNotChangingEmployees = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id);";
+  const getInventoryItemsFromViewForNotChangingLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentLocationId = newLocationId);";
+  const getInventoryItemsFromViewForNotChangingEmployeesAndLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id) AND (currentLocationId = newLocationId);";
 
   export const getItemsFromViewForListId = async (db, id) => {
     return new Promise((resolve, reject) => {
@@ -560,6 +563,37 @@ import * as SQLite from 'expo-sqlite';
         try{
           
           const allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getItemsFromViewForListIdWithShowFilters = async (db, id, showChangingEmployees, showChangingLocation) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let allRows;
+          if(showChangingEmployees === true && showChangingLocation === true)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          }
+          else if(showChangingEmployees === true && showChangingLocation === false)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingLocations, { $id: id });
+          }
+          else if(showChangingEmployees === false && showChangingLocation === true)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingEmployees, { $id: id });
+          }
+          else{
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingEmployeesAndLocations, { $id: id });
+          }
+
           resolve(allRows);
         }
         catch(error){

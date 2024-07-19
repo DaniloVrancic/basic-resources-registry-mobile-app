@@ -36,21 +36,12 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
 
     useEffect(() => {
         loadItemsForList(db, id, showChangingEmployees, showChangingLocations);
-      }, [id]);
+      }, []);
 
     const loadItemsForList = async (db: SQLiteDatabase, id: number, showChangingEmployees: boolean | undefined, showChangingLocations: boolean | undefined) => {
         try {
-            if(showChangingEmployees == undefined && showChangingLocations == undefined)
-            {
-                setLoadedItems(await getItemsFromViewForListId(db, id));
-            }
-            else if(showChangingEmployees == true && showChangingLocations == true)
-            {
-                setLoadedItems(await getItemsFromViewForListId(db, id));
-            }
-            else{
-                setLoadedItems(await getItemsFromViewForListIdWithShowFilters(db, id, showChangingEmployees, showChangingLocations));
-            }
+            setLoadedItems(await getItemsFromViewForListId(db, id));
+            
         } catch (error) {
           console.error('Error loading Items For List: ', error);
         }
@@ -64,7 +55,17 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
                 <ThemedView style={{borderRadius: 10}}>
                     {
                         loadedItems.map((element: TransferList) => 
-                            <InventoryItemCard key={element.fixedAssetId} {...element}/>
+                        {
+                            if(showChangingEmployees == false && element.currentEmployeeId != element.new_employee_id){
+                                return;
+                            }
+                            else if(showChangingLocations === false && element.currentLocationId != element.newLocationId){
+                                return;
+                            }
+                            else{
+                                return <InventoryItemCard key={element.fixedAssetId} {...element}/>
+                            }
+                        }
                         )
                     }
                 </ThemedView>

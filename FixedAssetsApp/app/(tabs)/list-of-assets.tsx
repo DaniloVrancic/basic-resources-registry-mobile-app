@@ -28,8 +28,8 @@ export default function ListOfAssets() {
   const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "", isChangingEmployee: true, isChangingLocation: true};
 
     
-  const [searchChangingEmployee, setSearchChangingEmployee] = useState(currentSearchCriteria.isChangingEmployee);
-  const [searchChangingLocation, setSearchChangingLocation] = useState(currentSearchCriteria.isChangingLocation);
+  const [searchChangingEmployee, setSearchChangingEmployee] = useState(true);
+  const [searchChangingLocation, setSearchChangingLocation] = useState(true);
 
   useEffect(() => {
     loadInventoryTransferLists(db);
@@ -56,7 +56,7 @@ export default function ListOfAssets() {
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { console.log("Location default click") }}
-              filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria)}
+              filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
               searchHandler={handleSearchListOfAssets}
@@ -71,7 +71,7 @@ export default function ListOfAssets() {
              {
                 loadedLists.map((inventoryList: InventoryList) =>
                   <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
-                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={undefined} showChangingLocations={undefined}/>
+                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={searchChangingEmployee} showChangingLocations={searchChangingLocation}/>
                   </ThemedView>
                 )
              }
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     },
   });
 
-  function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any) {
+  function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any, loadedLists: any, setLoadedLists: any) {
 
     const [keywordToSearch, setKeywordToSearch] = useState("");
 
@@ -186,9 +186,16 @@ const styles = StyleSheet.create({
     
   }, []);
   
-  const advancedFilter = () => {
-    // Implement the advanced filter logic here
-    console.log('Advanced filter applied:', currentSearchCriteria);
+  const advancedFilter = async () => {
+    
+    console.log('Show changing employees: ' + searchChangingEmployee);
+    console.log("Show chaning locations: " + searchChangingLocation);
+
+    try {
+      setLoadedLists(await getAllInventoryListsForContainsName(db, keywordToSearch));
+  } catch (error) {
+    console.error('Error loading Fixed Assets: ', error);
+  }
   };
   
   
@@ -246,7 +253,6 @@ const styles = StyleSheet.create({
             onLongPress={() => {}}
             onPress={() => {
               setSearchChangingLocation(!searchChangingLocation);
-              console.log(searchChangingLocation);
               currentSearchCriteria.isChangingLocation = searchChangingLocation;
             }}
             size={40}

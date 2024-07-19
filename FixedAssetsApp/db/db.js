@@ -561,8 +561,8 @@ import * as SQLite from 'expo-sqlite';
       
       db.withTransactionSync( async () => {
         try{
-          
           const allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          
           resolve(allRows);
         }
         catch(error){

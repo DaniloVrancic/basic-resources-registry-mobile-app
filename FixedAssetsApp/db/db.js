@@ -129,6 +129,7 @@ import * as SQLite from 'expo-sqlite';
 
     try{
       await insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
+
     }
     catch(error){
       console.error(error);
@@ -210,7 +211,10 @@ import * as SQLite from 'expo-sqlite';
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (7, 2, 7, 8, 2, 3)`,
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (8, 3, 8, 9, 3, 4)`,
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (9, 4, 9, 10, 4, 5)`,
-          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (10, 5, 10, 1, 5, 1)`
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (10, 5, 10, 1, 5, 1)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (6, 2, 3, 3, 1, 2)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (9, 2, 4, 4, 4, 4)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (5, 1, 2, 2, 4, 1)`
         ];
         break;
       default:

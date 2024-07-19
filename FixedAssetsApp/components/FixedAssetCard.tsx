@@ -40,11 +40,11 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
 
     return (
         <ThemedView style={styles.fixedAssetCardContainer}>
-        <ThemedView lightColor="#17153B" darkColor="ghostwhite" style={styles.cardHeader}>
-            <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{name}</ThemedText>
-        </ThemedView>
-
             <Pressable style={styles.buttonDesign} onPress={handleDetailsPress}>
+                <ThemedView lightColor="#17153B" darkColor="ghostwhite" style={styles.cardHeader}>
+                    <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{name}</ThemedText>
+                </ThemedView>
+
                 <ThemedView style={styles.cardImageTextSeperator}>
                     <ThemedView style={{flex: 2}}>
                             <Image style={styles.imageTag}

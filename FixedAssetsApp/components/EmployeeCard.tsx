@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Image, Modal, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
+import EmployeeCardDetailed from "./EmployeeCardDetailed";
 
 
 
@@ -17,9 +18,15 @@ const EmployeeCard: React.FC<Employee> = ({
 }) => {
     const textColor = useThemeColor({}, 'text');
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
+    const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
+
+    const [showModal, setShowModal] = useState(false);
+    const openModal = () => setShowModal(true);
+    const closeModal = () => setShowModal(false);
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
+          
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
                     <Image
@@ -51,12 +58,32 @@ const EmployeeCard: React.FC<Employee> = ({
                     <ThemedView style={styles.buttonContainer}>
                         <Pressable
                             style={styles.showOnEmployeeButton}
-                            onPress={() => {}}>
+                            onPress={openModal}>
                             <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
                         </Pressable>
                     </ThemedView>
                 </ThemedView>
+
+                <Modal visible={showModal} animationType="slide" transparent={true}>
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
+                                <Ionicons name="close" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
+                    </ThemedView>
+
+                    <ThemedView>
+                         <EmployeeCardDetailed {...thisEmployee}/>
+                    </ThemedView>
+                </ThemedView>
+            </Modal>
+
         </ThemedView>
+        
+
+        
     );
 }
 
@@ -136,4 +163,37 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         minWidth: '99%'
     }
+});
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+
 });

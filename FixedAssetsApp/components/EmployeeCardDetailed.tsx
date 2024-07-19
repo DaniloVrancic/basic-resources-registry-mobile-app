@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Employee } from "@/app/data_interfaces/employee";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Image, Pressable, TextInput, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 
 const EmployeeCardDetailed: React.FC<Employee> = ({
@@ -18,6 +18,16 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
     const [editMode, setEditMode] = useState(false);
 
     const handleUploadPhoto = () => {console.log("HANDLE UPLOAD PHOTO HERE!");}
+
+    const handlePressChanges = () => {
+        if(editMode){
+            //UPDATE USER SETTINGS IN THE DATABASE HERE
+            setEditMode(false);
+        }
+        else{
+            setEditMode(true);
+        }
+    }
 
     return (
         <ThemedView style={styles.cardContainer}>
@@ -37,10 +47,25 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                 </ThemedView>
             </ThemedView>
 
-            <ThemedView style={styles.cardContent}>
+            <ThemedView style={styles.cardContent} lightColor="ghostwhite" darkColor="#17153B">
 
-            <Pressable onPress={handleUploadPhoto}>
-                        <ThemedText style={styles.editUserPressable}>Edit User</ThemedText>
+                <ThemedView>
+                    <ThemedText>Name:</ThemedText>
+                    <TextInput value={name} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                </ThemedView>
+
+                <ThemedView>
+                    <ThemedText>Email:</ThemedText>
+                    <TextInput value={email} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                </ThemedView>
+
+                <ThemedView>
+                    <ThemedText>Income:</ThemedText>
+                    <TextInput value={income.toString()} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                </ThemedView>
+
+            <Pressable onPress={handlePressChanges}>
+                        <ThemedText style={styles.editUserPressable}>{(editMode) ? "Save Changes" : "Edit User"}</ThemedText>
             </Pressable>
 
             </ThemedView>
@@ -54,8 +79,9 @@ export default EmployeeCardDetailed;
 const styles = StyleSheet.create(
     {
         cardContainer: {
-          backgroundColor: "rgba(0,0,0,0.0)"
-            
+          backgroundColor: "rgba(0,0,0,0.0)",
+        borderWidth: 2,
+        borderColor: 'grey'
         },
         cardHeader: {
             backgroundColor: '#17153B',
@@ -68,7 +94,8 @@ const styles = StyleSheet.create(
             paddingVertical: 0,
         },
         cardContent: {
-            backgroundColor: "white"
+            alignItems: 'center'
+            
         },
         imageTag: {
             width: 80,

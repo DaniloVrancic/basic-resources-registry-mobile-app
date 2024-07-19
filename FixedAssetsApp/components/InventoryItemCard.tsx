@@ -32,17 +32,31 @@ const InventoryItemCard: React.FC<TransferList> = ({
             <ThemedView style={styles.transferContainer}>
                 <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Person in Charge:</ThemedText>
                     <ThemedView style={styles.transferValues}>
-                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
-                        <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
-                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newEmployeeName}</ThemedText>
+                        { currentEmployeeId === new_employee_id ? (
+                                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                            ) : (
+                                <>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                                         <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newEmployeeName}</ThemedText>
+                                </>
+                            )
+                        }
+                       
                     </ThemedView>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
                     <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Location of Asset:</ThemedText>
                     <ThemedView style={styles.transferValues}>
+                    {currentLocationId === newLocationId ? (
                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationName}</ThemedText>
-                        <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
-                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newLocationName}</ThemedText>
+                    ) : (
+                        <>
+                            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationName}</ThemedText>
+                            <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
+                            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newLocationName}</ThemedText>
+                        </>
+                    )}
                     </ThemedView>
             </ThemedView>
         </ThemedView>

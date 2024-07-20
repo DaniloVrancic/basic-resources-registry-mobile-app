@@ -21,11 +21,33 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
     const [inputEmail, setInputEmail] = useState(email);
     const [inputIncome, setInputIncome] = useState(income);
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     const handleUploadPhoto = () => {console.log("HANDLE UPLOAD PHOTO HERE!");}
 
     const handlePressChanges = () => {
         if(editMode){
+            if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
+                setErrorMessage('Please enter a valid name.');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(inputEmail)) {
+                setErrorMessage('Please enter a valid email address.');
+                return;
+            }
+
+            if (isNaN(inputIncome) || inputIncome.toString() === '') {
+                setErrorMessage('Income must be a valid number.');
+                return;
+            }
+
+            setErrorMessage('');
+
             //UPDATE USER SETTINGS IN THE DATABASE HERE
+            
+
             setEditMode(false);
         }
         else{
@@ -68,8 +90,12 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
             <ThemedView style={styles.cardContent} lightColor="ghostwhite" darkColor="#17153B">
 
+                <ThemedView style={{ backgroundColor: 'rgba(0,0,0,0.0)'}}>
+                    <ThemedText style={{color: 'red', fontSize: 18, fontWeight: 600}}>{(errorMessage.length > 0) ? "ERROR: " + errorMessage : ""}</ThemedText>
+                </ThemedView>
+
                 <ThemedView style={styles.cardContentElement}>
-                    <ThemedText>Name:</ThemedText>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Name:</ThemedText>
                     <TextInput  value={inputName} 
                                 onChangeText={setInputName}
                                 style={[{color: textColor}, styles.textInput]} 

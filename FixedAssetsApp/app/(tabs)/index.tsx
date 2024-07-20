@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 6,
     paddingHorizontal: 16,
-    gap: 8,
+    gap: 9,
     borderBottomColor: 'grey', 
     borderBottomWidth: 2
   },

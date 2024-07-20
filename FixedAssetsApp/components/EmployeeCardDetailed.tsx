@@ -17,6 +17,10 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
     const [editMode, setEditMode] = useState(false);
 
+    const [inputName, setInputName] = useState(name);
+    const [inputEmail, setInputEmail] = useState(email);
+    const [inputIncome, setInputIncome] = useState(income);
+
     const handleUploadPhoto = () => {console.log("HANDLE UPLOAD PHOTO HERE!");}
 
     const handlePressChanges = () => {
@@ -26,6 +30,21 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         }
         else{
             setEditMode(true);
+        }
+    }
+
+    const handleChangeIncome = (myNumber: string) => {
+
+        if(isNaN(parseInt(myNumber)))
+        {
+            myNumber.replace("NaN", "");
+            setInputIncome(0);
+        }
+        else{
+            setInputIncome(parseInt(myNumber));
+            if(isNaN(inputIncome)){
+                setInputIncome(0);
+            }
         }
     }
 
@@ -42,29 +61,38 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                     </Pressable>
                 </ThemedView>
                 <ThemedView style={styles.employeeIdContainer}>
-                    <ThemedText style={{fontSize: 16}}>Employee ID: </ThemedText>
-                    <ThemedText style={{fontSize: 20, fontWeight: 700}}>{id}</ThemedText>
+                    <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
+                    <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{id}</ThemedText>
                 </ThemedView>
             </ThemedView>
 
             <ThemedView style={styles.cardContent} lightColor="ghostwhite" darkColor="#17153B">
 
-                <ThemedView>
+                <ThemedView style={styles.cardContentElement}>
                     <ThemedText>Name:</ThemedText>
-                    <TextInput value={name} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                    <TextInput  value={inputName} 
+                                onChangeText={setInputName}
+                                style={[{color: textColor}, styles.textInput]} 
+                                readOnly={!editMode}></TextInput>
                 </ThemedView>
 
-                <ThemedView>
-                    <ThemedText>Email:</ThemedText>
-                    <TextInput value={email} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                <ThemedView style={styles.cardContentElement}>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Email:</ThemedText>
+                    <TextInput  value={inputEmail}
+                                onChangeText={setInputEmail}
+                                style={[{color: textColor}, styles.textInput]} 
+                                readOnly={!editMode}></TextInput>
                 </ThemedView>
 
-                <ThemedView>
+                <ThemedView style={[styles.cardContentElement, {marginBottom: 20}]}>
                     <ThemedText>Income:</ThemedText>
-                    <TextInput value={income.toString()} style={{color: textColor}} readOnly={!editMode}></TextInput>
+                    <TextInput  value={inputIncome.toString()} 
+                                onChangeText={handleChangeIncome}
+                                style={[{color: textColor}, styles.textInput]} 
+                                readOnly={!editMode}></TextInput>
                 </ThemedView>
 
-            <Pressable onPress={handlePressChanges}>
+            <Pressable onPress={handlePressChanges} style={{marginBottom: 20}}>
                         <ThemedText style={styles.editUserPressable}>{(editMode) ? "Save Changes" : "Edit User"}</ThemedText>
             </Pressable>
 
@@ -79,9 +107,12 @@ export default EmployeeCardDetailed;
 const styles = StyleSheet.create(
     {
         cardContainer: {
-          backgroundColor: "rgba(0,0,0,0.0)",
-        borderWidth: 2,
-        borderColor: 'grey'
+            backgroundColor: "rgba(0,0,0,0.0)",
+            borderWidth: 2,
+            borderColor: 'grey',
+            borderBottomLeftRadius: 12,
+            borderBottomRightRadius: 12,
+            overflow: 'hidden'
         },
         cardHeader: {
             backgroundColor: '#17153B',
@@ -94,23 +125,38 @@ const styles = StyleSheet.create(
             paddingVertical: 0,
         },
         cardContent: {
-            alignItems: 'center'
+            alignItems: 'center',
             
+        },
+        cardContentElement: {
+            backgroundColor: "rgba(0,0,0,0.0)",
+            paddingVertical: 15,
+            alignSelf:'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            
+        },
+        textInput: {
+            fontSize: 16,
+            textAlign: 'center'
         },
         imageTag: {
             width: 80,
             height: 80,
-            borderRadius: 100
+            borderRadius: 100,
+            marginTop: 15
         },
         employeeIdContainer: {
             padding: 20,
             flexDirection: 'row',
             justifyContent: 'space-evenly',
+            backgroundColor: 'rgba(0,0,0,0.0)',
         },
         imageEditing: {
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-evenly"
+            justifyContent: "space-evenly",
+            backgroundColor: 'rgba(0,0,0,0.0)'
         },
         uploadPhotoPressable: {
             backgroundColor: "purple",

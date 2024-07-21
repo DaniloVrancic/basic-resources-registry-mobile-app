@@ -4,7 +4,11 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import { Image, Pressable, TextInput, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import { updateEmployee } from "@/db/db";
 
+
+let db: SQLiteDatabase;
 const EmployeeCardDetailed: React.FC<Employee> = ({
     id,
     name,
@@ -20,12 +24,15 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
     const [inputName, setInputName] = useState(name);
     const [inputEmail, setInputEmail] = useState(email);
     const [inputIncome, setInputIncome] = useState(income);
+    const [inputPhotoUrl, setInputPhotoUrl] = useState(photoUrl);
 
     const [errorMessage, setErrorMessage] = useState('');
 
+    db = useSQLiteContext();
+
     const handleUploadPhoto = () => {console.log("HANDLE UPLOAD PHOTO HERE!");}
 
-    const handlePressChanges = () => {
+    const handlePressChanges = async () => {
         if(editMode){
             if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
                 setErrorMessage('Please enter a valid name.');
@@ -45,7 +52,9 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
             setErrorMessage('');
 
-            //UPDATE USER SETTINGS IN THE DATABASE HERE
+            let currentEmployeeChanges: Employee = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
+
+            await updateEmployee(db, currentEmployeeChanges);
             
 
             setEditMode(false);

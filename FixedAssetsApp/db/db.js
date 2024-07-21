@@ -296,6 +296,23 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  const updateEmployeeQuery = "UPDATE EMPLOYEE SET name=$name, email=$email, income=$income, photoUrl=$photoUrl where id=$id;";
+
+  export const updateEmployee = async (db, employee) => {
+      return new Promise((resolve, reject) => {
+        db.withTransactionSync( async () => {
+          try{
+            
+            let rowsChanged = await db.runAsync(updateEmployeeQuery, { $name: employee.name, $email: employee.email, $income: employee.income,photoUrl: employee.photoUrl, $id: employee.id});
+            resolve(rowsChanged);
+          }
+          catch(error){
+            reject(error);
+          }
+        });
+      });
+  }
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";

@@ -36,7 +36,7 @@ const EmployeeCard: React.FC<Employee> = ({
                         onError={() => {console.log('Failed to load image');}} // Optional error handler
                     />
                     </ThemedView>
-                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{name}</ThemedText>
+                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
             </ThemedView>
 
                 <ThemedView style={styles.informationContainer}>
@@ -46,13 +46,13 @@ const EmployeeCard: React.FC<Employee> = ({
                             <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">E-mail:</ThemedText>
                         </ThemedView>
                         <ThemedView style={{paddingHorizontal: 10, flexWrap:'wrap'}}>
-                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{email}</ThemedText>
+                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{thisEmployee.email}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
                     <ThemedView style={{flexDirection: 'row', minWidth: '135%', marginVertical: 5,}}>
                         <ThemedText style={{fontSize: 12, justifyContent: "flex-start", flex: 50}}>Income:</ThemedText>
-                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${income}/year</ThemedText>
+                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${thisEmployee.income}/year</ThemedText>
                     </ThemedView>
 
                     <ThemedView style={styles.buttonContainer}>

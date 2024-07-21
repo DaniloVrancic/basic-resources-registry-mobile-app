@@ -54,7 +54,11 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
             let currentEmployeeChanges: Employee = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
 
-            await updateEmployee(db, currentEmployeeChanges);
+            let rows = await updateEmployee(db, currentEmployeeChanges);
+            
+            if(rows.changes > 0){
+                
+            }
             
 
             setEditMode(false);

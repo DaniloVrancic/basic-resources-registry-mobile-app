@@ -21,8 +21,8 @@ const EmployeeCard: React.FC<Employee> = ({
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
 
     const [showModal, setShowModal] = useState(false);
-    const openModal = () => setShowModal(true);
-    const closeModal = () => setShowModal(false);
+    const openModal = () => setShowModal(true); //for opening helping window
+    const closeModal = () => setShowModal(false); //for closing helping window
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>

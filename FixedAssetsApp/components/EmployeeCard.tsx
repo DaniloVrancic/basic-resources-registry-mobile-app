@@ -20,7 +20,7 @@ const EmployeeCard: React.FC<Employee> = ({
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
 
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false); //show modal toggle
     const openModal = () => setShowModal(true); //for opening helping window
     const closeModal = () => setShowModal(false); //for closing helping window
 

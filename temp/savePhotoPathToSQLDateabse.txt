@@ -1,0 +1,14 @@
+import * as SQLite from 'expo-sqlite';
+
+const db = SQLite.openDatabase('assets.db');
+
+export const addItemWithPhoto = (name, description, barcode, price, dateCreated, person, location, photoPath, callback) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO assets (name, description, barcode, price, dateCreated, person, location, photoPath) values (?, ?, ?, ?, ?, ?, ?, ?);',
+      [name, description, barcode, price, dateCreated, person, location, photoPath],
+      (_, result) => callback(result),
+      (_, error) => console.log('Error:', error)
+    );
+  });
+};

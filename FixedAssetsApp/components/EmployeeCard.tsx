@@ -89,7 +89,7 @@ const EmployeeCard: React.FC<Employee> = ({
 
 export default EmployeeCard;
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({ //Stylesheet for this card
     cardContainer: {
         maxHeight: 450,
         flexDirection: 'column',

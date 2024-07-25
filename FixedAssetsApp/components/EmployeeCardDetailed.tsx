@@ -6,6 +6,7 @@ import { Image, Pressable, TextInput, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
+import { Avatar } from "@rneui/themed";
 
 
 let db: SQLiteDatabase;
@@ -87,14 +88,29 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
-                    <Image 
-                    style={styles.imageTag}
-                    resizeMode="center"
-                    source={defaultImage}></Image>
+                    
+                <ThemedView
+                    style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    marginBottom: 40,
+                    backgroundColor: 'rgba(0,0,0,0.0)'
+                    }}
+                >
+                        <Avatar
+                        size={64}
+                        rounded
+                        icon={{ name: 'adb', type: 'material' }}
+                        containerStyle={{ backgroundColor: 'orange' }}
+                        >
+                            <Avatar.Accessory size={24} />
+                        </Avatar>
+        </ThemedView>
                     <Pressable onPress={handleUploadPhoto} style={{display: editMode ? "flex" : "none"}}>
                         <ThemedText style={styles.uploadPhotoPressable}>Upload Photo</ThemedText>
                     </Pressable>
                 </ThemedView>
+                
                 <ThemedView style={styles.employeeIdContainer}>
                     <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
                     <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{id}</ThemedText>
@@ -192,6 +208,7 @@ const styles = StyleSheet.create(
             backgroundColor: 'rgba(0,0,0,0.0)',
         },
         imageEditing: {
+            paddingTop: 15,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-evenly",

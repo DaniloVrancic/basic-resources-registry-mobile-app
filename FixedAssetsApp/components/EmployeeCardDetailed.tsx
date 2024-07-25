@@ -84,6 +84,17 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         }
     }
 
+    const getInitials = (name: string) => {
+        // Split the name by spaces and filter out empty strings
+        const nameParts = name.split(' ').filter(part => part.length > 0);
+        
+        // Get the first 3 initials and capitalize them
+        const initials = nameParts.slice(0, 3).map(part => part.charAt(0).toUpperCase());
+    
+        // Join the initials into a string
+        return initials.join('');
+    }
+
     return (
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
@@ -93,17 +104,19 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                     style={{
                     flexDirection: 'row',
                     justifyContent: 'space-around',
-                    marginBottom: 40,
-                    backgroundColor: 'rgba(0,0,0,0.0)'
+                    marginBottom: 10,
+                    backgroundColor: 'rgba(0,0,0,0.0)',
+                    paddingTop: 10
                     }}
                 >
                         <Avatar
-                        size={64}
+                        size={80}
                         rounded
                         icon={{ name: 'adb', type: 'material' }}
-                        containerStyle={{ backgroundColor: 'orange' }}
+                        containerStyle={{ backgroundColor: 'purple', }}
+                        title={getInitials(name)}
                         >
-                            <Avatar.Accessory size={24} />
+                            <Avatar.Accessory size={26} />
                         </Avatar>
         </ThemedView>
                     <Pressable onPress={handleUploadPhoto} style={{display: editMode ? "flex" : "none"}}>

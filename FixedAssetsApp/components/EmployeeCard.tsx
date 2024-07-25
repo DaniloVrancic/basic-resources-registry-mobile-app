@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
 import EmployeeCardDetailed from "./EmployeeCardDetailed";
+import { Avatar } from "@rneui/themed";
 
 
 
@@ -24,17 +25,31 @@ const EmployeeCard: React.FC<Employee> = ({
     const openModal = () => setShowModal(true); //for opening helping window
     const closeModal = () => setShowModal(false); //for closing helping window
 
+    const getInitials = (name: string) => {
+        // Split the name by spaces and filter out empty strings
+        const nameParts = name.split(' ').filter(part => part.length > 0);
+        
+        // Get the first 3 initials and capitalize them
+        const initials = nameParts.slice(0, 3).map(part => part.charAt(0).toUpperCase());
+    
+        // Join the initials into a string
+        return initials.join('');
+    }
+
+
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
           
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
-                    <Image
-                        style={styles.imageTag}
-                        resizeMode="cover"
-                        source={defaultImage}
-                        onError={() => {console.log('Failed to load image');}} // Optional error handler
-                    />
+                    <Avatar
+                        size={80}
+                        rounded
+                        containerStyle={{ backgroundColor: 'purple', }}
+                        title={getInitials(name)}
+                        >
+                          
+                        </Avatar>
                     </ThemedView>
                     <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
             </ThemedView>

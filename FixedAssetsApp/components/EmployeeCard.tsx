@@ -21,6 +21,8 @@ const EmployeeCard: React.FC<Employee> = ({
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
 
+    const [userPhoto, setUserPhoto] = useState(photoUrl);
+
     const [showModal, setShowModal] = useState(false); //show modal toggle
     const openModal = () => setShowModal(true); //for opening helping window
     const closeModal = () => setShowModal(false); //for closing helping window
@@ -47,6 +49,7 @@ const EmployeeCard: React.FC<Employee> = ({
                         rounded
                         containerStyle={{ backgroundColor: 'purple', }}
                         title={getInitials(name)}
+                        
                         >
                           
                         </Avatar>
@@ -103,6 +106,14 @@ const EmployeeCard: React.FC<Employee> = ({
 }
 
 export default EmployeeCard;
+
+const imageStyles = StyleSheet.create({
+    imageStyle: {
+        width: '100%',
+        height: '100%',
+        aspectRatio: 1
+    }
+})
 
 const styles = StyleSheet.create({ //Stylesheet for this card
     cardContainer: {

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Employee } from "@/app/data_interfaces/employee";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { Image, Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { ThemedText } from "./ThemedText";
-import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
-import { Avatar, BottomSheet, Button, ListItem } from "@rneui/themed";
-import { CameraOptions, launchCamera } from "react-native-image-picker";
-import useCamera from "./camera/Camera";
+import { Avatar, BottomSheet, Button } from "@rneui/themed";
+import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
+import { Image } from "react-native";
 
 
 
@@ -35,8 +34,6 @@ const EmployeeCardDetailed = ({
     const [errorMessage, setErrorMessage] = useState('');
 
     db = useSQLiteContext();
-
-    const handleUploadPhoto = () => {console.log("HANDLE UPLOAD PHOTO HERE!");}
 
     const handlePressChanges = async () => {
         if(editMode){
@@ -111,6 +108,8 @@ const EmployeeCardDetailed = ({
     let options = {
         saveToPhotos: true,
         mediaType: 'photo',
+        height: 1024,
+        width: 768
     }
 
     const openCamera = async () => {
@@ -128,9 +127,12 @@ const EmployeeCardDetailed = ({
                   buttonPositive: "OK"
                 }
               );
+              let result;
                 
                 if(granted === PermissionsAndroid.RESULTS.GRANTED){
-                    const result = await launchCamera(options, (res) => {
+                    console.log(granted);
+                    
+                    result = await launchCameraAsync(options, (res) => {
                         console.log('Response = ', res);
                   
                         if (res.didCancel) {
@@ -145,22 +147,32 @@ const EmployeeCardDetailed = ({
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
                           console.log('response', JSON.stringify(res));
-                  
-                           setCameraPhoto(source.uri);
+                           
+                        
                          
                           
                         }
-                      });
+                      }).catch((warn) => {console.warn(warn)});
+                      
                 }
                 else{
                     console.log("Permission not given.");
                 }
+                const resultPhotoUri = (result.assets[0].uri);
+                setInputPhotoUrl(resultPhotoUri);
         }
         catch(error)
         {
             console.error(error);
         }
     };
+
+    const openGallery = async () => {
+        const result = await launchImageLibraryAsync(options);
+        const resultUri = result.assets[0].uri;
+        console.log(resultUri);
+        setInputPhotoUrl(resultUri);
+    }
 
 
     return (
@@ -183,6 +195,10 @@ const EmployeeCardDetailed = ({
                         icon={{ name: 'adb', type: 'material' }}
                         containerStyle={{ backgroundColor: 'purple', }}
                         title={getInitials(name)}
+                        ImageComponent={() => {
+                            return (<Image style={imageStyles.imageStyle} source={{uri: (inputPhotoUrl) ? inputPhotoUrl : (<></>)}} />)}} //FIX THIS LINE!!!
+
+                            //FIX THIS RETURN, NOT WORKING CORRECTLY IF THERE IS NO URI PRESENT, (ISN'T SUPPOSED TO WORK LIKE THIS)
                         onPress={() => {
 
                             if(editMode){
@@ -264,7 +280,7 @@ const EmployeeCardDetailed = ({
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
-                        onPress={() => {}}
+                        onPress={openGallery}
                     ></Button>
 
                     <Button
@@ -281,6 +297,14 @@ const EmployeeCardDetailed = ({
 }
 
 export default EmployeeCardDetailed;
+
+const imageStyles = StyleSheet.create({
+            imageStyle: {
+                width: '100%',
+                height: '100%',
+                aspectRatio: 1
+            }
+        })
 
 const styles = StyleSheet.create(
     {
@@ -365,4 +389,6 @@ const styles = StyleSheet.create(
             minWidth: "60%"
         }
     }
+
+    
 )

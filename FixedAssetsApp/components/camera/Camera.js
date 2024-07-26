@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { PermissionsAndroid } from "react-native";
-import { launchCamera } from "react-native-image-picker";
+import { launchCameraAsync } from "react-native-image-picker";
 
 const useCamera = () => {
 
@@ -27,7 +27,7 @@ const useCamera = () => {
               );
                 
                 if(granted === PermissionsAndroid.RESULTS.GRANTED){
-                    const result = await launchCamera(options, (res) => {
+                    const result = await launchCameraAsync(options, (res) => {
                         console.log('Response = ', res);
                   
                         if (res.didCancel) {

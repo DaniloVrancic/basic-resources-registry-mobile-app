@@ -2,23 +2,27 @@ import React, { useState } from "react";
 import { Employee } from "@/app/data_interfaces/employee";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { Image, Pressable, TextInput, StyleSheet } from "react-native";
+import { Image, Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, ListItem } from "@rneui/themed";
+import { CameraOptions, launchCamera } from "react-native-image-picker";
+import useCamera from "./camera/Camera";
 
 
-let db: SQLiteDatabase;
-const EmployeeCardDetailed: React.FC<Employee> = ({
+
+let db;
+const EmployeeCardDetailed = ({
     id,
     name,
     email,
     income,
     photoUrl
 }) => {
+    
     const textColor = useThemeColor({}, 'text');
-    const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
+    const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [editMode, setEditMode] = useState(false);
 
@@ -54,7 +58,7 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
             setErrorMessage('');
 
-            let currentEmployeeChanges: Employee = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
+            let currentEmployeeChanges = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
 
             let rows = await updateEmployee(db, currentEmployeeChanges);
             
@@ -70,7 +74,7 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         }
     }
 
-    const handleChangeIncome = (myNumber: string) => {
+    const handleChangeIncome = (myNumber) => {
 
         if(isNaN(parseInt(myNumber)))
         {
@@ -85,7 +89,7 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         }
     }
 
-    const getInitials = (name: string) => {
+    const getInitials = (name) => {
         // Split the name by spaces and filter out empty strings
         const nameParts = name.split(' ').filter(part => part.length > 0);
         
@@ -100,6 +104,31 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         
         setPhotoBottomSheetVisible(true);
     }
+
+    
+    const [cameraPhoto, setCameraPhoto] = useState('');
+
+    let options = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+    }
+
+    const openCamera = async () => {
+
+        
+
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        
+        if(granted === PermissionsAndroid.RESULTS.GRANTED){
+            console.log("HELLOOOO");
+            const result = await launchCamera(options);
+            console.log(result);
+            //setCameraPhoto(result);
+        }
+    };
+
 
     return (
         <ThemedView style={styles.cardContainer}>
@@ -116,7 +145,7 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                     }}
                 >
                         <Avatar
-                        size={80}
+                        size={90}
                         rounded
                         icon={{ name: 'adb', type: 'material' }}
                         containerStyle={{ backgroundColor: 'purple', }}
@@ -191,23 +220,23 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                 
                     <Button
                         title="Take Photo with Camera"
-                        buttonStyle={{backgroundColor: 'rgba(180,190,0,0.9)', height: 60}}
+                        buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
-                        icon={{name: 'camera', type: 'ionicon'}}
-                        onPress={() => {}}
+                        icon={{name: 'camera', type: 'ionicon', color:"white"}}
+                        onPress={openCamera}
                     ></Button>
 
                     <Button
                         title="Open Photo from Gallery"
-                        buttonStyle={{backgroundColor: 'orange', height: 60}}
+                        buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
-                        icon={{name: 'photo'}}
+                        icon={{name: 'photo', color:"white"}}
                         onPress={() => {}}
                     ></Button>
 
                     <Button
                         title="Cancel"
-                        buttonStyle={{backgroundColor: 'red', height: 60}}
+                        buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
                         onPress={() => {setPhotoBottomSheetVisible(false);}}

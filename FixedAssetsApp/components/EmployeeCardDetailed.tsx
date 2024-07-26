@@ -6,7 +6,7 @@ import { Image, Pressable, TextInput, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
-import { Avatar } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, ListItem } from "@rneui/themed";
 
 
 let db: SQLiteDatabase;
@@ -26,6 +26,7 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
     const [inputEmail, setInputEmail] = useState(email);
     const [inputIncome, setInputIncome] = useState(income);
     const [inputPhotoUrl, setInputPhotoUrl] = useState(photoUrl);
+    const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -95,6 +96,11 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
         return initials.join('');
     }
 
+    const onPressAvatar = () => {
+        
+        setPhotoBottomSheetVisible(true);
+    }
+
     return (
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
@@ -115,13 +121,27 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
                         icon={{ name: 'adb', type: 'material' }}
                         containerStyle={{ backgroundColor: 'purple', }}
                         title={getInitials(name)}
+                        onPress={() => {
+
+                            if(editMode){
+                                onPressAvatar();
+                            }
+                            
+                            }}
                         >
-                            <Avatar.Accessory size={26} />
+                            <Avatar.Accessory 
+                            size={26}
+                            style={{borderRadius: 100}}
+                            onPress={() => {
+
+                                if(editMode){
+                                    onPressAvatar();
+                                }
+                            }} 
+                            color={(editMode) ? 'lime' : 'grey'} />
                         </Avatar>
         </ThemedView>
-                    <Pressable onPress={handleUploadPhoto} style={{display: editMode ? "flex" : "none"}}>
-                        <ThemedText style={styles.uploadPhotoPressable}>Upload Photo</ThemedText>
-                    </Pressable>
+                    
                 </ThemedView>
                 
                 <ThemedView style={styles.employeeIdContainer}>
@@ -166,6 +186,34 @@ const EmployeeCardDetailed: React.FC<Employee> = ({
 
             </ThemedView>
 
+
+            <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
+                
+                    <Button
+                        title="Take Photo with Camera"
+                        buttonStyle={{backgroundColor: 'rgba(180,190,0,0.9)', height: 60}}
+                        titleStyle={{fontSize: 20}}
+                        icon={{name: 'camera', type: 'ionicon'}}
+                        onPress={() => {}}
+                    ></Button>
+
+                    <Button
+                        title="Open Photo from Gallery"
+                        buttonStyle={{backgroundColor: 'orange', height: 60}}
+                        titleStyle={{fontSize: 20}}
+                        icon={{name: 'photo'}}
+                        onPress={() => {}}
+                    ></Button>
+
+                    <Button
+                        title="Cancel"
+                        buttonStyle={{backgroundColor: 'red', height: 60}}
+                        titleStyle={{fontSize: 20}}
+                        icon={{name: 'x', type: 'foundation'}}
+                        onPress={() => {setPhotoBottomSheetVisible(false);}}
+                    ></Button>
+                
+            </BottomSheet>                
         </ThemedView>
     );
 }

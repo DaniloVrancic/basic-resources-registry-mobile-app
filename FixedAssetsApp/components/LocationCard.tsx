@@ -1,23 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Pressable, StyleSheet } from "react-native";
+import { Modal, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Location } from "@/app/data_interfaces/location";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
+import LocationMap from "./LocationMap";
 
 
-const LocationCard: React.FC<Location> = ({
-    id,
-    name,
-    size,
-    latitude,
-    longitude
-}) => {
+const LocationCard: React.FC<Location> = (
+    {id, name, size, latitude, longitude}
+) => {
+    const thisLocation: Location = {id, name, size, latitude, longitude};
     const textColor = useThemeColor({}, 'text');
+    const [showMapModal, setShowMapModal] = useState(false);
 
     type RootStackParamList = {
         LocationMap: { name: string; latitude: number; longitude: number };
@@ -26,8 +25,12 @@ const LocationCard: React.FC<Location> = ({
     const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'LocationMap'>>();
 
     const handleShowOnMap = () => {
-        navigation.navigate('LocationMap', { name, latitude, longitude });
+        setShowMapModal(true);
     };
+
+    const closeModal = () => {
+        setShowMapModal(false);
+    }
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
@@ -52,6 +55,22 @@ const LocationCard: React.FC<Location> = ({
                         <ThemedText style={styles.showOnMapButtonText}>Show on Map</ThemedText>
                     </Pressable>
                 </ThemedView>
+
+                <Modal visible={showMapModal} animationType="slide">
+                    <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                        <ThemedView style={modalStyles.modalHeader}>
+                                <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
+                                    <Ionicons name="close" size={24} color={textColor} />
+                                </Pressable>
+                                <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
+                        </ThemedView>
+
+                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+                            <LocationMap id={id} name={name} size={size} latitude={latitude} longitude={longitude}></LocationMap>
+                        </ThemedView>
+                    </ThemedView>
+                </Modal>
         </ThemedView>
     );
 }
@@ -127,3 +146,35 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     }
 });
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+    })

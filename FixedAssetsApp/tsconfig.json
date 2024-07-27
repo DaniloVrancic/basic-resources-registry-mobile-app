@@ -13,5 +13,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "db/db.js", "app/(tabs)/employees.js"  ]
+, "db/db.js", "app/(tabs)/employees.js", "components/camera/Camera.js", "components/EmployeeCardDetailed.js", "components/EmployeeCard.js"  ]
 }

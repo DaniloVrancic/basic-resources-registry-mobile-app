@@ -15,12 +15,17 @@ import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllFixedAssets } from '@/db/db';
+import { getAllFixedAssets, getAllFixedAssetsWithNameAndBetweenRange, getFixedItemsForContainsName } from '@/db/db';
 import { FixedAsset } from '../data_interfaces/fixed-asset';
 
 let db: SQLiteDatabase;
 export default function HomeScreen() {
   db = useSQLiteContext();
+
+  const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
+  const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
+
+  
   const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
 
   useEffect(() => {
@@ -35,6 +40,14 @@ export default function HomeScreen() {
     }
   };
 
+  const handleFixedAssetSearch = async (name: string) => {
+    try {
+      setLoadedFixedAssets(await getFixedItemsForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  }
+
 
   return (
     
@@ -43,9 +56,10 @@ export default function HomeScreen() {
       <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
                 onAddClick={() => { console.log("Employees default click") }}
-                filterChildren={fixedAssetAdvancedFiltering()}
+                filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
                 renderAddButton={true}
                 renderAdvancedFilterButton={true}
+                searchHandler={handleFixedAssetSearch}
               />
       </ThemedView>
 
@@ -94,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 6,
     paddingHorizontal: 16,
-    gap: 8,
+    gap: 9,
     borderBottomColor: 'grey', 
     borderBottomWidth: 2
   },
@@ -163,9 +177,8 @@ const styles = StyleSheet.create({
 });
 
 
-function fixedAssetAdvancedFiltering() {
+function fixedAssetAdvancedFiltering(assets: any, setAssets: any) {
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
-  const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
   const [nameToSearch, setNameToSearch] = useState(currentSearchCriteria.name);
   const [minPrice, setMinPrice] = useState(currentSearchCriteria.price_min);
   const [maxPrice, setMaxPrice] = useState(currentSearchCriteria.price_max); // Assume a maximum income of 8000 for the slider
@@ -174,7 +187,6 @@ function fixedAssetAdvancedFiltering() {
 
   const handleNameChange = (newName: string) => {
     setNameToSearch(newName)
-    searchCriteria.name = newName;
   };
 
   
@@ -190,14 +202,21 @@ const [floatingLabel, setFloatingLabel] = useState(false);
 
 const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
   setMinPrice(low as number);
-  currentSearchCriteria.price_min = low as number;
   setMaxPrice(high as number);
-  currentSearchCriteria.price_max = high as number;
 }, []);
 
-const advancedFilter = () => {
-  // Implement the advanced filter logic here
-  console.log('Advanced filter applied:', searchCriteria);
+const advancedFilter = async () => {
+  try {
+      setAssets(await getAllFixedAssetsWithNameAndBetweenRange(db, nameToSearch, minPrice, maxPrice));
+  } catch (error) {
+    console.error('Error loading Fixed Assets: ', error);
+  }
+
+};
+
+const advancedFilterBarcode = () => {
+  
+  
 };
 
 
@@ -229,10 +248,12 @@ const advancedFilter = () => {
           renderRailSelected={renderRailSelected}
           renderLabel={renderLabel}
           renderNotch={renderNotch}
+          low={minPrice}
+          high={maxPrice}
         />
         <ThemedText>{maxPrice?.toString()}</ThemedText>
       </ThemedView>
-      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilter}>
+      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilterBarcode}>
         <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
         <ThemedText style={styles.advancedFilterButtonText}>Scan Code</ThemedText>
       </Pressable>

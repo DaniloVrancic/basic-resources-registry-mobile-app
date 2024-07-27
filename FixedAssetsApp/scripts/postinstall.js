@@ -1,6 +1,9 @@
+/*
+
 // webCompatibility.mjs
-import { promises as fsPromises } from 'fs';
-import chalk from 'chalk';
+const fsPromises = require('fs').promises;
+//import chalk from 'chalk';
+const chalk = require('chalk').promises;
 
 const { readFile, writeFile, copyFile } = fsPromises;
 
@@ -22,3 +25,5 @@ export const reactNativeMapsWeb = async function () {
 };
 
 reactNativeMapsWeb();
+
+*/

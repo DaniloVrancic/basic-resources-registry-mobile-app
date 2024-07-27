@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -13,11 +13,10 @@ import Notch from '@/components/slider_components/Notch';
 import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inventory-list-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
-import { testInventoryList1 } from '@/constants/TestInventoryLists';
-import InventoryItemCard from '@/components/InventoryItemCard';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllInventoryLists } from '@/db/db';
+import { getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
+import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
 
 let db: SQLiteDatabase;
@@ -25,6 +24,12 @@ export default function ListOfAssets() {
 
   db = useSQLiteContext();
   const [loadedLists, setLoadedLists] = useState([]);
+
+  const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "", isChangingEmployee: true, isChangingLocation: true};
+
+    
+  const [searchChangingEmployee, setSearchChangingEmployee] = useState(true);
+  const [searchChangingLocation, setSearchChangingLocation] = useState(true);
 
   useEffect(() => {
     loadInventoryTransferLists(db);
@@ -38,14 +43,25 @@ export default function ListOfAssets() {
     }
   };
 
+  const handleSearchListOfAssets = async (name: string) => {
+    try {
+      setLoadedLists(await getAllInventoryListsForContainsName(db, name));
+    } catch (error) {
+      console.error('Error loading Inventory Lists: ', error);
+    }
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { console.log("Location default click") }}
-              filterChildren={listOfAssetsAdvancedFiltering()}
+              filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
               renderAddButton={true}
-              renderAdvancedFilterButton={true}/>
+              renderAdvancedFilterButton={true}
+              searchHandler={handleSearchListOfAssets}
+              />
+
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
             <ThemedText style={{paddingHorizontal: 20}} type="title">List of Assets</ThemedText>
@@ -54,8 +70,8 @@ export default function ListOfAssets() {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
              {
                 loadedLists.map((inventoryList: InventoryList) =>
-                  <ThemedView key={inventoryList.id} style={{marginVertical: 10, borderRadius: 15}}>
-                    <InventoryItemList key={inventoryList.id} {...inventoryList}/>
+                  <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
+                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={searchChangingEmployee} showChangingLocations={searchChangingLocation}/>
                   </ThemedView>
                 )
              }
@@ -143,12 +159,8 @@ const styles = StyleSheet.create({
     },
   });
 
-  function listOfAssetsAdvancedFiltering() {
-    const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "",isChangingEmployee: true, isChangingLocation: true};
+  function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any, loadedLists: any, setLoadedLists: any) {
 
-    
-    const [searchChangingEmployee, setSearchChangingEmployee] = useState(currentSearchCriteria.isChangingEmployee);
-    const [searchChangingLocation, setSearchChangingLocation] = useState(currentSearchCriteria.isChangingLocation);
     const [keywordToSearch, setKeywordToSearch] = useState("");
 
     const textColor = useThemeColor({}, 'text');
@@ -174,9 +186,16 @@ const styles = StyleSheet.create({
     
   }, []);
   
-  const advancedFilter = () => {
-    // Implement the advanced filter logic here
-    console.log('Advanced filter applied:', currentSearchCriteria);
+  const advancedFilter = async () => {
+    
+    console.log('Show changing employees: ' + searchChangingEmployee);
+    console.log("Show chaning locations: " + searchChangingLocation);
+
+    try {
+      setLoadedLists(await getAllInventoryListsForContainsName(db, keywordToSearch));
+  } catch (error) {
+    console.error('Error loading Fixed Assets: ', error);
+  }
   };
   
   
@@ -187,7 +206,7 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by name of employee..."
+          placeholder="Search by name of Transfer List..."
           value={keywordToSearch}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
@@ -203,10 +222,9 @@ const styles = StyleSheet.create({
               setSearchChangingEmployee(!searchChangingEmployee);
               currentSearchCriteria.isChangingLocation = searchChangingEmployee;
             }}
-            onLongIconPress={() =>
-              console.log("onLongIconPress()")
+            onLongIconPress={() => {}
             }
-            onLongPress={() => console.log("onLongPress()")}
+            onLongPress={() => {}}
             onPress={() => {
               setSearchChangingEmployee(!searchChangingEmployee);
               currentSearchCriteria.isChangingLocation = searchChangingEmployee;
@@ -227,16 +245,14 @@ const styles = StyleSheet.create({
             containerStyle={{ width: "75%", backgroundColor: 'rgba(0,0,0,0)'}}
             onIconPress={() => {
               setSearchChangingLocation(!searchChangingLocation);
-              console.log(searchChangingLocation);
               currentSearchCriteria.isChangingLocation = searchChangingLocation;
             }}
             onLongIconPress={() =>
-              console.log("onLongIconPress()")
+            {}
             }
-            onLongPress={() => console.log("onLongPress()")}
+            onLongPress={() => {}}
             onPress={() => {
               setSearchChangingLocation(!searchChangingLocation);
-              console.log(searchChangingLocation);
               currentSearchCriteria.isChangingLocation = searchChangingLocation;
             }}
             size={40}

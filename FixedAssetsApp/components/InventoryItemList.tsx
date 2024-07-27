@@ -5,29 +5,43 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { getItemsForList } from '@/db/db';
+import { getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 import { StyleSheet } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { TransferList } from '@/app/data_interfaces/transfer-list';
 
 let db: SQLiteDatabase;
-const InventoryItemList: React.FC<InventoryList> = ({
+
+interface InventoryItemListWithShowFilters {
+
+    id: number;
+    name: string;
+    showChangingEmployees?: boolean | undefined;
+    showChangingLocations?: boolean | undefined;
+}
+
+const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
     id,
-    name
+    name,
+    showChangingEmployees,
+    showChangingLocations
 }) => {
     const textColor = useThemeColor({}, 'text');
+    let parametersForList;
 
     db = useSQLiteContext();
-    const [loadedItems, setLoadedItems] = useState([]);
+    const [loadedItems, setLoadedItems]: any = useState([]);
 
     useEffect(() => {
-        loadItemsForList(db, id);
-      }, [id]);
+        loadItemsForList(db, id, showChangingEmployees, showChangingLocations);
+      }, []);
 
-    const loadItemsForList = async (db: SQLiteDatabase, id: number) => {
+    const loadItemsForList = async (db: SQLiteDatabase, id: number, showChangingEmployees: boolean | undefined, showChangingLocations: boolean | undefined) => {
         try {
-            setLoadedItems(await getItemsForList(db, id));
+            setLoadedItems(await getItemsFromViewForListId(db, id));
+            
         } catch (error) {
           console.error('Error loading Items For List: ', error);
         }
@@ -40,8 +54,18 @@ const InventoryItemList: React.FC<InventoryList> = ({
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
                 <ThemedView style={{borderRadius: 10}}>
                     {
-                        loadedItems.map((element: InventoryItem) => 
-                            <InventoryItemCard key={element.fixed_asset_id} {...element}/>
+                        loadedItems.map((element: TransferList) => 
+                        {
+                            if(showChangingEmployees == false && element.currentEmployeeId != element.new_employee_id){
+                                return;
+                            }
+                            else if(showChangingLocations === false && element.currentLocationId != element.newLocationId){
+                                return;
+                            }
+                            else{
+                                return <InventoryItemCard key={element.fixedAssetId} {...element}/>
+                            }
+                        }
                         )
                     }
                 </ThemedView>

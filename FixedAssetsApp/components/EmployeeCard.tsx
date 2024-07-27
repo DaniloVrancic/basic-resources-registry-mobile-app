@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Image, Pressable, StyleSheet } from "react-native";
+import { Image, Modal, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
+import EmployeeCardDetailed from "./EmployeeCardDetailed";
+import { Avatar } from "@rneui/themed";
 
 
 
@@ -17,19 +19,42 @@ const EmployeeCard: React.FC<Employee> = ({
 }) => {
     const textColor = useThemeColor({}, 'text');
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
+    const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
+
+    const [userPhoto, setUserPhoto] = useState(photoUrl);
+
+    const [showModal, setShowModal] = useState(false); //show modal toggle
+    const openModal = () => setShowModal(true); //for opening helping window
+    const closeModal = () => setShowModal(false); //for closing helping window
+
+    const getInitials = (name: string) => {
+        // Split the name by spaces and filter out empty strings
+        const nameParts = name.split(' ').filter(part => part.length > 0);
+        
+        // Get the first 3 initials and capitalize them
+        const initials = nameParts.slice(0, 3).map(part => part.charAt(0).toUpperCase());
+    
+        // Join the initials into a string
+        return initials.join('');
+    }
+
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
+          
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
-                    <Image
-                        style={styles.imageTag}
-                        resizeMode="cover"
-                        source={defaultImage}
-                        onError={() => {console.log('Failed to load image');}} // Optional error handler
-                    />
+                    <Avatar
+                        size={80}
+                        rounded
+                        containerStyle={{ backgroundColor: 'purple', }}
+                        title={getInitials(name)}
+                        
+                        >
+                          
+                        </Avatar>
                     </ThemedView>
-                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{name}</ThemedText>
+                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
             </ThemedView>
 
                 <ThemedView style={styles.informationContainer}>
@@ -39,30 +64,58 @@ const EmployeeCard: React.FC<Employee> = ({
                             <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">E-mail:</ThemedText>
                         </ThemedView>
                         <ThemedView style={{paddingHorizontal: 10, flexWrap:'wrap'}}>
-                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{email}</ThemedText>
+                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{thisEmployee.email}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
                     <ThemedView style={{flexDirection: 'row', minWidth: '135%', marginVertical: 5,}}>
                         <ThemedText style={{fontSize: 12, justifyContent: "flex-start", flex: 50}}>Income:</ThemedText>
-                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${income}/year</ThemedText>
+                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${thisEmployee.income}/year</ThemedText>
                     </ThemedView>
 
                     <ThemedView style={styles.buttonContainer}>
                         <Pressable
                             style={styles.showOnEmployeeButton}
-                            onPress={() => {}}>
+                            onPress={openModal}>
                             <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
                         </Pressable>
                     </ThemedView>
                 </ThemedView>
+
+                <Modal visible={showModal} animationType="slide" transparent={true}>
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
+                                <Ionicons name="close" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
+                    </ThemedView>
+
+                    <ThemedView>
+                         <EmployeeCardDetailed {...thisEmployee}/>
+                    </ThemedView>
+                </ThemedView>
+            </Modal>
+
         </ThemedView>
+        
+
+        
     );
 }
 
 export default EmployeeCard;
 
-const styles = StyleSheet.create({
+const imageStyles = StyleSheet.create({
+    imageStyle: {
+        width: '100%',
+        height: '100%',
+        aspectRatio: 1
+    }
+})
+
+const styles = StyleSheet.create({ //Stylesheet for this card
     cardContainer: {
         maxHeight: 450,
         flexDirection: 'column',
@@ -136,4 +189,37 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         minWidth: '99%'
     }
+});
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+
 });

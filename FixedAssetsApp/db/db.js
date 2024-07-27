@@ -73,6 +73,32 @@ import * as SQLite from 'expo-sqlite';
     CREATE INDEX IF NOT EXISTS 'fk_inventory_item_location2_idx' ON 'inventory_item' ('newLocationId');
     `
 
+    const createViewForTransferLists =
+    `
+    CREATE VIEW IF NOT EXISTS "transfer_list_view" AS
+    SELECT 
+	      tl.id AS "transferListId",
+        tl.name AS "transferListName",
+        fa.id AS "fixedAssetId",
+        fa.name AS "fixedAssetName",
+        it.currentLocationId AS "currentLocationId",
+        cl.name AS "currentLocationName",
+        it.newLocationId AS "newLocationId",
+	      nl.name AS "newLocationName",
+        it.currentEmployeeId AS "currentEmployeeId",
+        ce.name AS "currentEmployeeName",
+        it.new_employee_id AS "new_employee_id",
+        ne.name AS "newEmployeeName"
+    FROM
+        ((((((inventory_item it
+        LEFT JOIN location cl ON ((cl.id = it.currentLocationId)))
+        LEFT JOIN location nl ON ((nl.id = it.newLocationId)))
+        LEFT JOIN transfer_list tl ON ((tl.id = it.transfer_list_id)))
+        LEFT JOIN fixed_asset fa ON ((fa.id = it.fixed_asset_id)))
+        LEFT JOIN employee ce ON ((ce.id = it.currentEmployeeId)))
+        LEFT JOIN employee ne ON ((ne.id = it.new_employee_id)));
+    `
+
     try {
       await db.execAsync('PRAGMA journal_mode = WAL');
       await db.execAsync('PRAGMA foreign_keys = ON');
@@ -95,7 +121,15 @@ import * as SQLite from 'expo-sqlite';
     }
 
     try{
+      await db.runAsync(createViewForTransferLists)
+    } catch(error) {
+      console.error(error);
+      throw Error('Failed to create Views');
+    }
+
+    try{
       await insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
+
     }
     catch(error){
       console.error(error);
@@ -177,7 +211,10 @@ import * as SQLite from 'expo-sqlite';
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (7, 2, 7, 8, 2, 3)`,
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (8, 3, 8, 9, 3, 4)`,
           `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (9, 4, 9, 10, 4, 5)`,
-          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (10, 5, 10, 1, 5, 1)`
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (10, 5, 10, 1, 5, 1)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (6, 2, 3, 3, 1, 2)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (9, 2, 4, 4, 4, 4)`,
+          `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES (5, 1, 2, 2, 4, 1)`
         ];
         break;
       default:
@@ -194,6 +231,10 @@ import * as SQLite from 'expo-sqlite';
   //GETTING ALL EMPLOYEES FROM DB ////////////////////////////////////////////////////////////////////
 
   const getAllEmployeesQuery = "SELECT * FROM 'employee';";
+  const getAllEmployeesQueryWithContainsName = "SELECT * FROM 'employee' WHERE `name` LIKE $name;"
+  const getAllEmployeesQueryWithBetween = "SELECT * FROM 'employee' WHERE income BETWEEN $lower AND $upper ;";
+  const getAllEmployeesQueryWithContainsNameAndBetween = "SELECT * FROM 'employee' WHERE (name LIKE $name AND (income BETWEEN $lower AND $upper)) ;";
+
 
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
@@ -210,9 +251,79 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  export const getEmployeesForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllEmployeesQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllEmployeesQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllEmployeesWithNameAndBetweenRange = async (db, name, lower, upper) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllEmployeesQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllEmployeesQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const updateEmployeeQuery = "UPDATE EMPLOYEE SET name=$name, email=$email, income=$income, photoUrl=$photoUrl where id=$id;";
+
+  export const updateEmployee = async (db, employee) => {
+      return new Promise((resolve, reject) => {
+        db.withTransactionSync( async () => {
+          try{
+            
+            let rowsChanged = await db.runAsync(updateEmployeeQuery, { $name: employee.name, 
+                                                                       $email: employee.email, 
+                                                                       $income: employee.income,
+                                                                       $photoUrl: employee.photoUrl, 
+                                                                       $id: employee.id});
+            
+            resolve(rowsChanged);
+          }
+          catch(error){
+            reject(error);
+          }
+        });
+      });
+  }
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";
+  const getAllLocationsQueryWithContainsName = "SELECT * FROM 'location' WHERE `name` LIKE $name;"
+  const getAllLocationsQueryWithBetween = "SELECT * FROM 'location' WHERE size BETWEEN $lower AND $upper ;";
+  const getAllLocationsQueryWithContainsNameAndBetween = "SELECT * FROM 'location' WHERE (name LIKE $name AND (size BETWEEN $lower AND $upper)) ;";
 
   export const getAllLocations = async (db) => {
     return new Promise((resolve, reject) => {
@@ -229,18 +340,144 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
-  //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
-  
-  const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
+  export const getAllLocationsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllLocationsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllLocationsQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
 
-  export const getAllFixedAssets = async (db) => {
-
+  export const getAllLocationsForContainsNameAndBetweenRange = async (db, name, lower, upper) => {
 
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllLocationsQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllLocationsQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
+  
+  const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
+  const getAllFixedAssetsQueryWhereLocationId = "SELECT * FROM 'fixed_asset' WHERE location_id=$location_id;";
+  const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE `name` LIKE $name;"
+  const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
+  const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE (name LIKE $name AND (price BETWEEN $lower AND $upper)) ;";
+  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE (barcode=$barcode) ;";
+
+  export const getAllFixedAssets = async (db) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllFixedAssetsQuery, []);
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getFixedItemsForLocationId = async (db, location_id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          const allRows = await db.getAllAsync(getAllFixedAssetsQueryWhereLocationId, { $location_id: location_id });
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getFixedItemsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getAllFixedAssetsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllFixedAssetsWithNameAndBetweenRange = async (db, name, lower, upper) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows;
+          if(name.length === 0)
+          {
+            rows = await db.getAllAsync(getAllFixedAssetsQueryWithBetween, { $lower: lower, $upper: upper});
+          }
+          else{
+            rows = await db.getAllAsync(getAllFixedAssetsQueryWithContainsNameAndBetween, { $name: `%${name}%`, $lower: lower, $upper: upper});
+          }
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllFixedAssetsWithBarcode = async (db, barcode) => {
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let rows = await db.getAllAsync(getAllFixedAssetsQueryWithBarcode, { $barcode: barcode});
+
           resolve(rows);
         }
         catch(error){
@@ -275,6 +512,8 @@ import * as SQLite from 'expo-sqlite';
   //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
 
   const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
+  const getInventoryListsQueryWithContainsName = "SELECT * FROM 'transfer_list' WHERE `name` LIKE $name;"
+
   export const getAllInventoryLists = async (db) => {
 
 
@@ -283,7 +522,105 @@ import * as SQLite from 'expo-sqlite';
       db.withTransactionAsync( async () => {
         try{
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
+          
           resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getAllInventoryListsForContainsName = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          var allRows;
+          if(name.length === 0)
+          {
+            allRows = await db.getAllAsync(getInventoryListsQuery);
+          }
+          else{
+            allRows = await db.getAllAsync(getInventoryListsQueryWithContainsName, { $name: `%${name}%`});
+          }
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  //GETTING THE ITEMS FROM THE VIEW ////////////////////////////////////////
+
+  const getInventoryListsFromViewQuery = "SELECT DISTINCT * FROM 'transfer_list_view'";
+  export const getAllInventoryListsFromView = async (db) => {
+
+
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionAsync( async () => {
+        try{
+          let rows = await db.getAllAsync(getInventoryListsFromViewQuery, []);
+          
+          resolve(rows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id";
+  const getInventoryItemsFromViewForNotChangingEmployees = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id);";
+  const getInventoryItemsFromViewForNotChangingLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentLocationId = newLocationId);";
+  const getInventoryItemsFromViewForNotChangingEmployeesAndLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id) AND (currentLocationId = newLocationId);";
+
+  export const getItemsFromViewForListId = async (db, id) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          const allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          
+          resolve(allRows);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  };
+
+  export const getItemsFromViewForListIdWithShowFilters = async (db, id, showChangingEmployees, showChangingLocation) => {
+    return new Promise((resolve, reject) => {
+      
+      db.withTransactionSync( async () => {
+        try{
+          let allRows;
+          if(showChangingEmployees === true && showChangingLocation === true)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForListId, { $id: id });
+          }
+          else if(showChangingEmployees === true && showChangingLocation === false)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingLocations, { $id: id });
+          }
+          else if(showChangingEmployees === false && showChangingLocation === true)
+          {
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingEmployees, { $id: id });
+          }
+          else{
+            allRows = await db.getAllAsync(getInventoryItemsFromViewForNotChangingEmployeesAndLocations, { $id: id });
+          }
+
+          resolve(allRows);
         }
         catch(error){
           reject(error);

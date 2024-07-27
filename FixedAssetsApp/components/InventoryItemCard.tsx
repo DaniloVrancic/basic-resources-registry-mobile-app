@@ -5,14 +5,22 @@ import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { InventoryItem } from "@/app/data_interfaces/inventory-item";
+import { TransferList } from "@/app/data_interfaces/transfer-list";
 
 
-const InventoryItemCard: React.FC<InventoryItem> = ({
+const InventoryItemCard: React.FC<TransferList> = ({
     currentEmployeeId,
+    currentEmployeeName,
     currentLocationId,
-    fixed_asset_id,
+    currentLocationName,
+    fixedAssetId,
+    fixedAssetName,
+    newEmployeeName,
     new_employee_id,
-    newLocationId
+    newLocationId,
+    newLocationName,
+    transferListId,
+    transferListName
 }) => {
     const textColor = useThemeColor({}, 'text');
 
@@ -20,18 +28,36 @@ const InventoryItemCard: React.FC<InventoryItem> = ({
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
-            <ThemedText type="subtitle">{fixed_asset_id}</ThemedText>
+            <ThemedText type="subtitle" style={{marginBottom: 15}}>{fixedAssetName}</ThemedText>
             <ThemedView style={styles.transferContainer}>
-                <ThemedText style={styles.transferText}>Person in Charge:</ThemedText>
-                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeId}</ThemedText>
-                <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
-                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{new_employee_id}</ThemedText>
+                <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Person in Charge:</ThemedText>
+                    <ThemedView style={styles.transferValues}>
+                        { currentEmployeeId === new_employee_id ? (
+                                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                            ) : (
+                                <>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                                         <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newEmployeeName}</ThemedText>
+                                </>
+                            )
+                        }
+                       
+                    </ThemedView>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
-            <ThemedText style={styles.transferText}>Location of Asset:</ThemedText>
-            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationId}</ThemedText>
-                <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
-                <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newLocationId}</ThemedText>
+                    <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Location of Asset:</ThemedText>
+                    <ThemedView style={styles.transferValues}>
+                    {currentLocationId === newLocationId ? (
+                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationName}</ThemedText>
+                    ) : (
+                        <>
+                            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentLocationName}</ThemedText>
+                            <Ionicons name="arrow-forward-sharp" size={32} color={textColor}/>
+                            <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newLocationName}</ThemedText>
+                        </>
+                    )}
+                    </ThemedView>
             </ThemedView>
         </ThemedView>
     );
@@ -49,20 +75,30 @@ const styles = StyleSheet.create({
         margin: 5
     },
     transferContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
-        alignContent: 'center',
+        alignSelf: 'center',
         fontSize: 10,
         fontWeight: 300
     },
+    transferHeaderText: {
+        textAlign: 'center',
+        paddingHorizontal: 6,
+        fontWeight: 700
+    },
     transferText: {
-        textAlign: 'right',
-        gap: 12,
+        textAlign: 'center',
         paddingHorizontal: 6,
     },
     transferTextValue: {
-        fontSize: 20,
+        fontSize: 16,
+        flexWrap: 'wrap',
+        maxWidth: '90%',
         paddingTop: 4
+    },
+    transferValues: {
+        flexDirection: 'row',
+        alignSelf: 'center'
     },
     showOnMapButton: {
         backgroundColor: 'rgb(106, 27, 154)', // Purple-blueish color

@@ -53,6 +53,8 @@ const EmployeeCardDetailed = ({
                 return;
             }
 
+           
+
             setErrorMessage('');
 
             let currentEmployeeChanges = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}

@@ -302,7 +302,6 @@ import * as SQLite from 'expo-sqlite';
       return new Promise((resolve, reject) => {
         db.withTransactionSync( async () => {
           try{
-            
             let rowsChanged = await db.runAsync(updateEmployeeQuery, { $name: employee.name, 
                                                                        $email: employee.email, 
                                                                        $income: employee.income,

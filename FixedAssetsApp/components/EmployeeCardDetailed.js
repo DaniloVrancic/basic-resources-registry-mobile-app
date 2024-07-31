@@ -193,8 +193,12 @@ const EmployeeCardDetailed = ({
                         size={90}
                         rounded
                         icon={{ name: 'adb', type: 'material' }}
-                        containerStyle={{ backgroundColor: 'purple', }}
-                        title={getInitials(name)}
+                        
+                        placeholderStyle={{backgroundColor: 'purple'}}
+                        source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
+                        title={getInitials(name)
+                        
+                        }
 
                             
                         onPress={() => {

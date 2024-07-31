@@ -20,8 +20,7 @@ const EmployeeCard: React.FC<Employee> = ({
     const textColor = useThemeColor({}, 'text');
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
-
-    const [userPhoto, setUserPhoto] = useState(photoUrl);
+    const [thisEmployeeState, setEmployeeState] = useState(thisEmployee);
 
     const [showModal, setShowModal] = useState(false); //show modal toggle
     const openModal = () => setShowModal(true); //for opening helping window
@@ -93,7 +92,8 @@ const EmployeeCard: React.FC<Employee> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <EmployeeCardDetailed {...thisEmployee}/>
+                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} id={thisEmployeeState.id} name={thisEmployeeState.name}
+                         email={thisEmployeeState.email} income={thisEmployeeState.income} photoUrl={thisEmployeeState.photoUrl}/>
                     </ThemedView>
                 </ThemedView>
             </Modal>

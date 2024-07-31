@@ -8,17 +8,19 @@ import { updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { Image } from "react-native";
+import {Employee} from "@/app/data_interfaces/employee"
 
 
 
 let db;
-const EmployeeCardDetailed = ({
-    id,
+const EmployeeCardDetailed = (
+    setEmployeeState, 
+    id, //I CAN FORWARD EMPLOYEE STATE HERE AND NOT INDIVIDUAL PARAMETERS, FIX THIS!
     name,
     email,
     income,
     photoUrl
-}) => {
+) => {
     
     const textColor = useThemeColor({}, 'text');
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
@@ -62,7 +64,7 @@ const EmployeeCardDetailed = ({
             let rows = await updateEmployee(db, currentEmployeeChanges);
             
             if(rows.changes > 0){
-                
+
             }
             
 

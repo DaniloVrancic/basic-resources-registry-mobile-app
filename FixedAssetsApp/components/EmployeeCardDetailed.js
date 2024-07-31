@@ -195,10 +195,8 @@ const EmployeeCardDetailed = ({
                         icon={{ name: 'adb', type: 'material' }}
                         containerStyle={{ backgroundColor: 'purple', }}
                         title={getInitials(name)}
-                        ImageComponent={() => {
-                            return (<Image style={imageStyles.imageStyle} source={{uri: (inputPhotoUrl) ? inputPhotoUrl : (<></>)}} />)}} //FIX THIS LINE!!!
 
-                            //FIX THIS RETURN, NOT WORKING CORRECTLY IF THERE IS NO URI PRESENT, (ISN'T SUPPOSED TO WORK LIKE THIS)
+                            
                         onPress={() => {
 
                             if(editMode){
@@ -256,6 +254,11 @@ const EmployeeCardDetailed = ({
                                 onChangeText={handleChangeIncome}
                                 style={[{color: textColor}, styles.textInput]} 
                                 readOnly={!editMode}></TextInput>
+                </ThemedView>
+
+                <ThemedView>
+                    <ThemedText>PhotoURL: </ThemedText>
+                    <ThemedText>{inputPhotoUrl}</ThemedText>
                 </ThemedView>
 
             <Pressable onPress={handlePressChanges} style={{marginBottom: 20}}>

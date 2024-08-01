@@ -92,8 +92,7 @@ const EmployeeCard: React.FC<Employee> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} id={thisEmployeeState.id} name={thisEmployeeState.name}
-                         email={thisEmployeeState.email} income={thisEmployeeState.income} photoUrl={thisEmployeeState.photoUrl}/>
+                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} />
                     </ThemedView>
                 </ThemedView>
             </Modal>

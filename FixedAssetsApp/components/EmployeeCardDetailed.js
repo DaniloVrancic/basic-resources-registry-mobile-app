@@ -7,19 +7,13 @@ import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
-import { Image } from "react-native";
-import {Employee} from "@/app/data_interfaces/employee"
 
 
 
 let db;
 const EmployeeCardDetailed = (
-    setEmployeeState, 
-    id, //I CAN FORWARD EMPLOYEE STATE HERE AND NOT INDIVIDUAL PARAMETERS, FIX THIS!
-    name,
-    email,
-    income,
-    photoUrl
+    {setEmployeeState, 
+    employeeState }
 ) => {
     
     const textColor = useThemeColor({}, 'text');
@@ -27,10 +21,10 @@ const EmployeeCardDetailed = (
 
     const [editMode, setEditMode] = useState(false);
 
-    const [inputName, setInputName] = useState(name);
-    const [inputEmail, setInputEmail] = useState(email);
-    const [inputIncome, setInputIncome] = useState(income);
-    const [inputPhotoUrl, setInputPhotoUrl] = useState(photoUrl);
+    const [inputName, setInputName] = useState(employeeState.name);
+    const [inputEmail, setInputEmail] = useState(employeeState.email);
+    const [inputIncome, setInputIncome] = useState(employeeState.income);
+    const [inputPhotoUrl, setInputPhotoUrl] = useState(employeeState.photoUrl);
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -59,12 +53,16 @@ const EmployeeCardDetailed = (
 
             setErrorMessage('');
 
-            let currentEmployeeChanges = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
+            //let currentEmployeeChanges = {id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl};
+            employeeState.name = inputName;
+            employeeState.email = inputEmail;
+            employeeState.income = inputIncome;
+            employeeState.photoUrl = inputPhotoUrl;
 
-            let rows = await updateEmployee(db, currentEmployeeChanges);
+            let rows = await updateEmployee(db, employeeState);
             
             if(rows.changes > 0){
-
+                setEmployeeState(employeeState);
             }
             
 
@@ -200,7 +198,7 @@ const EmployeeCardDetailed = (
                         
                         placeholderStyle={{backgroundColor: 'purple'}}
                         source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
-                        title={getInitials(name)
+                        title={getInitials(employeeState.name)
                         
                         }
 
@@ -230,7 +228,7 @@ const EmployeeCardDetailed = (
                 
                 <ThemedView style={styles.employeeIdContainer}>
                     <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
-                    <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{id}</ThemedText>
+                    <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{employeeState.id}</ThemedText>
                 </ThemedView>
             </ThemedView>
 

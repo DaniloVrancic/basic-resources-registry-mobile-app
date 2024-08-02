@@ -192,12 +192,42 @@ const EmployeeCardDetailed = (
                         paddingTop: 10
                         }}
                     >
+                        {
+                            (inputPhotoUrl == null || inputPhotoUrl.length === 0) ? 
+                            
+                            <Avatar
+                                size={90}
+                                rounded
+                                icon={{ name: 'person', type: 'material' }}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                
+                            onPress={() => {
+
+                                if(editMode){
+                                    onPressAvatar();
+                                }
+                                
+                                }}
+                            >
+                                <Avatar.Accessory 
+                                size={26}
+                                style={{borderRadius: 100}}
+                                onPress={() => {
+
+                                    if(editMode){
+                                        onPressAvatar();
+                                    }
+                                }} 
+                                color={(editMode) ? 'lime' : 'grey'} />
+                            </Avatar>
+                            :
                             <Avatar
                                 size={90}
                                 rounded
                                 icon={{ name: 'adb', type: 'material' }}
                                 placeholderStyle={{backgroundColor: 'purple'}}
-                                source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
+                                source={{ uri: inputPhotoUrl }}
                                 title={getInitials(employeeState.name)
                             }
                             onPress={() => {
@@ -219,6 +249,8 @@ const EmployeeCardDetailed = (
                                 }} 
                                 color={(editMode) ? 'lime' : 'grey'} />
                             </Avatar>
+                        }
+                            
                     </ThemedView>
                     
                 </ThemedView>

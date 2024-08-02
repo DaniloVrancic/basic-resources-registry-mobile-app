@@ -50,16 +50,25 @@ const EmployeeCard: React.FC<Employee> = ({
                         marginBottom: 10,
                         backgroundColor: 'rgba(0,0,0,0.0)',
                         paddingTop: 10
-                        }}
-                    >
+                        }}>
+                            {(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? 
                                 <Avatar
-                                    size={80}
-                                    rounded
-                                    icon={{ name: 'adb', type: 'material' }}
-                                    placeholderStyle={{backgroundColor: 'purple'}}
-                                    source={(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: thisEmployeeState.photoUrl }}
-                                    title={getInitials(thisEmployeeState.name)
-                                    }></Avatar>
+                                size={100}
+                                rounded
+                                icon={{ name: 'person', type: 'material' }}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}/>
+                            :
+                                <Avatar
+                                size={100}
+                                rounded
+                                icon={{ name: 'adb', type: 'material' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                source={{ uri: thisEmployeeState.photoUrl }}
+                                title={getInitials(thisEmployeeState.name)
+                                }/>
+                            } 
+                                
                             </ThemedView>
                     </ThemedView>
                     <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>

@@ -63,7 +63,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                                 containerStyle={{ borderRadius: 20 }}
                                 icon={{ name: 'token', type: 'material' }}
                                 placeholderStyle={{ backgroundColor: 'purple', borderRadius: 20 }}
-                                source={(fixedAssetDetails.photoUrl == null || fixedAssetDetails.photoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: fixedAssetDetails.photoUrl }}
+                                source={{ uri: fixedAssetDetails.photoUrl }}
                                 
                             />
                         }

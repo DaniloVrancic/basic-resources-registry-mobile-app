@@ -89,12 +89,39 @@ const FixedAssetCardDetailedCard = (
             <ThemedView style={styles.cardContainer}>
                 <ThemedView lightColor="#17153B" style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
-                    <Avatar
+                    {
+                            (fixedAssetState.photoUrl == null || fixedAssetState.photoUrl.length === 0) ?
+                            <Avatar
+                                size={120}
+                                icon={{ name: 'token', type: 'material' }}
+                                placeholderStyle={{backgroundColor: 'purple', borderRadius: 20}}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 20, minWidth: '100%', height: '100%', justifyContent: 'center' }}
+                                    onPress={() => {
+                                        if(editMode){
+                                            onPressAvatar();
+                                        }   
+                                        }}
+                            >
+                                <Avatar.Accessory 
+                                size={26}
+                                style={{borderRadius: 100}}
+                                    onPress={() => {
+
+                                        if(editMode){
+                                            onPressAvatar();
+                                        }
+                                    }} 
+                                color={(editMode) ? 'lime' : 'grey'} />
+                            </Avatar>
+
+                            :
+
+                            <Avatar
                                 size={120}
                                 icon={{ name: 'token', type: 'material' }}
                                 placeholderStyle={{backgroundColor: 'purple', borderRadius: 20}}
                                 containerStyle={{borderRadius: 20}}
-                                source={(fixedAssetState.photoUrl == null || fixedAssetState.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: fixedAssetState.photoUrl }}
+                                source={{ uri: fixedAssetState.photoUrl }}
                             onPress={() => {
                                 if(editMode){
                                     onPressAvatar();
@@ -112,6 +139,8 @@ const FixedAssetCardDetailedCard = (
                                 }} 
                                 color={(editMode) ? 'lime' : 'grey'} />
                             </Avatar>
+
+                    }
                     </ThemedView>
                     <ThemedView style={styles.headerTextContainer}>
 

@@ -2,11 +2,13 @@ import { FixedAsset } from "@/app/data_interfaces/fixed-asset"
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, TextInput } from "react-native";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
+import { updateFixedAsset } from "@/db/db";
+import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 
 let db;
 const FixedAssetCardDetailedCard = (
@@ -16,8 +18,14 @@ const FixedAssetCardDetailedCard = (
 ) => {
 
     const textColor = useThemeColor({}, 'text');
+    const oppositeTextColor = useOppositeThemeColor({}, 'text');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
+
+    const [inputBarcode, setInputBarcode] = useState(fixedAssetState.barcode);
+    const [inputName, setInputName] = useState(fixedAssetState.name);
+    const [inputDescription, setInputDescription] = useState(fixedAssetState.description);
+    const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate);
 
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
@@ -87,7 +95,16 @@ const FixedAssetCardDetailedCard = (
         setInputPhotoUrl(resultUri);
     }
 
-    const handleSaveButtonPress = async () => {} //TODO: Implement the update method for the asset
+    const handleSaveButtonPress = async () => {
+
+
+        let tempAssetState = {...fixedAssetState};
+        let rows = await updateFixedAsset(db, fixedAssetState);
+    }
+
+    const handleChangeBarcode = (myBarcode) => {
+        
+    }
 
 
     return (
@@ -148,11 +165,16 @@ const FixedAssetCardDetailedCard = (
                     }
                     </ThemedView>
                     <ThemedView style={styles.headerTextContainer}>
-
                     
                         <ThemedView style={{flexDirection: 'column', alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.0)'}}>
                             <ThemedText lightColor="ghostwhite">Product_ID: {fixedAssetState.id}</ThemedText>
-                            <ThemedText lightColor="ghostwhite">Name: {fixedAssetState.name}</ThemedText>
+                                <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)'}, styles.cardContentElement]}>
+                                    <ThemedText lightColor="ghostwhite" style={{textAlign: 'center'}}>Name: </ThemedText>
+                                    <TextInput  value={inputName} 
+                                                onChangeText={setInputName}
+                                                style={[{color: oppositeTextColor}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: textColor}]} 
+                                                readOnly={!editMode}/>
+                                </ThemedView>
                             <ThemedText lightColor="ghostwhite">Price: {fixedAssetState.price}</ThemedText>
                         </ThemedView>
                     </ThemedView>
@@ -163,15 +185,32 @@ const FixedAssetCardDetailedCard = (
 
                 </ThemedView>
 
-                        <ThemedView style={styles.descriptionContainer}>
-                            <ThemedText style={styles.descriptionTitle}>Description:</ThemedText> 
-                            <ThemedText style={styles.descriptionContent}>{fixedAssetState.description}</ThemedText>   
+                        <ThemedView darkColor="white" style={styles.descriptionContainer}>
+                            <ThemedText lightColor="white" darkColor="black" style={styles.descriptionTitle}>Description:</ThemedText> 
+                            <TextInput  value={inputDescription} 
+                                            onChangeText={setInputDescription}
+                                            multiline={true}
+                                            
+                                            style={[{color: oppositeTextColor}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            readOnly={!editMode}/>
                         </ThemedView>
 
 
                         <ThemedView style={styles.itemsInColumn}>
-                            <ThemedText>Barcode: {fixedAssetState.barcode}</ThemedText>
-                            <ThemedText>Creation Date: {fixedAssetState.creationDate.toString()}</ThemedText>
+                        <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20}]}>
+                                <ThemedText style={{textAlign: 'center'}}>Barcode: </ThemedText>
+                                <TextInput  value={inputBarcode} 
+                                            onChangeText={setInputBarcode}
+                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            readOnly={!editMode}/>
+                        </ThemedView>
+                        <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20}]}>
+                                <ThemedText style={{textAlign: 'center'}}>Creation Date: </ThemedText>
+                                <TextInput  value={inputCreationDate.toString()} 
+                                            onChangeText={setInputCreationDate}
+                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            readOnly={!editMode}/>
+                        </ThemedView>
                             <ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>
                             <ThemedText>Assigned Location (ID): {fixedAssetState.location_id}</ThemedText>
                         </ThemedView>
@@ -216,6 +255,8 @@ const FixedAssetCardDetailedCard = (
                     
             
           )
+
+
 }
 
 export default FixedAssetCardDetailedCard;
@@ -273,7 +314,10 @@ const styles = StyleSheet.create({
         fontWeight: 700
     },
     descriptionContent: {
-        marginHorizontal: 10
+        marginHorizontal: 10,
+        padding: 5,
+        flexWrap: 'wrap',
+        maxWidth:'100%'
     },
     editModeContainer: {
      backgroundColor: 'rgba(255,255,255,1.0)',
@@ -286,6 +330,17 @@ const styles = StyleSheet.create({
     itemsInColumn: {
         alignItems: 'center',
         marginVertical: 5
+    },
+    cardContentElement: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    barcodeInputElement: {
+        minWidth: '100%',
+        justifyContent:'center'
+    },
+    textInput: {
+     paddingHorizontal: 5,   
     }
     
 

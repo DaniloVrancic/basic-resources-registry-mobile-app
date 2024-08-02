@@ -43,15 +43,24 @@ const EmployeeCard: React.FC<Employee> = ({
           
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
-                    <Avatar
-                        size={80}
-                        rounded
-                        containerStyle={{ backgroundColor: 'purple', }}
-                        title={getInitials(name)}
-                        
-                        >
-                          
-                        </Avatar>
+                    <ThemedView
+                        style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        marginBottom: 10,
+                        backgroundColor: 'rgba(0,0,0,0.0)',
+                        paddingTop: 10
+                        }}
+                    >
+                                <Avatar
+                                    size={80}
+                                    rounded
+                                    icon={{ name: 'adb', type: 'material' }}
+                                    placeholderStyle={{backgroundColor: 'purple'}}
+                                    source={(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: thisEmployeeState.photoUrl }}
+                                    title={getInitials(thisEmployeeState.name)
+                                    }></Avatar>
+                            </ThemedView>
                     </ThemedView>
                     <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
             </ThemedView>

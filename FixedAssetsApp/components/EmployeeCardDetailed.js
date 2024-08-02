@@ -61,9 +61,9 @@ const EmployeeCardDetailed = (
 
             let rows = await updateEmployee(db, employeeState);
             
-            if(rows.changes > 0){
-                setEmployeeState(employeeState);
-            }
+            
+            setEmployeeState({id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl});
+            
             
 
             setEditMode(false);
@@ -182,47 +182,44 @@ const EmployeeCardDetailed = (
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
                     
-                <ThemedView
-                    style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    marginBottom: 10,
-                    backgroundColor: 'rgba(0,0,0,0.0)',
-                    paddingTop: 10
-                    }}
-                >
-                        <Avatar
-                        size={90}
-                        rounded
-                        icon={{ name: 'adb', type: 'material' }}
-                        
-                        placeholderStyle={{backgroundColor: 'purple'}}
-                        source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
-                        title={getInitials(employeeState.name)
-                        
-                        }
-
-                            
-                        onPress={() => {
-
-                            if(editMode){
-                                onPressAvatar();
+                    <ThemedView
+                        style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        marginBottom: 10,
+                        backgroundColor: 'rgba(0,0,0,0.0)',
+                        paddingTop: 10
+                        }}
+                    >
+                            <Avatar
+                            size={90}
+                            rounded
+                            icon={{ name: 'adb', type: 'material' }}
+                            containerStyle
+                            placeholderStyle={{backgroundColor: 'purple'}}
+                            source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
+                            title={getInitials(employeeState.name)
                             }
-                            
-                            }}
-                        >
-                            <Avatar.Accessory 
-                            size={26}
-                            style={{borderRadius: 100}}
                             onPress={() => {
 
                                 if(editMode){
                                     onPressAvatar();
                                 }
-                            }} 
-                            color={(editMode) ? 'lime' : 'grey'} />
-                        </Avatar>
-        </ThemedView>
+                                
+                                }}
+                            >
+                                <Avatar.Accessory 
+                                size={26}
+                                style={{borderRadius: 100}}
+                                onPress={() => {
+
+                                    if(editMode){
+                                        onPressAvatar();
+                                    }
+                                }} 
+                                color={(editMode) ? 'lime' : 'grey'} />
+                            </Avatar>
+                    </ThemedView>
                     
                 </ThemedView>
                 
@@ -260,11 +257,6 @@ const EmployeeCardDetailed = (
                                 onChangeText={handleChangeIncome}
                                 style={[{color: textColor}, styles.textInput]} 
                                 readOnly={!editMode}></TextInput>
-                </ThemedView>
-
-                <ThemedView>
-                    <ThemedText>PhotoURL: </ThemedText>
-                    <ThemedText>{inputPhotoUrl}</ThemedText>
                 </ThemedView>
 
             <Pressable onPress={handlePressChanges} style={{marginBottom: 20}}>

@@ -6,6 +6,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import FixedAssetCardDetailedCard from "./FixedAssetDetailedCard";
+import { Avatar } from "@rneui/themed";
 
 const FixedAssetCard: React.FC<FixedAsset> = ({
     id,
@@ -46,22 +47,35 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                 </ThemedView>
 
                 <ThemedView style={styles.cardImageTextSeperator}>
-                    <ThemedView style={{flex: 2}}>
-                            <Image style={styles.imageTag}
-                                resizeMode="cover"
-                                source={{uri: 'https://picsum.photos/200'}}
-                                onError={() => {console.error('Failed to load image');}} // Optional error handler
-                                >
-                            </Image>
-                    </ThemedView>
-                    <ThemedView style={{flex: 3}}>
+                <ThemedView style={{ flex: 2 }}>
+                        {
+                            (fixedAssetDetails.photoUrl == null || fixedAssetDetails.photoUrl.length === 0) ?
+                            <Avatar
+                                size={120}
+                                containerStyle={{ borderRadius: 20 }}
+                                icon={{ name: 'token', type: 'material' }}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 20, minWidth: '100%', height: '100%', justifyContent: 'center' }}
+                                
+                            />
+                            :
+                            <Avatar
+                                size={120}
+                                containerStyle={{ borderRadius: 20 }}
+                                icon={{ name: 'token', type: 'material' }}
+                                placeholderStyle={{ backgroundColor: 'purple', borderRadius: 20 }}
+                                source={(fixedAssetDetails.photoUrl == null || fixedAssetDetails.photoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: fixedAssetDetails.photoUrl }}
+                                
+                            />
+                        }
+                </ThemedView>
+                <ThemedView style={{flex: 3}}>
                         <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
                         <ThemedView style={styles.creationDateContainer}>
                             <ThemedText>Creation Date: </ThemedText>
                             <ThemedText style={{fontWeight: 600}}>{creationDate.toString()}</ThemedText>
                         </ThemedView>
                             
-                    </ThemedView>
+                </ThemedView>
                 </ThemedView>
             </Pressable>
 
@@ -76,7 +90,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <FixedAssetCardDetailedCard {...fixedAssetDetails}/>
+                         <FixedAssetCardDetailedCard setFixedAssetState={setFixedAssetDetails} fixedAssetState={fixedAssetDetails}/>
                     </ThemedView>
                 </ThemedView>
             </Modal>

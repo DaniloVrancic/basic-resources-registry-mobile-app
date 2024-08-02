@@ -5,8 +5,9 @@ import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-nati
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
-import { Avatar, BottomSheet, Button } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
+import { MaterialIcons } from "@expo/vector-icons";
 
 
 
@@ -192,13 +193,12 @@ const EmployeeCardDetailed = (
                         }}
                     >
                             <Avatar
-                            size={90}
-                            rounded
-                            icon={{ name: 'adb', type: 'material' }}
-                            containerStyle
-                            placeholderStyle={{backgroundColor: 'purple'}}
-                            source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
-                            title={getInitials(employeeState.name)
+                                size={90}
+                                rounded
+                                icon={{ name: 'adb', type: 'material' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                source={(inputPhotoUrl == null || inputPhotoUrl.length === 0) ? {uri: 'https://www.gravatar.com/avatar/?d=mp'} : { uri: inputPhotoUrl }}
+                                title={getInitials(employeeState.name)
                             }
                             onPress={() => {
 

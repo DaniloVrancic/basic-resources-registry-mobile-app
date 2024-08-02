@@ -486,6 +486,30 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  const updateFixedAssetQuery = "UPDATE fixed_asset SET name=$name, description=$description, barcode=$barcode, price=$price, creationDate=$creationDate, location_id=$location_id, employee_id=$employee_id, photoUrl=$photoUrl WHERE (id=$id);";
+  export const updateFixedAsset = async (db, asset) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateFixedAssetQuery, { $name: asset.name, 
+                                                                     $description: asset.description, 
+                                                                     $barcode: asset.barcode,
+                                                                     $price: asset.price,
+                                                                     $creationDate: asset.creationDate,
+                                                                     $location_id: asset.location_id,
+                                                                     $employee_id: asset.employee_id,
+                                                                     $photoUrl: asset.photoUrl, 
+                                                                     $id: asset.id});
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+}
+
 
   // GETTING INVENTORY ITEMS ////////////////////////////////////////////////////////////////////
 

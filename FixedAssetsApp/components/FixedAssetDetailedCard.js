@@ -6,7 +6,9 @@ import { Pressable, StyleSheet } from "react-native";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useState } from "react";
+import { useSQLiteContext } from "expo-sqlite";
 
+let db;
 const FixedAssetCardDetailedCard = (
     {fixedAssetState,
     setFixedAssetState
@@ -15,10 +17,11 @@ const FixedAssetCardDetailedCard = (
 
     const textColor = useThemeColor({}, 'text');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
-
     const [editMode, setEditMode] = useState(false);
 
     const defaultImageUrl = "@/assets/images/defaultImage.png";
+
+    db = useSQLiteContext();
 
     const onPressAvatar = () => {
         
@@ -83,6 +86,8 @@ const FixedAssetCardDetailedCard = (
         console.log(resultUri);
         setInputPhotoUrl(resultUri);
     }
+
+    const handleSaveButtonPress = async () => {} //TODO: Implement the update method for the asset
 
 
     return (
@@ -173,8 +178,10 @@ const FixedAssetCardDetailedCard = (
                         
                         
                         <ThemedView style={styles.itemsInColumn}>
-                            <ThemedText>Photo (URL):</ThemedText>
-                            <ThemedText>{fixedAssetState.photoUrl}</ThemedText>
+                            {editMode && <Pressable style={{maxHeight: 60, height: 50, maxWidth:60, width: 50, backgroundColor:'purple', borderRadius: 100, padding: 5, justifyContent:'center'}}
+                                            onPress={handleSaveButtonPress}>
+                                <Icon name="save" type="material" iconStyle={(editMode) ? {color:'lime'} :{color:'white'}}/>
+                            </Pressable>}
                         </ThemedView>
 
                         <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>

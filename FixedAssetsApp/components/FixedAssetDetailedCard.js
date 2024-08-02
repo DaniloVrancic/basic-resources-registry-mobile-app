@@ -3,7 +3,7 @@ import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
 import { Pressable, StyleSheet, TextInput } from "react-native";
-import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, ButtonGroup, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
@@ -25,7 +25,9 @@ const FixedAssetCardDetailedCard = (
     const [inputBarcode, setInputBarcode] = useState(fixedAssetState.barcode);
     const [inputName, setInputName] = useState(fixedAssetState.name);
     const [inputDescription, setInputDescription] = useState(fixedAssetState.description);
-    const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate);
+    const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate.toString());
+
+    const [errorMessage, setErrorMessage] = useState('');
 
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
@@ -97,9 +99,29 @@ const FixedAssetCardDetailedCard = (
 
     const handleSaveButtonPress = async () => {
 
+        if(editMode){
+            if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
+                setErrorMessage('Please enter a valid name.');
+                return;
+            }
 
-        let tempAssetState = {...fixedAssetState};
-        let rows = await updateFixedAsset(db, fixedAssetState);
+            const barcodeRegex = /^[A-Z0-9\-_]+$/;
+            if (!barcodeRegex.test(inputBarcode)) {
+                setErrorMessage('Please enter a valid barcode.');
+                return;
+            }
+
+            const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+            if (!dateRegex.test(inputCreationDate)) {
+                setErrorMessage('Please enter a valid creation date.');
+                return;
+            }
+
+
+            
+            let tempAssetState = {...fixedAssetState};
+            let rows = await updateFixedAsset(db, fixedAssetState);
+        }
     }
 
     const handleChangeBarcode = (myBarcode) => {
@@ -194,15 +216,23 @@ const FixedAssetCardDetailedCard = (
                                             style={[{color: oppositeTextColor}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
-
+                        <ThemedView style={{width:'100%', justifyContent: 'center'}}>
+                            {
+                                (errorMessage.length > 0) && <ThemedText>{errorMessage}</ThemedText>
+                            }
+                        </ThemedView>
 
                         <ThemedView style={styles.itemsInColumn}>
-                        <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20}]}>
+                        <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20, alignItems:'center'}]}>
                                 <ThemedText style={{textAlign: 'center'}}>Barcode: </ThemedText>
                                 <TextInput  value={inputBarcode} 
                                             onChangeText={setInputBarcode}
-                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
+                                <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'}>
+                                    <Icon name="barcode-sharp" type="ionicon" color="white" style={{paddingHorizontal: 5}} />
+                                    Scan Code 
+                                </Button>
                         </ThemedView>
                         <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20}]}>
                                 <ThemedText style={{textAlign: 'center'}}>Creation Date: </ThemedText>

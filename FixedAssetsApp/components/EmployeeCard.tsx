@@ -20,8 +20,7 @@ const EmployeeCard: React.FC<Employee> = ({
     const textColor = useThemeColor({}, 'text');
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
-
-    const [userPhoto, setUserPhoto] = useState(photoUrl);
+    const [thisEmployeeState, setEmployeeState] = useState(thisEmployee);
 
     const [showModal, setShowModal] = useState(false); //show modal toggle
     const openModal = () => setShowModal(true); //for opening helping window
@@ -44,15 +43,33 @@ const EmployeeCard: React.FC<Employee> = ({
           
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
-                    <Avatar
-                        size={80}
-                        rounded
-                        containerStyle={{ backgroundColor: 'purple', }}
-                        title={getInitials(name)}
-                        
-                        >
-                          
-                        </Avatar>
+                    <ThemedView
+                        style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        marginBottom: 10,
+                        backgroundColor: 'rgba(0,0,0,0.0)',
+                        paddingTop: 10
+                        }}>
+                            {(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? 
+                                <Avatar
+                                size={100}
+                                rounded
+                                icon={{ name: 'person', type: 'material' }}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}/>
+                            :
+                                <Avatar
+                                size={100}
+                                rounded
+                                icon={{ name: 'adb', type: 'material' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                source={{ uri: thisEmployeeState.photoUrl }}
+                                title={getInitials(thisEmployeeState.name)
+                                }/>
+                            } 
+                                
+                            </ThemedView>
                     </ThemedView>
                     <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
             </ThemedView>
@@ -93,7 +110,7 @@ const EmployeeCard: React.FC<Employee> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <EmployeeCardDetailed {...thisEmployee}/>
+                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} />
                     </ThemedView>
                 </ThemedView>
             </Modal>

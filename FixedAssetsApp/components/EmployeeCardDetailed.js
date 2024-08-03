@@ -5,30 +5,27 @@ import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-nati
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
-import { Avatar, BottomSheet, Button } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
-import { Image } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 
 
 let db;
-const EmployeeCardDetailed = ({
-    id,
-    name,
-    email,
-    income,
-    photoUrl
-}) => {
+const EmployeeCardDetailed = (
+    {setEmployeeState, 
+    employeeState }
+) => {
     
     const textColor = useThemeColor({}, 'text');
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [editMode, setEditMode] = useState(false);
 
-    const [inputName, setInputName] = useState(name);
-    const [inputEmail, setInputEmail] = useState(email);
-    const [inputIncome, setInputIncome] = useState(income);
-    const [inputPhotoUrl, setInputPhotoUrl] = useState(photoUrl);
+    const [inputName, setInputName] = useState(employeeState.name);
+    const [inputEmail, setInputEmail] = useState(employeeState.email);
+    const [inputIncome, setInputIncome] = useState(employeeState.income);
+    const [inputPhotoUrl, setInputPhotoUrl] = useState(employeeState.photoUrl);
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -53,15 +50,21 @@ const EmployeeCardDetailed = ({
                 return;
             }
 
+           
+
             setErrorMessage('');
 
-            let currentEmployeeChanges = {id: id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl}
+            //let currentEmployeeChanges = {id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl};
+            employeeState.name = inputName;
+            employeeState.email = inputEmail;
+            employeeState.income = inputIncome;
+            employeeState.photoUrl = inputPhotoUrl;
 
-            let rows = await updateEmployee(db, currentEmployeeChanges);
+            let rows = await updateEmployee(db, employeeState);
             
-            if(rows.changes > 0){
-                
-            }
+            
+            setEmployeeState({id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl});
+            
             
 
             setEditMode(false);
@@ -180,51 +183,81 @@ const EmployeeCardDetailed = ({
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
                     
-                <ThemedView
-                    style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    marginBottom: 10,
-                    backgroundColor: 'rgba(0,0,0,0.0)',
-                    paddingTop: 10
-                    }}
-                >
-                        <Avatar
-                        size={90}
-                        rounded
-                        icon={{ name: 'adb', type: 'material' }}
-                        containerStyle={{ backgroundColor: 'purple', }}
-                        title={getInitials(name)}
-                        ImageComponent={() => {
-                            return (<Image style={imageStyles.imageStyle} source={{uri: (inputPhotoUrl) ? inputPhotoUrl : (<></>)}} />)}} //FIX THIS LINE!!!
-
-                            //FIX THIS RETURN, NOT WORKING CORRECTLY IF THERE IS NO URI PRESENT, (ISN'T SUPPOSED TO WORK LIKE THIS)
-                        onPress={() => {
-
-                            if(editMode){
-                                onPressAvatar();
-                            }
+                    <ThemedView
+                        style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        marginBottom: 10,
+                        backgroundColor: 'rgba(0,0,0,0.0)',
+                        paddingTop: 10
+                        }}
+                    >
+                        {
+                            (inputPhotoUrl == null || inputPhotoUrl.length === 0) ? 
                             
-                            }}
-                        >
-                            <Avatar.Accessory 
-                            size={26}
-                            style={{borderRadius: 100}}
+                            <Avatar
+                                size={90}
+                                rounded
+                                icon={{ name: 'person', type: 'material' }}
+                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                
                             onPress={() => {
 
                                 if(editMode){
                                     onPressAvatar();
                                 }
-                            }} 
-                            color={(editMode) ? 'lime' : 'grey'} />
-                        </Avatar>
-        </ThemedView>
+                                
+                                }}
+                            >
+                                <Avatar.Accessory 
+                                size={26}
+                                style={{borderRadius: 100}}
+                                onPress={() => {
+
+                                    if(editMode){
+                                        onPressAvatar();
+                                    }
+                                }} 
+                                color={(editMode) ? 'lime' : 'grey'} />
+                            </Avatar>
+                            :
+                            <Avatar
+                                size={90}
+                                rounded
+                                icon={{ name: 'adb', type: 'material' }}
+                                placeholderStyle={{backgroundColor: 'purple'}}
+                                source={{ uri: inputPhotoUrl }}
+                                title={getInitials(employeeState.name)
+                            }
+                            onPress={() => {
+
+                                if(editMode){
+                                    onPressAvatar();
+                                }
+                                
+                                }}
+                            >
+                                <Avatar.Accessory 
+                                size={26}
+                                style={{borderRadius: 100}}
+                                onPress={() => {
+
+                                    if(editMode){
+                                        onPressAvatar();
+                                    }
+                                }} 
+                                color={(editMode) ? 'lime' : 'grey'} />
+                            </Avatar>
+                        }
+                            
+                    </ThemedView>
                     
                 </ThemedView>
                 
                 <ThemedView style={styles.employeeIdContainer}>
                     <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
-                    <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{id}</ThemedText>
+                    <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{employeeState.id}</ThemedText>
                 </ThemedView>
             </ThemedView>
 

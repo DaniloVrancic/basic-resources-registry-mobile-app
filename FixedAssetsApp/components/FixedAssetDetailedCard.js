@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 import { updateFixedAsset, getAllEmployees, getAllLocations } from "@/db/db";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { Dropdown } from "react-native-element-dropdown";
 
 let db;
 const FixedAssetCardDetailedCard = (
@@ -26,7 +28,9 @@ const FixedAssetCardDetailedCard = (
     const [inputName, setInputName] = useState(fixedAssetState.name);
     const [inputDescription, setInputDescription] = useState(fixedAssetState.description);
     const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate.toString());
-
+    const [inputAssignedEmployeeId, setInputAssignedEmployeeId] = useState(fixedAssetState.employee_id);
+    const [inputAssignedLocationId, setInputAssignedLocationId] = useState(fixedAssetState.location_id);
+    
     const [errorMessage, setErrorMessage] = useState('');
 
     const [possibleEmployees, setPossibleEmployees] = useState([]);
@@ -177,6 +181,24 @@ const FixedAssetCardDetailedCard = (
         
     }
 
+    const [value, setValue] = useState(null);
+
+    const renderItem = item => {
+        return (
+          <ThemedView style={styles.item}>
+            <ThemedText style={styles.textItem}>{item.label}</ThemedText>
+            {item.value === value && (
+              <AntDesign
+                style={styles.icon}
+                color="black"
+                name="Safety"
+                size={20}
+              />
+            )}
+          </ThemedView>
+        );
+      };
+
 
     return (
             <ThemedView style={styles.cardContainer}>
@@ -290,7 +312,35 @@ const FixedAssetCardDetailedCard = (
                                             style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
-                            <ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>
+
+                           
+                            {
+                                (editMode) ? 
+                                (<Dropdown
+                                    style={dropdownStyles.dropdown}
+                                    placeholderStyle={dropdownStyles.placeholderStyle}
+                                    selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                    inputSearchStyle={dropdownStyles.inputSearchStyle}
+                                    iconStyle={dropdownStyles.iconStyle}
+                                    data={possibleEmployees}
+                                    search
+                                    maxHeight={180}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder="Select item"
+                                    searchPlaceholder="Search..."
+                                    value={value}
+                                    onChange={item => {
+                                      setValue(item.value);
+                                      setInputAssignedEmployeeId(item.value);
+                                    }}
+                                    renderLeftIcon={() => (
+                                      <AntDesign style={dropdownStyles.icon} color="black" name="Safety" size={30} />
+                                    )}
+                                  />) 
+                                : 
+                                (<ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>)
+                            }
                             <ThemedText>Assigned Location (ID): {fixedAssetState.location_id}</ThemedText>
                         </ThemedView>
                         
@@ -310,7 +360,7 @@ const FixedAssetCardDetailedCard = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
                         onPress={openCamera}
-                    ></Button>
+                    />
 
                     <Button
                         title="Open Photo from Gallery"
@@ -318,7 +368,7 @@ const FixedAssetCardDetailedCard = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
                         onPress={openGallery}
-                    ></Button>
+                    />
 
                     <Button
                         title="Cancel"
@@ -326,7 +376,7 @@ const FixedAssetCardDetailedCard = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
                         onPress={() => {setPhotoBottomSheetVisible(false);}}
-                    ></Button>
+                        />
                 
             </BottomSheet>  
                     </ThemedView>
@@ -424,3 +474,32 @@ const styles = StyleSheet.create({
     
 
 });
+
+const dropdownStyles = StyleSheet.create({
+    dropdown: {
+      margin: 10,
+      height: 40,
+      borderBottomColor: 'gray',
+      borderBottomWidth: 0.5,
+      paddingHorizontal: '20%'
+    },
+    icon: {
+      marginRight: 5,
+    },
+    placeholderStyle: {
+      color: 'lime',
+      fontSize: 8,
+    },
+    selectedTextStyle: {
+      color: 'lime',
+      fontSize: 8,
+    },
+    iconStyle: {
+      width: 30,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 50,
+      fontSize: 16,
+    },
+  });

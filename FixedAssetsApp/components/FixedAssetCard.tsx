@@ -47,7 +47,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                 </ThemedView>
 
                 <ThemedView style={styles.cardImageTextSeperator}>
-                <ThemedView style={{ flex: 2 }}>
+                <ThemedView style={{ flex: 2, paddingRight: '3%' }}>
                         {
                             (fixedAssetDetails.photoUrl == null || fixedAssetDetails.photoUrl.length === 0) ?
                             <Avatar
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         fontWeight: 700
     },
     cardImageTextSeperator: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 7,
         flexDirection: 'row'
     },
     creationDateContainer:{

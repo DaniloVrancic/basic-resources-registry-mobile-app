@@ -40,7 +40,6 @@ const EmployeeCard: React.FC<Employee> = ({
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
-          
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
                     <ThemedView
@@ -49,7 +48,7 @@ const EmployeeCard: React.FC<Employee> = ({
                         justifyContent: 'space-around',
                         marginBottom: 10,
                         backgroundColor: 'rgba(0,0,0,0.0)',
-                        paddingTop: 10
+                        paddingTop: 10,
                         }}>
                             {(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? 
                                 <Avatar

@@ -600,7 +600,7 @@ import * as SQLite from 'expo-sqlite';
   };
 
 
-  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id";
+  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id;";
   const getInventoryItemsFromViewForNotChangingEmployees = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id);";
   const getInventoryItemsFromViewForNotChangingLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentLocationId = newLocationId);";
   const getInventoryItemsFromViewForNotChangingEmployeesAndLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id) AND (currentLocationId = newLocationId);";

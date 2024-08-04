@@ -150,13 +150,8 @@ const EmployeeCardDetailed = (
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
                           console.log('response', JSON.stringify(res));
-                           
-                        
-                         
-                          
                         }
                       }).catch((warn) => {console.warn(warn)});
-                      
                 }
                 else{
                     console.log("Permission not given.");

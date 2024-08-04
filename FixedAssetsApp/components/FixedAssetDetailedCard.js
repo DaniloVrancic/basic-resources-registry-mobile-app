@@ -1,8 +1,8 @@
 import { FixedAsset } from "@/app/data_interfaces/fixed-asset"
+import { Pressable, StyleSheet, TextInput, PermissionsAndroid } from "react-native";
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
-import { Pressable, StyleSheet, TextInput } from "react-native";
 import { Avatar, BottomSheet, Button, ButtonGroup, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ const FixedAssetCardDetailedCard = (
     const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate.toString());
     const [inputAssignedEmployeeId, setInputAssignedEmployeeId] = useState(fixedAssetState.employee_id);
     const [inputAssignedLocationId, setInputAssignedLocationId] = useState(fixedAssetState.location_id);
+    const [inputPhotoUrl, setInputPhotoUrl] = useState(fixedAssetState.photoUrl);
     
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -91,6 +92,13 @@ const FixedAssetCardDetailedCard = (
         setPhotoBottomSheetVisible(true);
     }
 
+    let options = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+        height: 1024,
+        width: 768
+    }
+
     const openCamera = async () => {
         try{
             const granted = await PermissionsAndroid.request(
@@ -123,10 +131,6 @@ const FixedAssetCardDetailedCard = (
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
                           console.log('response', JSON.stringify(res));
-                           
-                        
-                         
-                          
                         }
                       }).catch((warn) => {console.warn(warn)});
                       
@@ -182,6 +186,8 @@ const FixedAssetCardDetailedCard = (
     }
 
     const [value, setValue] = useState(null);
+    const [isFocusEmployee, setIsFocusEmployee] = useState(false);
+    const [isFocusLocation, setIsFocusLocation] = useState(false);
 
     const renderItem = item => {
         return (
@@ -197,6 +203,28 @@ const FixedAssetCardDetailedCard = (
             )}
           </ThemedView>
         );
+      };
+
+      const renderLabelEmployee = () => {
+        if (value || isFocusEmployee) {
+          return (
+            <ThemedText style={[dropdownStyles.label, isFocusEmployee && { color: 'blue' }]}>
+              Select Employee:
+            </ThemedText>
+          );
+        }
+        return null;
+      };
+
+      const renderLabelLocation = () => {
+        if (value || isFocusLocation) {
+          return (
+            <ThemedText style={[dropdownStyles.label, isFocusLocation && { color: 'blue' }]}>
+              Select Location:
+            </ThemedText>
+          );
+        }
+        return null;
       };
 
 
@@ -260,12 +288,12 @@ const FixedAssetCardDetailedCard = (
                     <ThemedView style={styles.headerTextContainer}>
                     
                         <ThemedView style={{flexDirection: 'column', alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.0)'}}>
-                            <ThemedText lightColor="ghostwhite">Product_ID: {fixedAssetState.id}</ThemedText>
-                                <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)'}, styles.cardContentElement]}>
-                                    <ThemedText lightColor="ghostwhite" style={{textAlign: 'center'}}>Name: </ThemedText>
+                            <ThemedText lightColor="ghostwhite">Product ID: {fixedAssetState.id}</ThemedText>
+                                <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}, styles.cardContentElement]}>
+                                    <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>Name: </ThemedText>
                                     <TextInput  value={inputName} 
                                                 onChangeText={setInputName}
-                                                style={[{color: oppositeTextColor}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: textColor}]} 
+                                                style={[{color: oppositeTextColor, fontSize: 15}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
                                                 readOnly={!editMode}/>
                                 </ThemedView>
                             <ThemedText lightColor="ghostwhite">Price: {fixedAssetState.price}</ThemedText>
@@ -279,12 +307,12 @@ const FixedAssetCardDetailedCard = (
                 </ThemedView>
 
                         <ThemedView darkColor="white" style={styles.descriptionContainer}>
-                            <ThemedText lightColor="white" darkColor="black" style={styles.descriptionTitle}>Description:</ThemedText> 
+                            <ThemedText lightColor="black" darkColor="white" style={styles.descriptionTitle}>Description:</ThemedText> 
                             <TextInput  value={inputDescription} 
                                             onChangeText={setInputDescription}
                                             multiline={true}
                                             
-                                            style={[{color: oppositeTextColor}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor, fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={{width:'100%', justifyContent: 'center'}}>
@@ -316,32 +344,83 @@ const FixedAssetCardDetailedCard = (
                            
                             {
                                 (editMode) ? 
-                                (<Dropdown
-                                    style={dropdownStyles.dropdown}
+                                (<ThemedView style={dropdownStyles.container}>
+                                        {renderLabelEmployee()}
+                                        <Dropdown
+                                        dropdownPosition="top"
+                                        inverted={false}
+                                        style={[dropdownStyles.dropdown, isFocusEmployee && { borderColor: 'blue' }]}
+                                        placeholderStyle={dropdownStyles.placeholderStyle}
+                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
+                                        iconStyle={dropdownStyles.iconStyle}
+                                        data={possibleEmployees}
+                                        search
+                                        maxHeight={'90%'}
+                                        labelField="label"
+                                        valueField="value"
+                                        placeholder={!isFocusEmployee ? 'Select item' : '...'}
+                                        searchPlaceholder="Search..."
+                                        value={inputAssignedEmployeeId}
+                                        onFocus={() => setIsFocusEmployee(true)}
+                                        onBlur={() => setIsFocusEmployee(false)}
+                                        onChange={item => {
+                                            setInputAssignedEmployeeId(item.value);
+                                            setIsFocusEmployee(false);
+                                        }}
+                                        renderLeftIcon={() => (
+                                            <AntDesign
+                                            style={dropdownStyles.icon}
+                                            color={isFocusEmployee ? 'blue' : 'black'}
+                                            name="Safety"
+                                            size={20}
+                                            />
+                                        )}
+                                        />
+                                </ThemedView>) 
+                                : 
+                                (<ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>)
+                            }
+                            {
+                                (editMode) ? 
+                                (<ThemedView style={dropdownStyles.container}>
+                                    {renderLabelLocation()}
+                                    <Dropdown
+                                    dropdownPosition="top"
+                                    inverted={false}
+                                    style={[dropdownStyles.dropdown, isFocusLocation && { borderColor: 'blue' }]}
                                     placeholderStyle={dropdownStyles.placeholderStyle}
                                     selectedTextStyle={dropdownStyles.selectedTextStyle}
                                     inputSearchStyle={dropdownStyles.inputSearchStyle}
                                     iconStyle={dropdownStyles.iconStyle}
-                                    data={possibleEmployees}
+                                    data={possibleLocations}
                                     search
-                                    maxHeight={180}
+                                    maxHeight={'90%'}
                                     labelField="label"
                                     valueField="value"
-                                    placeholder="Select item"
+                                    placeholder={!isFocusLocation ? 'Select item' : '...'}
                                     searchPlaceholder="Search..."
-                                    value={value}
+                                    value={inputAssignedLocationId}
+                                    onFocus={() => setIsFocusLocation(true)}
+                                    onBlur={() => setIsFocusLocation(false)}
                                     onChange={item => {
-                                      setValue(item.value);
-                                      setInputAssignedEmployeeId(item.value);
+                                        setInputAssignedLocationId(item.value);
+                                        setIsFocusLocation(false);
                                     }}
                                     renderLeftIcon={() => (
-                                      <AntDesign style={dropdownStyles.icon} color="black" name="Safety" size={30} />
+                                        <AntDesign
+                                        style={dropdownStyles.icon}
+                                        color={isFocusLocation ? 'blue' : 'black'}
+                                        name="Safety"
+                                        size={20}
+                                        />
                                     )}
-                                  />) 
-                                : 
-                                (<ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>)
+                                    />
+                            </ThemedView>)
+                                :
+                                (<ThemedText>Assigned Location (ID): {fixedAssetState.location_id}</ThemedText>) 
                             }
-                            <ThemedText>Assigned Location (ID): {fixedAssetState.location_id}</ThemedText>
+                            
                         </ThemedView>
                         
                         
@@ -476,30 +555,42 @@ const styles = StyleSheet.create({
 });
 
 const dropdownStyles = StyleSheet.create({
-    dropdown: {
-      margin: 10,
-      height: 40,
-      borderBottomColor: 'gray',
-      borderBottomWidth: 0.5,
-      paddingHorizontal: '20%'
-    },
-    icon: {
-      marginRight: 5,
-    },
-    placeholderStyle: {
-      color: 'lime',
-      fontSize: 8,
-    },
-    selectedTextStyle: {
-      color: 'lime',
-      fontSize: 8,
-    },
-    iconStyle: {
-      width: 30,
-      height: 20,
-    },
-    inputSearchStyle: {
-      height: 50,
-      fontSize: 16,
-    },
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+        width: '90%'
+      },
+      dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
+      label: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        left: 26,
+        top: 52,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+      },
+      placeholderStyle: {
+        fontSize: 16,
+      },
+      selectedTextStyle: {
+        fontSize: 16,
+      },
+      iconStyle: {
+        width: 20,
+        height: 20,
+      },
+      inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+      },
   });

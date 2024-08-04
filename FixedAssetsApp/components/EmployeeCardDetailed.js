@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
@@ -104,9 +104,6 @@ const EmployeeCardDetailed = (
         
         setPhotoBottomSheetVisible(true);
     }
-
-    
-    const [cameraPhoto, setCameraPhoto] = useState('');
 
     let options = {
         saveToPhotos: true,

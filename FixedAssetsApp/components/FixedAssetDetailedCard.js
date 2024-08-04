@@ -43,17 +43,40 @@ const FixedAssetCardDetailedCard = (
     [])
     
 
+      /*
+       * The code below will fetch all the Employee data from the database and correctly filter only the data that we will use.
+       * This data is then bound to the State which will be used to display all the possible Employees to select in a drop down menu.
+       */
     const loadEmployeesFromDatabase = async (db) => {
         try {
-            setPossibleEmployees(await getAllEmployees(db));
+            var fetchedEmployees = (await getAllEmployees(db));
+            var valuesToReturn = [];
+
+            fetchedEmployees.forEach(element => {
+                var mappedElement = { label: element.name, value: element.id};
+                valuesToReturn.push(mappedElement);
+            });
+            setPossibleEmployees(valuesToReturn);
         } catch (error) {
           console.error('Error loading employees:', error);
         }
       };
 
-      const loadLocationsFromDatabase = async (db) => {
+
+      /*
+       * The code below will fetch all the Location data from the database and correctly filter only the data that we will use.
+       * This data is then bound to the State which will be used to display all the possible locations to select in a drop down menu.
+       */
+    const loadLocationsFromDatabase = async (db) => {
         try {
-            setPossibleLocations(await getAllLocations(db));
+            var fetchedLocations = (await getAllLocations(db));
+            var valuesToReturn = [];
+
+            fetchedLocations.forEach(element => {
+                var mappedElement = { label: element.name, value: element.id};
+                valuesToReturn.push(mappedElement);
+            });
+            setPossibleLocations(valuesToReturn);
         } catch (error) {
           console.error('Error loading employees:', error);
         }

@@ -239,7 +239,7 @@ import * as SQLite from 'expo-sqlite';
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllEmployeesQuery, []);
           resolve(rows);
@@ -327,7 +327,7 @@ import * as SQLite from 'expo-sqlite';
   export const getAllLocations = async (db) => {
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllLocationsQuery, []);
           resolve(rows);

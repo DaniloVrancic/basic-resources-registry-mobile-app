@@ -5,9 +5,9 @@ import { ThemedText } from "./ThemedText";
 import { Pressable, StyleSheet, TextInput } from "react-native";
 import { Avatar, BottomSheet, Button, ButtonGroup, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { updateFixedAsset } from "@/db/db";
+import { updateFixedAsset, getAllEmployees, getAllLocations } from "@/db/db";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 
 let db;
@@ -29,9 +29,35 @@ const FixedAssetCardDetailedCard = (
 
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [possibleEmployees, setPossibleEmployees] = useState([]);
+    const [possibleLocations, setPossibleLocations] = useState([]);
+
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
     db = useSQLiteContext();
+
+    useEffect(() => {
+        loadEmployeesFromDatabase(db);
+        loadLocationsFromDatabase(db);
+    }, 
+    [])
+    
+
+    const loadEmployeesFromDatabase = async (db) => {
+        try {
+            setPossibleEmployees(await getAllEmployees(db));
+        } catch (error) {
+          console.error('Error loading employees:', error);
+        }
+      };
+
+      const loadLocationsFromDatabase = async (db) => {
+        try {
+            setPossibleLocations(await getAllLocations(db));
+        } catch (error) {
+          console.error('Error loading employees:', error);
+        }
+      };
 
     const onPressAvatar = () => {
         
@@ -370,7 +396,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     textInput: {
-     paddingHorizontal: 5,   
+        paddingHorizontal: 5,   
     }
     
 

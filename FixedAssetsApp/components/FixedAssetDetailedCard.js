@@ -125,7 +125,7 @@ const FixedAssetCardDetailedCard = (
                           console.log('ImagePicker Error: ', res.error);
                         } else if (res.customButton) {
                           console.log('User tapped custom button: ', res.customButton);
-                          alert(res.customButton);
+                          alert(res.customButton); //Messages to be displayed for specific errors.
                         } else {
                          // let source = res;
                           // var resourcePath1 = source.assets[0].uri;

@@ -386,12 +386,12 @@ const FixedAssetCardDetailedCard = (
                 </ThemedView>
 
                         <ThemedView darkColor="white" style={styles.descriptionContainer}>
-                            <ThemedText lightColor="black" darkColor="white" style={styles.descriptionTitle}>Description:</ThemedText> 
+                            <ThemedText lightColor="black" darkColor="black" style={styles.descriptionTitle}>Description:</ThemedText> 
                             <TextInput  value={inputDescription} 
                                             onChangeText={setInputDescription}
                                             multiline={true}
                                             
-                                            style={[{color: textColor, fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: 'black', fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={{width:'100%', justifyContent: 'center'}}>

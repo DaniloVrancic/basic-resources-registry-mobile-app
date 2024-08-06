@@ -1,5 +1,5 @@
 import { FixedAsset } from "@/app/data_interfaces/fixed-asset"
-import { Pressable, StyleSheet, TextInput, PermissionsAndroid } from "react-native";
+import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal } from "react-native";
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
@@ -11,6 +11,7 @@ import { updateFixedAsset, getAllEmployees, getAllLocations } from "@/db/db";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Dropdown } from "react-native-element-dropdown";
+import CameraScanner from "./camera/CameraScanner";
 
 let db;
 const FixedAssetCardDetailedCard = (
@@ -22,6 +23,7 @@ const FixedAssetCardDetailedCard = (
     const textColor = useThemeColor({}, 'text');
     const oppositeTextColor = useOppositeThemeColor({}, 'text');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
+    const [isCameraScannerVisible, setIsCameraScannerVisible] = useState(false);
     const [editMode, setEditMode] = useState(false);
 
     const [inputBarcode, setInputBarcode] = useState(fixedAssetState.barcode);
@@ -293,6 +295,9 @@ const FixedAssetCardDetailedCard = (
         }
     };
 
+    const openModalScanner = () => setIsCameraScannerVisible(true);
+    const closeModalScanner = () => setIsCameraScannerVisible(false);
+
 
     return (
             <ThemedView style={styles.cardContainer}>
@@ -402,7 +407,7 @@ const FixedAssetCardDetailedCard = (
                                             onChangeText={setInputBarcode}
                                             style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
-                                <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'}>
+                                <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'} onPress={openModalScanner}>
                                     <Icon name="barcode-sharp" type="ionicon" color="white" style={{paddingHorizontal: 5}} />
                                     Scan Code 
                                 </Button>
@@ -531,8 +536,26 @@ const FixedAssetCardDetailedCard = (
                         onPress={() => {setPhotoBottomSheetVisible(false);}}
                         />
                 
-            </BottomSheet>  
+            </BottomSheet>
+
+
+            <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}> 
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
+                                <Icon name="close" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
                     </ThemedView>
+
+                    <ThemedView>
+                         {/* Fill with Content here */}
+                         <CameraScanner/>
+                    </ThemedView>
+                </ThemedView>
+            </Modal>
+        </ThemedView>
 
                     
             
@@ -625,6 +648,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,   
     }
     
+
+});
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
 
 });
 

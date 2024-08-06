@@ -84,6 +84,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                 </ThemedView>
             </Pressable>
 
+
             <Modal visible={showModal} animationType="slide" transparent={true}>
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 

@@ -199,14 +199,11 @@ const FixedAssetCardDetailedCard = (
             };
             
             try{
-                console.log("TRYING TO UPDATE FIXED ASSET NOW!");
                 var rows = await updateFixedAsset(db, tempAssetState);
-                console.log(rows);
 
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
-                console.log("SUCCESS!!!");
-                console.log('ROWS CHANGED: ' + rows);
+
                 setEditMode(false);
             }
             catch(myError){
@@ -333,6 +330,7 @@ const FixedAssetCardDetailedCard = (
                                 icon={{ name: 'token', type: 'material' }}
                                 placeholderStyle={{backgroundColor: 'purple', borderRadius: 20}}
                                 containerStyle={{borderRadius: 20}}
+                                avatarStyle={{borderRadius: 20, borderWidth: 2, borderColor: 'grey'}}
                                 source={{ uri: fixedAssetState.photoUrl }}
                             onPress={() => {
                                 if(editMode){

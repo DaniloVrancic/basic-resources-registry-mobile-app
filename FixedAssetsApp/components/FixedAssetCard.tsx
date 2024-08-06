@@ -67,6 +67,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                                 containerStyle={{ borderRadius: 20 }}
                                 icon={{ name: 'token', type: 'material' }}
                                 placeholderStyle={{ backgroundColor: 'purple', borderRadius: 20 }}
+                                avatarStyle={{borderRadius: 20, borderWidth: 2, borderColor: 'grey'}}
                                 source={{ uri: fixedAssetDetails.photoUrl }}
                                 
                             />

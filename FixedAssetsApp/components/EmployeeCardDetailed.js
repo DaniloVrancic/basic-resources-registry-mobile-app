@@ -61,7 +61,6 @@ const EmployeeCardDetailed = (
 
             let rows = await updateEmployee(db, employeeState);
             
-            console.log(rows);
             setEmployeeState({id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl});
             
             

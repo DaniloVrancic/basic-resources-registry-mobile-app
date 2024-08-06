@@ -30,7 +30,12 @@
     },
     "plugins": [
       "expo-router",
-      "expo-document-picker"
+      "expo-document-picker",
+      "expo-camera",
+      {
+        "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+        "recordAudioAndroid": true
+      }
     ],
     "experiments": {
       "typedRoutes": true

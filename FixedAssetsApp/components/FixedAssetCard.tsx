@@ -24,7 +24,11 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
     const [showModal, setShowModal] = useState(false);
-    const [fixedAssetDetails, setFixedAssetDetails] = useState({id: id, name: name, description: description, barcode: barcode,
+    const [fixedAssetDetails, setFixedAssetDetails] = useState({
+        id: id, 
+        name: name, 
+        description: description, 
+        barcode: barcode,
         price: price, 
         creationDate: creationDate, 
         employee_id: employee_id, 
@@ -43,7 +47,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
         <ThemedView style={styles.fixedAssetCardContainer}>
             <Pressable style={styles.buttonDesign} onPress={handleDetailsPress}>
                 <ThemedView lightColor="#17153B" darkColor="ghostwhite" style={styles.cardHeader}>
-                    <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{name}</ThemedText>
+                    <ThemedText lightColor="ghostwhite" darkColor="#17153B" style={styles.cardHeaderText}>{fixedAssetDetails.name}</ThemedText>
                 </ThemedView>
 
                 <ThemedView style={styles.cardImageTextSeperator}>
@@ -69,10 +73,10 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                         }
                 </ThemedView>
                 <ThemedView style={{flex: 3}}>
-                        <ThemedText style={{fontWeight: 600}}>Price: ${price}</ThemedText>
+                        <ThemedText style={{fontWeight: 600}}>Price: ${fixedAssetDetails.price}</ThemedText>
                         <ThemedView style={styles.creationDateContainer}>
                             <ThemedText>Creation Date: </ThemedText>
-                            <ThemedText style={{fontWeight: 600}}>{creationDate.toString()}</ThemedText>
+                            <ThemedText style={{fontWeight: 600}}>{fixedAssetDetails.creationDate.toString()}</ThemedText>
                         </ThemedView>
                             
                 </ThemedView>

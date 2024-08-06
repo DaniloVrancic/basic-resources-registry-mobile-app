@@ -7,7 +7,6 @@ import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
-import { MaterialIcons } from "@expo/vector-icons";
 
 
 
@@ -62,7 +61,7 @@ const EmployeeCardDetailed = (
 
             let rows = await updateEmployee(db, employeeState);
             
-            
+            console.log(rows);
             setEmployeeState({id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl});
             
             

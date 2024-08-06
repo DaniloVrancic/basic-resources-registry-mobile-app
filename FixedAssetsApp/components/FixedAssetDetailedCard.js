@@ -26,7 +26,7 @@ const FixedAssetCardDetailedCard = (
 
     const [inputBarcode, setInputBarcode] = useState(fixedAssetState.barcode);
     const [inputName, setInputName] = useState(fixedAssetState.name);
-    const [inputPrice, setInputPrice] = useState(fixedAssetState.price);
+    const [inputPrice, setInputPrice] = useState(fixedAssetState.price.toString());
     const [inputDescription, setInputDescription] = useState(fixedAssetState.description);
     const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate.toString());
     const [inputAssignedEmployeeId, setInputAssignedEmployeeId] = useState(fixedAssetState.employee_id);
@@ -151,7 +151,6 @@ const FixedAssetCardDetailedCard = (
     const openGallery = async () => {
         const result = await launchImageLibraryAsync(options);
         const resultUri = result.assets[0].uri;
-        console.log(resultUri);
         setInputPhotoUrl(resultUri);
     }
 
@@ -177,7 +176,7 @@ const FixedAssetCardDetailedCard = (
 
             // Handle inputPrice
             let processedPrice;
-            if (inputPrice === '.' || inputPrice === '') {
+            if (inputPrice === '.' || inputPrice === '' || inputPrice.length == 0) {
                 processedPrice = 0;
             } else if (inputPrice.startsWith('.')) {
                 processedPrice = parseFloat('0' + inputPrice);
@@ -194,21 +193,29 @@ const FixedAssetCardDetailedCard = (
 
 
             
-            let tempAssetState = {id: fixedAssetState.id, name: inputName, description: inputDescription,
+            const tempAssetState = {id: fixedAssetState.id, name: inputName, description: inputDescription,
                 barcode: inputBarcode, price: processedPrice, creationDate: inputCreationDate, employee_id: inputAssignedEmployeeId,
                 location_id: inputAssignedLocationId, photoUrl: inputPhotoUrl
             };
-
-            let rows = await updateFixedAsset(db, tempAssetState);
-            console.log(tempAssetState);
             
+            try{
+                console.log("TRYING TO UPDATE FIXED ASSET NOW!");
+                var rows = await updateFixedAsset(db, tempAssetState);
+                console.log(rows);
 
-            if(rows > 0){
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
                 console.log("SUCCESS!!!");
                 console.log('ROWS CHANGED: ' + rows);
+                setEditMode(false);
             }
+            catch(myError){
+                console.error(myError);
+            }
+            
+            
+
+            
         }
     }
 

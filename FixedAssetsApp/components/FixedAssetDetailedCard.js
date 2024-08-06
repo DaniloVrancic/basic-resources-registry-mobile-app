@@ -26,6 +26,7 @@ const FixedAssetCardDetailedCard = (
 
     const [inputBarcode, setInputBarcode] = useState(fixedAssetState.barcode);
     const [inputName, setInputName] = useState(fixedAssetState.name);
+    const [inputPrice, setInputPrice] = useState(fixedAssetState.price);
     const [inputDescription, setInputDescription] = useState(fixedAssetState.description);
     const [inputCreationDate, setInputCreationDate] = useState(fixedAssetState.creationDate.toString());
     const [inputAssignedEmployeeId, setInputAssignedEmployeeId] = useState(fixedAssetState.employee_id);
@@ -174,10 +175,40 @@ const FixedAssetCardDetailedCard = (
                 return;
             }
 
+            // Handle inputPrice
+            let processedPrice;
+            if (inputPrice === '.' || inputPrice === '') {
+                processedPrice = 0;
+            } else if (inputPrice.startsWith('.')) {
+                processedPrice = parseFloat('0' + inputPrice);
+            } else if (inputPrice.endsWith('.')) {
+                processedPrice = parseFloat(inputPrice + '00');
+            } else {
+                processedPrice = parseFloat(inputPrice);
+            }
+
+            if (isNaN(processedPrice)) {
+                setErrorMessage('Please enter a valid price.');
+                return;
+            }
+
 
             
-            let tempAssetState = {...fixedAssetState};
-            let rows = await updateFixedAsset(db, fixedAssetState);
+            let tempAssetState = {id: fixedAssetState.id, name: inputName, description: inputDescription,
+                barcode: inputBarcode, price: processedPrice, creationDate: inputCreationDate, employee_id: inputAssignedEmployeeId,
+                location_id: inputAssignedLocationId, photoUrl: inputPhotoUrl
+            };
+
+            let rows = await updateFixedAsset(db, tempAssetState);
+            console.log(tempAssetState);
+            
+
+            if(rows > 0){
+                setErrorMessage('');
+                setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
+                console.log("SUCCESS!!!");
+                console.log('ROWS CHANGED: ' + rows);
+            }
         }
     }
 
@@ -226,6 +257,37 @@ const FixedAssetCardDetailedCard = (
         }
         return null;
       };
+
+      const handleChangePrice = (myNumber) => {
+        if(myNumber === ""){
+            setInputPrice(myNumber);
+            return;
+        }
+        // Allow only digits and a single dot
+        const validNumber = myNumber.replace(/[^0-9.]/g, '');
+        
+        // Check if the string has more than one dot
+        const dotCount = (validNumber.match(/\./g) || []).length;
+        
+        // If there is more than one dot, keep the current inputPrice
+        if (dotCount > 1) {
+            return;
+        }
+        
+        // Allow empty string to reset the input
+        if (validNumber === '') {
+            setInputPrice('');
+            return;
+        }
+        
+        // Parse the number
+        const parsedNumber = parseFloat(validNumber);
+        
+        // Set inputPrice to the parsed number if it's a valid number or just the validNumber
+        if (!isNaN(parsedNumber) || validNumber === '.') {
+            setInputPrice(validNumber);
+        }
+    };
 
 
     return (
@@ -296,7 +358,14 @@ const FixedAssetCardDetailedCard = (
                                                 style={[{color: oppositeTextColor, fontSize: 15}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
                                                 readOnly={!editMode}/>
                                 </ThemedView>
-                            <ThemedText lightColor="ghostwhite">Price: {fixedAssetState.price}</ThemedText>
+                            
+                            <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}, styles.cardContentElement]}>
+                            <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>Price: </ThemedText>
+                                    <TextInput  value={inputPrice.toString()} 
+                                                onChangeText={handleChangePrice}
+                                                style={[{color: oppositeTextColor, fontSize: 15}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
+                                                readOnly={!editMode}/>
+                                </ThemedView>
                         </ThemedView>
                     </ThemedView>
 

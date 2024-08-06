@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Image, Modal, Pressable, StyleSheet } from "react-native";
+import { Image, Modal, Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
 import EmployeeCardDetailed from "./EmployeeCardDetailed";
-import { Avatar } from "@rneui/themed";
+import { Avatar, Icon } from "@rneui/themed";
 
 
 
@@ -93,7 +93,10 @@ const EmployeeCard: React.FC<Employee> = ({
                         <Pressable
                             style={styles.showOnEmployeeButton}
                             onPress={openModal}>
-                            <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
+                            <View style={styles.showLargerViewLayout}>
+                                <Icon type="material" name="person" color="white"/>
+                                <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
+                            </View>
                         </Pressable>
                     </ThemedView>
                 </ThemedView>
@@ -164,9 +167,14 @@ const styles = StyleSheet.create({ //Stylesheet for this card
         padding: 12,
         marginTop: 10,
         borderRadius: 5,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         alignSelf: 'center',
-        width: '50%',
+        width: '60%',
+    },
+    showLargerViewLayout: {
+        flexDirection:'row',
+        columnGap: 5,
+        paddingHorizontal:5,
     },
     showOnEmployeeButtonText: {
         color: 'white',

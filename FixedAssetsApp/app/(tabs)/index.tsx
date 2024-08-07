@@ -277,19 +277,18 @@ const handleScannedValue = async (myScannedValue : any) => {
 
   const searchedAsset : any = await getAllFixedAssetsWithBarcode(db, myScannedValue);
   setCameraScanned(true);
-  console.log((new Date()).toISOString() + "----------------------------------");
-  console.log(searchedAsset);
+  setScannedBarCode(myScannedValue.toString());
+
   if(searchedAsset == null || isObjectEmpty(searchedAsset))
     {
-    //console.log("OBJECT IS EMPTY");
+
     setFoundAsset(undefined);
   }
   else{
-    //console.log("SETTING SEARCHED ASSETS");
-    setFoundAsset(searchedAsset);
-    setScannedBarCode(myScannedValue);
+
+    setFoundAsset({...searchedAsset});
+    
   }
-  console.log(foundAsset);
 }
 
 
@@ -365,11 +364,30 @@ const handleNewScan = () => {
                     </ThemedView>)
                     :
                     (
-                      <ThemedView>
-                          {
-                            //<FixedAssetCardDetailedCard fixedAssetState={foundAsset} setFixedAssetState={setFoundAsset}/>
-                          }
-                      </ThemedView>
+                      (foundAsset == undefined) ?
+                    (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                      <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                    </ThemedView>
+                    <ThemedView style={{minHeight: '66%'}}>
+                        {/* Fill with Content here */}
+                        <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                    </ThemedView>
+                    <ThemedView style={{minWidth: '100%',backgroundColor:'rgba(200,0,0,0.8', alignItems:'center'}}>
+                      <ThemedText type='defaultSemiBold' style={{backgroundColor:'rgba(0,0,0,0)'}}>Item with barcode: {scannedBarCode}</ThemedText>
+                      <ThemedText lightColor='red' darkColor='red' style={{backgroundColor:'rgba(0,0,0,0)'}}>Not found.</ThemedText>
+                    </ThemedView>
+                  </ThemedView>
+                  )
+                    :
+                    (
+                    <ThemedView style={{paddingVertical:'20%', backgroundColor:'rgba(0,0,0,0)' }}>
+                      {
+                        <FixedAssetCardDetailedCard setFixedAssetState={setFoundAsset} fixedAssetState={foundAsset}/>
+                      }
+                  </ThemedView>) 
+                      
+                      
                     )
                 }
                 </ThemedView>

@@ -391,7 +391,7 @@ import * as SQLite from 'expo-sqlite';
   const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE `name` LIKE $name;"
   const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
   const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE (name LIKE $name AND (price BETWEEN $lower AND $upper)) ;";
-  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE (barcode=$barcode) ;";
+  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE barcode=$barcode;";
 
   export const getAllFixedAssets = async (db) => {
 
@@ -475,8 +475,8 @@ import * as SQLite from 'expo-sqlite';
       
       db.withTransactionSync( async () => {
         try{
-          let rows = await db.getAllAsync(getAllFixedAssetsQueryWithBarcode, { $barcode: barcode});
-
+          let rows = await db.getFirstAsync(getAllFixedAssetsQueryWithBarcode, 
+                                          { $barcode: barcode});
           resolve(rows);
         }
         catch(error){

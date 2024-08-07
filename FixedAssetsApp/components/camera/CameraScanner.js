@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { CameraView, Camera } from "expo-camera";
 
-const CameraScanner = () => {
+const CameraScanner = (
+  {
+    onCodeScanned
+  }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -17,7 +20,10 @@ const CameraScanner = () => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    if(typeof onCodeScanned === 'function')
+    {
+      onCodeScanned(data);
+    }
   };
 
   if (hasPermission === null) {
@@ -25,23 +31,28 @@ const CameraScanner = () => {
     return <Text>Requesting for camera permission</Text>;
   }
   if (hasPermission === false) {
-    //console.log("No access to camera")
+   
     return <Text>No access to camera</Text>;
   }
 
-  //console.log("Success!")
+  
   return (
     <View style={[styles.container, styles.containerBorder]}>
       <CameraView
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{
-          barcodeTypes: ["qr", "pdf417"],
+          barcodeTypes: [
+            "ean13" , "ean8" , 
+            "qr" , "pdf417" , 
+            "code39" , "code93" , 
+            "itf14" , "codabar" , 
+            "code128" , "upc_a"]
         }}
-        style={StyleSheet.absoluteFillObject}
+        style={[StyleSheet.absoluteFillObject]}
       />
       {scanned && (
         <Button title={"Tap to Scan Again"} styles={styles.scanAgainButton} onPress={() => setScanned(false)}>
-          <Text>Niggers</Text>
+          
           </Button>
       )}
     </View>
@@ -54,14 +65,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height:'100%',
-    minHeight:'40%',
+    minHeight:'66.66%',
     flexDirection: "column",
     justifyContent: "center",
   },
   containerBorder: {
     borderWidth: 2,
     borderColor: 'grey',
-    borderRadius: 10
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   scanAgainButton: {
     minHeight: 30,

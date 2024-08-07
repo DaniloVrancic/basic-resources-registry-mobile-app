@@ -298,6 +298,13 @@ const FixedAssetCardDetailedCard = (
     const openModalScanner = () => setIsCameraScannerVisible(true);
     const closeModalScanner = () => setIsCameraScannerVisible(false);
 
+    let newestScannedValue = undefined;
+
+    const handleScannedValue = myScannedValue => {
+        setInputBarcode(myScannedValue);
+        newestScannedValue = myScannedValue;
+        console.log("MY SCANNED VALUE " + newestScannedValue);
+    }
 
     return (
             <ThemedView style={styles.cardContainer}>
@@ -544,16 +551,30 @@ const FixedAssetCardDetailedCard = (
 
                     <ThemedView style={modalStyles.modalHeader}>
                             <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
-                                <Icon name="close" size={24} color={textColor} />
+                                <Icon name="undo" type="material" size={24} color={textColor} />
                             </Pressable>
                             <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
                     </ThemedView>
 
+                    <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                    </ThemedView>
                     <ThemedView>
                          {/* Fill with Content here */}
-                         <CameraScanner/>
+                         <CameraScanner onCodeScanned={handleScannedValue}/>
                     </ThemedView>
                 </ThemedView>
+                {
+                    (fixedAssetState.barcode === inputBarcode) ? 
+                    (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>No Code Found</ThemedText>
+                    </ThemedView>)
+                    :
+                    (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{inputBarcode}</ThemedText>
+                    </ThemedView>)
+                }
+                
             </Modal>
         </ThemedView>
 

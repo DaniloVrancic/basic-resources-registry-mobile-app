@@ -1,9 +1,8 @@
-import { FixedAsset } from "@/app/data_interfaces/fixed-asset"
 import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal } from "react-native";
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
-import { Avatar, BottomSheet, Button, ButtonGroup, Icon } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";

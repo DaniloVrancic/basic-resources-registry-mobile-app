@@ -4,7 +4,6 @@ import { ThemedText } from "@/components/ThemedText";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { InventoryItem } from "@/app/data_interfaces/inventory-item";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
 
 

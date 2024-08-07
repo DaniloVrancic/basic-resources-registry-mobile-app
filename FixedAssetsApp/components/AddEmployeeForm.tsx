@@ -8,16 +8,17 @@ import { addEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 
-const AddEmployeeForm = ({ onEmployeeAdded }) => {
+const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
     const textColor = useThemeColor({}, 'text');
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [inputName, setInputName] = useState('');
     const [inputEmail, setInputEmail] = useState('');
-    const [inputIncome, setInputIncome] = useState('');
+    const [inputIncome, setInputIncome] = useState<number | undefined>(undefined);
     const [inputPhotoUrl, setInputPhotoUrl] = useState('');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    var nameInput;
 
     const db = useSQLiteContext();
 
@@ -33,7 +34,7 @@ const AddEmployeeForm = ({ onEmployeeAdded }) => {
             return;
         }
 
-        if (isNaN(inputIncome) || inputIncome.toString() === '') {
+        if (isNaN(inputIncome as number) || (inputIncome as number).toString() === '') {
             setErrorMessage('Income must be a valid number.');
             return;
         }
@@ -44,27 +45,21 @@ const AddEmployeeForm = ({ onEmployeeAdded }) => {
             id: Date.now(),
             name: inputName,
             email: inputEmail,
-            income: parseFloat(inputIncome),
+            income: parseFloat(inputIncome?.toString() as string),
             photoUrl: inputPhotoUrl
         };
 
-        await addEmployee(db, newEmployee);
+        let result = await addEmployee(db, newEmployee);
         onEmployeeAdded(newEmployee);
     }
 
-    const handleChangeIncome = (myNumber) => {
+    const handleChangeIncome = (myNumber: any) => {
         if (isNaN(parseInt(myNumber))) {
             myNumber.replace("NaN", "");
             setInputIncome(0);
         } else {
             setInputIncome(parseInt(myNumber));
         }
-    }
-
-    const getInitials = (name) => {
-        const nameParts = name.split(' ').filter(part => part.length > 0);
-        const initials = nameParts.slice(0, 3).map(part => part.charAt(0).toUpperCase());
-        return initials.join('');
     }
 
     const onPressAvatar = () => {
@@ -84,10 +79,18 @@ const AddEmployeeForm = ({ onEmployeeAdded }) => {
                 }
             );
 
+            let options: any = {
+                saveToPhotos: true,
+                mediaType: 'photo',
+                height: 1024,
+                width: 768
+            }
+
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                const result = await launchCameraAsync({ saveToPhotos: true, mediaType: 'photo' });
+                const result = await launchCameraAsync(options);
                 if (!result.canceled) {
-                    setInputPhotoUrl(result.uri);
+                    const resultPhotoUri = (result.assets[0].uri);
+                    setInputPhotoUrl(resultPhotoUri);
                 }
             } else {
                 console.log("Camera permission denied");
@@ -98,9 +101,10 @@ const AddEmployeeForm = ({ onEmployeeAdded }) => {
     };
 
     const openGallery = async () => {
-        const result = await launchImageLibraryAsync({ mediaType: 'photo' });
+        const result = await launchImageLibraryAsync();
         if (!result.canceled) {
-            setInputPhotoUrl(result.uri);
+            const resultUri = result.assets[0].uri;
+            setInputPhotoUrl(resultUri);
         }
     }
 
@@ -123,7 +127,7 @@ const AddEmployeeForm = ({ onEmployeeAdded }) => {
 
                 <ThemedView style={styles.formElement}>
                     <ThemedText style={{ color: textColor }}>Income:</ThemedText>
-                    <TextInput value={inputIncome.toString()} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
+                    <TextInput value={(inputIncome as number).toString()} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
                 </ThemedView>
 
                 <ThemedView style={styles.formElement}>

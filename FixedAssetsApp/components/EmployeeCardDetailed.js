@@ -163,7 +163,6 @@ const EmployeeCardDetailed = (
     const openGallery = async () => {
         const result = await launchImageLibraryAsync(options);
         const resultUri = result.assets[0].uri;
-        console.log(resultUri);
         setInputPhotoUrl(resultUri);
     }
 

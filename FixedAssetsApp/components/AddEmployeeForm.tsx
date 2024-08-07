@@ -5,7 +5,7 @@ import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
 import { addEmployee } from "@/db/db";
-import { Avatar, BottomSheet, Button } from "@rneui/themed";
+import { Avatar, BottomSheet, Button, Input } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 
 const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
@@ -14,11 +14,11 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
 
     const [inputName, setInputName] = useState('');
     const [inputEmail, setInputEmail] = useState('');
-    const [inputIncome, setInputIncome] = useState<number | undefined>(undefined);
+    const [inputIncome, setInputIncome] = useState<string | undefined>(undefined);
     const [inputPhotoUrl, setInputPhotoUrl] = useState('');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    var nameInput;
+    var nameInputField : any = React.createRef();
 
     const db = useSQLiteContext();
 
@@ -34,7 +34,7 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
             return;
         }
 
-        if (isNaN(inputIncome as number) || (inputIncome as number).toString() === '') {
+        if (isNaN(parseInt(inputIncome as string)) || (inputIncome as string) === '') {
             setErrorMessage('Income must be a valid number.');
             return;
         }
@@ -56,9 +56,9 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
     const handleChangeIncome = (myNumber: any) => {
         if (isNaN(parseInt(myNumber))) {
             myNumber.replace("NaN", "");
-            setInputIncome(0);
+            setInputIncome("");
         } else {
-            setInputIncome(parseInt(myNumber));
+            setInputIncome(myNumber);
         }
     }
 
@@ -117,17 +117,17 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
 
                 <ThemedView style={styles.formElement}>
                     <ThemedText style={{ color: textColor }}>Name:</ThemedText>
-                    <TextInput value={inputName} onChangeText={setInputName} style={[{ color: textColor }, styles.textInput]} />
+                    <Input value={inputName} onChangeText={setInputName} style={[{ color: textColor }, styles.textInput]} />
                 </ThemedView>
 
                 <ThemedView style={styles.formElement}>
                     <ThemedText style={{ color: textColor }}>Email:</ThemedText>
-                    <TextInput value={inputEmail} onChangeText={setInputEmail} style={[{ color: textColor }, styles.textInput]} />
+                    <Input value={inputEmail} onChangeText={setInputEmail} style={[{ color: textColor }, styles.textInput]} />
                 </ThemedView>
 
                 <ThemedView style={styles.formElement}>
                     <ThemedText style={{ color: textColor }}>Income:</ThemedText>
-                    <TextInput value={(inputIncome as number).toString()} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
+                    <Input value={(inputIncome)} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
                 </ThemedView>
 
                 <ThemedView style={styles.formElement}>

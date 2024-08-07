@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import LoadingAnimation from '@/components/fallback/LoadingAnimation';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Employee } from '../data_interfaces/employee';
 import { getAllEmployees, getAllEmployeesWithNameAndBetweenRange, getEmployeesForContainsName } from '@/db/db';
+import AddEmployeeForm from '@/components/AddEmployeeForm';
 
 let db: SQLiteDatabase;
 export default function Employees() {
@@ -25,6 +26,11 @@ export default function Employees() {
 
   db = useSQLiteContext();
   const [loadedEmployees, setLoadedEmployees] = useState([]);
+
+  const [showAddEmployee, setShowAddEmployee] = useState<boolean>(false);
+
+  const openShowAdd = () => {setShowAddEmployee(true);}
+  const closeShowAdd = () => {setShowAddEmployee(false);}
   
   
 
@@ -48,12 +54,14 @@ export default function Employees() {
     }
   }
 
+  const textColor = useThemeColor({}, 'text');
+
 
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
-              onAddClick={() => { console.log("Employees default click") }}
+              onAddClick={() => { openShowAdd(); }}
               filterChildren={employeeAdvancedFiltering(loadedEmployees, setLoadedEmployees)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
@@ -78,9 +86,27 @@ export default function Employees() {
                 
             </Suspense>
           </ThemedView>
+
+          <Modal visible={showAddEmployee} animationType="slide">
+            <ThemedView style={modalStyles.modalContainer}>
+              <ThemedView style={modalStyles.modalHeader}>
+                <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
+                  <Ionicons name="close" size={24} color={textColor} />
+                </Pressable>
+                <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
+              </ThemedView>
+                {
+                  //Rest of the container here
+                }
+                <AddEmployeeForm/>
+            </ThemedView>
+        </Modal>
+
       </SafeAreaView>
   )
 }
+
+
 
 
 
@@ -229,4 +255,37 @@ const styles = StyleSheet.create({
     padding: 10,
     // Add additional styling as needed
   },
+});
+
+const modalStyles = StyleSheet.create({
+      modalContainer: {
+          flex: 1,
+          justifyContent: 'flex-start',
+          padding: 8,
+      },
+      modalHeader: {
+          display: 'flex',
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          flexDirection: 'row-reverse',
+          alignItems: 'center',
+          alignContent: 'center',
+          justifyContent: 'center',
+          paddingBottom: 40,
+          marginRight: 20
+      },
+      modalCloseButton: {
+          justifyContent: 'flex-end',
+      textAlign: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+      flex: 1,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      borderRadius: 50,
+      backgroundColor: 'rgba(200,200,200, 0.8)',
+      },
+      modalSpaceFill: {
+          flex: 10,
+      }
+
 });

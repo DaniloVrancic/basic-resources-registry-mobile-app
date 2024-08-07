@@ -4,7 +4,8 @@ import { CameraView, Camera } from "expo-camera";
 
 const CameraScanner = (
   {
-    onCodeScanned
+    onCodeScanned,
+    onNewScanButtonTapped
   }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -51,9 +52,11 @@ const CameraScanner = (
         style={[StyleSheet.absoluteFillObject]}
       />
       {scanned && (
-        <Button title={"Tap to Scan Again"} styles={styles.scanAgainButton} onPress={() => setScanned(false)}>
-          
-          </Button>
+        <Button title={"Tap to Scan Again (Cancel Current Scan)"} styles={styles.scanAgainButton} onPress={() => {
+          setScanned(false); 
+          if(onNewScanButtonTapped != undefined)
+          onNewScanButtonTapped();
+        }}> </Button>
       )}
     </View>
   );

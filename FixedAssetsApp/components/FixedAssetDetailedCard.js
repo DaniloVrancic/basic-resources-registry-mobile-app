@@ -34,6 +34,8 @@ const FixedAssetCardDetailedCard = (
     const [inputAssignedEmployeeId, setInputAssignedEmployeeId] = useState(fixedAssetState.employee_id);
     const [inputAssignedLocationId, setInputAssignedLocationId] = useState(fixedAssetState.location_id);
     const [inputPhotoUrl, setInputPhotoUrl] = useState(fixedAssetState.photoUrl);
+
+    const [cameraScanned, setCameraScanned] = useState(false);
     
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -295,15 +297,18 @@ const FixedAssetCardDetailedCard = (
         }
     };
 
-    const openModalScanner = () => setIsCameraScannerVisible(true);
+    const openModalScanner = () => {setCameraScanned(false); setIsCameraScannerVisible(true)};
     const closeModalScanner = () => setIsCameraScannerVisible(false);
 
-    let newestScannedValue = undefined;
 
     const handleScannedValue = myScannedValue => {
         setInputBarcode(myScannedValue);
-        newestScannedValue = myScannedValue;
-        console.log("MY SCANNED VALUE " + newestScannedValue);
+        setCameraScanned(true);
+    }
+
+    const handleNewScan = () => {
+        setInputBarcode(fixedAssetState.barcode);
+        setCameraScanned(false);
     }
 
     return (
@@ -414,7 +419,7 @@ const FixedAssetCardDetailedCard = (
                                             onChangeText={setInputBarcode}
                                             style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
-                                <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'} onPress={openModalScanner}>
+                                <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'} onPress={openModalScanner} disabled={!editMode}>
                                     <Icon name="barcode-sharp" type="ionicon" color="white" style={{paddingHorizontal: 5}} />
                                     Scan Code 
                                 </Button>
@@ -561,16 +566,17 @@ const FixedAssetCardDetailedCard = (
                     </ThemedView>
                     <ThemedView>
                          {/* Fill with Content here */}
-                         <CameraScanner onCodeScanned={handleScannedValue}/>
+                         <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
                     </ThemedView>
                 </ThemedView>
                 {
-                    (fixedAssetState.barcode === inputBarcode) ? 
+                    (!cameraScanned) ? 
                     (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>No Code Found</ThemedText>
                     </ThemedView>)
                     :
                     (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{inputBarcode}</ThemedText>
                     </ThemedView>)
                 }

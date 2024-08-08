@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid, ScrollView } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
@@ -93,7 +93,7 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
                     setInputPhotoUrl(resultPhotoUri);
                 }
             } else {
-                console.log("Camera permission denied");
+                setInputPhotoUrl("");
             }
         } catch (error) {
             console.error(error);
@@ -106,47 +106,53 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
             const resultUri = result.assets[0].uri;
             setInputPhotoUrl(resultUri);
         }
+        else{
+            setInputPhotoUrl("");
+        }
     }
 
     return (
         <ThemedView style={styles.formContainer}>
             <ThemedText style={styles.formTitle}>Add New Employee</ThemedText>
+            
+                <ThemedView style={styles.formContent}>
+                    <ThemedText style={{ color: 'red', fontSize: 18, fontWeight: 600 }}>{errorMessage && "ERROR: " + errorMessage}</ThemedText>
 
-            <ThemedView style={styles.formContent}>
-                <ThemedText style={{ color: 'red', fontSize: 18, fontWeight: 600 }}>{errorMessage && "ERROR: " + errorMessage}</ThemedText>
+                    <ThemedView style={styles.formElement}>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Name:</ThemedText>
+                        <Input value={inputName} onChangeText={setInputName} style={[{ color: textColor }, styles.textInput]} />
+                    </ThemedView>
 
-                <ThemedView style={styles.formElement}>
-                    <ThemedText style={{ color: textColor }}>Name:</ThemedText>
-                    <Input value={inputName} onChangeText={setInputName} style={[{ color: textColor }, styles.textInput]} />
+                    <ThemedView style={styles.formElement}>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Email:</ThemedText>
+                        <Input value={inputEmail} onChangeText={setInputEmail} style={[{ color: textColor }, styles.textInput]} />
+                    </ThemedView>
+
+                    <ThemedView style={styles.formElement}>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Income:</ThemedText>
+                        <Input value={(inputIncome)} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
+                    </ThemedView>
+
+                    <ThemedView style={styles.formElement}>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Photo:</ThemedText>
+                        <Avatar
+                            size={100}
+                            rounded
+                            icon={{ name: 'person', type: 'material', size: 64 }}
+                            iconStyle={{backgroundColor:'purple', minWidth: '90%', minHeight: '90%', alignSelf:'center', justifyContent:'center'}}
+                            onPress={onPressAvatar}
+                            source={inputPhotoUrl ? { uri: inputPhotoUrl } : undefined}
+                            containerStyle={{alignSelf: "center", backgroundColor:'purple'}}
+                        >
+                            <Avatar.Accessory size={40} style={{ borderRadius: 100, backgroundColor: 'purple', borderWidth: 2.5, borderColor: 'black' }} onPress={onPressAvatar} />
+                        </Avatar>
+                    </ThemedView>
+
+                    <Pressable onPress={handleAddEmployee} style={styles.addButton}>
+                        <ThemedText style={styles.addButtonText}>Add Employee</ThemedText>
+                    </Pressable>
                 </ThemedView>
-
-                <ThemedView style={styles.formElement}>
-                    <ThemedText style={{ color: textColor }}>Email:</ThemedText>
-                    <Input value={inputEmail} onChangeText={setInputEmail} style={[{ color: textColor }, styles.textInput]} />
-                </ThemedView>
-
-                <ThemedView style={styles.formElement}>
-                    <ThemedText style={{ color: textColor }}>Income:</ThemedText>
-                    <Input value={(inputIncome)} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
-                </ThemedView>
-
-                <ThemedView style={styles.formElement}>
-                    <ThemedText style={{ color: textColor }}>Photo:</ThemedText>
-                    <Avatar
-                        size={90}
-                        rounded
-                        icon={{ name: 'person', type: 'material' }}
-                        source={inputPhotoUrl ? { uri: inputPhotoUrl } : defaultImage}
-                        onPress={onPressAvatar}
-                    >
-                        <Avatar.Accessory size={26} style={{ borderRadius: 100 }} onPress={onPressAvatar} />
-                    </Avatar>
-                </ThemedView>
-
-                <Pressable onPress={handleAddEmployee} style={styles.addButton}>
-                    <ThemedText style={styles.addButtonText}>Add Employee</ThemedText>
-                </Pressable>
-            </ThemedView>
+            
 
             <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
                 <Button title="Take Photo with Camera" buttonStyle={styles.bottomSheetButton} onPress={openCamera} />
@@ -166,7 +172,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 2,
         borderColor: 'grey',
-        overflow: 'hidden'
     },
     formTitle: {
         fontSize: 24,
@@ -176,6 +181,7 @@ const styles = StyleSheet.create({
     },
     formContent: {
         alignItems: 'center',
+        overflow:'visible'
     },
     formElement: {
         marginVertical: 10,
@@ -187,7 +193,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'grey',
         borderRadius: 8,
-        marginTop: 5
+        marginTop: 5,
+        marginBottom: 3
     },
     addButton: {
         backgroundColor: 'purple',
@@ -214,6 +221,11 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     cancelButton: {
-        backgroundColor: 'red'
+        backgroundColor: 'red',
+    },
+    labelStyle: {
+        paddingHorizontal: 5,
+        fontSize: 18,
+        fontWeight: 500
     }
 });

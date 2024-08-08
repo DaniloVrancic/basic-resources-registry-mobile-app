@@ -87,8 +87,10 @@ export default function Employees() {
             </Suspense>
           </ThemedView>
 
+
           <Modal visible={showAddEmployee} animationType="slide">
-            <ThemedView style={modalStyles.modalContainer}>
+          <ScrollView>
+            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
               <ThemedView style={modalStyles.modalHeader}>
                 <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
                   <Ionicons name="close" size={24} color={textColor} />
@@ -100,6 +102,7 @@ export default function Employees() {
                 }
                 <AddEmployeeForm/>
             </ThemedView>
+            </ScrollView>
         </Modal>
 
       </SafeAreaView>
@@ -262,6 +265,7 @@ const modalStyles = StyleSheet.create({
           flex: 1,
           justifyContent: 'flex-start',
           padding: 8,
+          overflow:'scroll'
       },
       modalHeader: {
           display: 'flex',
@@ -271,7 +275,7 @@ const modalStyles = StyleSheet.create({
           alignContent: 'center',
           justifyContent: 'center',
           paddingBottom: 40,
-          marginRight: 20
+          marginRight: 20,
       },
       modalCloseButton: {
           justifyContent: 'flex-end',

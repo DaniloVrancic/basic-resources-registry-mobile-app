@@ -56,6 +56,10 @@ export default function Employees() {
 
   const textColor = useThemeColor({}, 'text');
 
+  const handleEmployeeAdded = async() => {
+    setLoadedEmployees(await getAllEmployees(db));
+  }
+
 
   return (
       <SafeAreaView style={styles.safeArea}>
@@ -100,20 +104,22 @@ export default function Employees() {
                 {
                   //Rest of the container here
                 }
-                <AddEmployeeForm/>
+                <AddEmployeeForm onEmployeeAdded={() => handleEmployeeAdded()}/>
             </ThemedView>
             </ScrollView>
         </Modal>
 
       </SafeAreaView>
   )
+
+  
 }
 
 
 
 
 
-function handleAddEmployee() {}
+
 
 function employeeAdvancedFiltering(employees: any, setEmployees: any) {
   const currentSearchCriteria: EmployeeSearchCriteria = {name: "" as string, income_min: 20_000 as number, income_max: 100_000 as number};

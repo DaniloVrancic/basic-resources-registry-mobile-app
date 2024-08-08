@@ -49,6 +49,7 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
         };
 
         let result = await addEmployee(db, newEmployee);
+        
         onEmployeeAdded(newEmployee);
     }
 

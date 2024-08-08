@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { getFixedItemsForLocationId } from '@/db/db';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
+import { Icon } from '@rneui/themed';
 
 
 let db: SQLiteDatabase;
@@ -22,7 +23,12 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
             const currentLocation = {id, name, size, latitude, longitude};
             const [showAssetList, setShowAssetList] = useState(false);
             const [loadedAssets, setLoadedAssets] = useState([]);
+
+            const [editMode, setEditMode] = useState<boolean>(false);
             
+            const handleEditPress = (e: any) => {
+                setEditMode(!editMode);
+            }
 
             const loadAssetsForThisLocation= async (db: SQLiteDatabase, id: number) => {
                 try{
@@ -42,6 +48,9 @@ const LocationMap: React.FC<Location> = ( {id, name, size, latitude, longitude} 
                 <GestureHandlerRootView>
                 <ThemedView style={styles.container}>
                     <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
+                        <ThemedView style={[{backgroundColor:'rgba(0,0,0,0)', alignSelf:'flex-end', marginRight: 15}]}>
+                            <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                        </ThemedView>
                         <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Location: {name}</ThemedText>
                         <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Size: {size}m2</ThemedText>
                     </ThemedView>

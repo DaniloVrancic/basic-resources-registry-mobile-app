@@ -42,7 +42,6 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
         setErrorMessage('');
 
         const newEmployee = {
-            id: Date.now(),
             name: inputName,
             email: inputEmail,
             income: parseFloat(inputIncome?.toString() as string),

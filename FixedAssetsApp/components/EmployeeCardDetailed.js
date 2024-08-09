@@ -1,13 +1,12 @@
 import React, { useState } from "react";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
 import { updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
-import { MaterialIcons } from "@expo/vector-icons";
 
 
 
@@ -62,7 +61,6 @@ const EmployeeCardDetailed = (
 
             let rows = await updateEmployee(db, employeeState);
             
-            
             setEmployeeState({id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl});
             
             
@@ -104,9 +102,6 @@ const EmployeeCardDetailed = (
         
         setPhotoBottomSheetVisible(true);
     }
-
-    
-    const [cameraPhoto, setCameraPhoto] = useState('');
 
     let options = {
         saveToPhotos: true,
@@ -150,13 +145,8 @@ const EmployeeCardDetailed = (
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
                           console.log('response', JSON.stringify(res));
-                           
-                        
-                         
-                          
                         }
                       }).catch((warn) => {console.warn(warn)});
-                      
                 }
                 else{
                     console.log("Permission not given.");
@@ -173,7 +163,6 @@ const EmployeeCardDetailed = (
     const openGallery = async () => {
         const result = await launchImageLibraryAsync(options);
         const resultUri = result.assets[0].uri;
-        console.log(resultUri);
         setInputPhotoUrl(resultUri);
     }
 

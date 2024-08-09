@@ -14,7 +14,8 @@ import LocationMap from "./LocationMap";
 const LocationCard: React.FC<Location> = (
     {id, name, size, latitude, longitude}
 ) => {
-    const thisLocation: Location = {id, name, size, latitude, longitude};
+
+    const [thisLocation, setThisLocation] = useState<Location>({id, name, size, latitude, longitude})
     const textColor = useThemeColor({}, 'text');
     const [showMapModal, setShowMapModal] = useState(false);
 
@@ -35,16 +36,16 @@ const LocationCard: React.FC<Location> = (
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedView style={[styles.cardHeader]}>
-                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type='title'>{name}</ThemedText>
-                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type="defaultSemiBold">Size of area: {size} m2</ThemedText>
+                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type='title'>{thisLocation.name}</ThemedText>
+                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type="defaultSemiBold">Size of area: {thisLocation.size} m2</ThemedText>
             </ThemedView>
 
             <ThemedView style={styles.cardContent}>
                 <ThemedView style={styles.fullCoordinatesSection}>
                     <Ionicons name="earth" size={32} color={useThemeColor({}, 'text')} style={{textAlign: 'center'}}/>
                         <ThemedView style={styles.coordinatesContainer}>
-                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Latitude:</ThemedText> {latitude}</ThemedText>
-                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Longitude:</ThemedText> {longitude}</ThemedText>
+                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Latitude:</ThemedText> {thisLocation.latitude.toPrecision(6)}</ThemedText>
+                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Longitude:</ThemedText> {thisLocation.longitude.toPrecision(6)}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
@@ -66,8 +67,8 @@ const LocationCard: React.FC<Location> = (
                                 <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
                         </ThemedView>
 
-                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
-                            <LocationMap id={id} name={name} size={size} latitude={latitude} longitude={longitude}></LocationMap>
+                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContent}>
+                            <LocationMap locationState={thisLocation} setLocationState={setThisLocation}/>
                         </ThemedView>
                     </ThemedView>
                 </Modal>
@@ -151,7 +152,7 @@ const modalStyles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'flex-start',
-        padding: 8,
+        padding: 5,
     },
     modalHeader: {
         display: 'flex',
@@ -161,7 +162,12 @@ const modalStyles = StyleSheet.create({
         alignContent: 'center',
         justifyContent: 'center',
         paddingBottom: 40,
-        marginRight: 20
+        marginRight: 20,
+        marginBottom: 20,
+        flex: 1
+    },
+    modalContent: {
+        flex: 11
     },
     modalCloseButton: {
         justifyContent: 'flex-end',

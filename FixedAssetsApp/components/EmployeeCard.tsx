@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Image, Modal, Pressable, StyleSheet } from "react-native";
+import { Image, Modal, Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
 import EmployeeCardDetailed from "./EmployeeCardDetailed";
-import { Avatar } from "@rneui/themed";
+import { Avatar, Icon } from "@rneui/themed";
 
 
 
@@ -40,7 +40,6 @@ const EmployeeCard: React.FC<Employee> = ({
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
-          
             <ThemedView style={styles.cardHeader}>
                     <ThemedView style={styles.imageContainer}>
                     <ThemedView
@@ -49,7 +48,7 @@ const EmployeeCard: React.FC<Employee> = ({
                         justifyContent: 'space-around',
                         marginBottom: 10,
                         backgroundColor: 'rgba(0,0,0,0.0)',
-                        paddingTop: 10
+                        paddingTop: 10,
                         }}>
                             {(thisEmployeeState.photoUrl == null || thisEmployeeState.photoUrl.length === 0) ? 
                                 <Avatar
@@ -71,7 +70,7 @@ const EmployeeCard: React.FC<Employee> = ({
                                 
                             </ThemedView>
                     </ThemedView>
-                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployee.name}</ThemedText>
+                    <ThemedText type='title' style={[styles.headerName,{paddingVertical: 10}]}>{thisEmployeeState.name}</ThemedText>
             </ThemedView>
 
                 <ThemedView style={styles.informationContainer}>
@@ -81,20 +80,23 @@ const EmployeeCard: React.FC<Employee> = ({
                             <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">E-mail:</ThemedText>
                         </ThemedView>
                         <ThemedView style={{paddingHorizontal: 10, flexWrap:'wrap'}}>
-                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{thisEmployee.email}</ThemedText>
+                            <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{thisEmployeeState.email}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
                     <ThemedView style={{flexDirection: 'row', minWidth: '135%', marginVertical: 5,}}>
                         <ThemedText style={{fontSize: 12, justifyContent: "flex-start", flex: 50}}>Income:</ThemedText>
-                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${thisEmployee.income}/year</ThemedText>
+                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${thisEmployeeState.income}/year</ThemedText>
                     </ThemedView>
 
                     <ThemedView style={styles.buttonContainer}>
                         <Pressable
                             style={styles.showOnEmployeeButton}
                             onPress={openModal}>
-                            <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
+                            <View style={styles.showLargerViewLayout}>
+                                <Icon type="material" name="person" color="white"/>
+                                <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
+                            </View>
                         </Pressable>
                     </ThemedView>
                 </ThemedView>
@@ -165,9 +167,14 @@ const styles = StyleSheet.create({ //Stylesheet for this card
         padding: 12,
         marginTop: 10,
         borderRadius: 5,
-        alignItems: 'flex-end',
+        alignItems: 'center',
         alignSelf: 'center',
-        width: '50%',
+        width: '60%',
+    },
+    showLargerViewLayout: {
+        flexDirection:'row',
+        columnGap: 5,
+        paddingHorizontal:5,
     },
     showOnEmployeeButtonText: {
         color: 'white',

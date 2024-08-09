@@ -239,7 +239,7 @@ import * as SQLite from 'expo-sqlite';
   export const getAllEmployees = async (db) => {
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllEmployeesQuery, []);
           resolve(rows);
@@ -317,6 +317,27 @@ import * as SQLite from 'expo-sqlite';
       });
   }
 
+  const addEmployeeQuery = "INSERT INTO employee (name, email, income, photoUrl) VALUES ($name, $email, $income, $photoUrl);";
+
+  export const addEmployee = async (db, employee) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(addEmployeeQuery, { $name: employee.name, 
+                                                                     $email: employee.email, 
+                                                                     $income: employee.income,
+                                                                     $photoUrl: employee.photoUrl
+                                                                    });
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+}
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";
@@ -327,7 +348,7 @@ import * as SQLite from 'expo-sqlite';
   export const getAllLocations = async (db) => {
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getAllLocationsQuery, []);
           resolve(rows);
@@ -384,6 +405,27 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  const updateLocationQuery = "UPDATE LOCATION SET name=$name, size=$size, latitude=$latitude, longitude=$longitude where id=$id;";
+
+  export const updateLocation = async (db, location) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateLocationQuery, { $name: location.name, 
+                                                                     $size: location.size, 
+                                                                     $latitude: location.latitude,
+                                                                     $longitude: location.longitude, 
+                                                                     $id: location.id});
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+}
+
   //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
@@ -391,7 +433,7 @@ import * as SQLite from 'expo-sqlite';
   const getAllFixedAssetsQueryWithContainsName = "SELECT * FROM 'fixed_asset' WHERE `name` LIKE $name;"
   const getAllFixedAssetsQueryWithBetween = "SELECT * FROM 'fixed_asset' WHERE price BETWEEN $lower AND $upper ;";
   const getAllFixedAssetsQueryWithContainsNameAndBetween = "SELECT * FROM 'fixed_asset' WHERE (name LIKE $name AND (price BETWEEN $lower AND $upper)) ;";
-  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE (barcode=$barcode) ;";
+  const getAllFixedAssetsQueryWithBarcode = "SELECT * FROM 'fixed_asset' WHERE barcode=$barcode;";
 
   export const getAllFixedAssets = async (db) => {
 
@@ -475,8 +517,8 @@ import * as SQLite from 'expo-sqlite';
       
       db.withTransactionSync( async () => {
         try{
-          let rows = await db.getAllAsync(getAllFixedAssetsQueryWithBarcode, { $barcode: barcode});
-
+          let rows = await db.getFirstAsync(getAllFixedAssetsQueryWithBarcode, 
+                                          { $barcode: barcode});
           resolve(rows);
         }
         catch(error){
@@ -600,7 +642,7 @@ import * as SQLite from 'expo-sqlite';
   };
 
 
-  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id";
+  const getInventoryItemsFromViewForListId = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id;";
   const getInventoryItemsFromViewForNotChangingEmployees = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id);";
   const getInventoryItemsFromViewForNotChangingLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentLocationId = newLocationId);";
   const getInventoryItemsFromViewForNotChangingEmployeesAndLocations = "SELECT * FROM 'transfer_list_view' WHERE transferListId = $id AND (currentEmployeeId = new_employee_id) AND (currentLocationId = newLocationId);";

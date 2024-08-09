@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable, Modal } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -15,12 +15,16 @@ import Label from '@/components/slider_components/Label';
 import Notch from '@/components/slider_components/Notch';
 import { Ionicons } from '@expo/vector-icons';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllFixedAssets, getAllFixedAssetsWithNameAndBetweenRange, getFixedItemsForContainsName } from '@/db/db';
+import { getAllFixedAssets, getAllFixedAssetsWithBarcode, getAllFixedAssetsWithNameAndBetweenRange, getFixedItemsForContainsName } from '@/db/db';
 import { FixedAsset } from '../data_interfaces/fixed-asset';
+import { Icon } from '@rneui/themed';
+import CameraScanner from '@/components/camera/CameraScanner';
+import FixedAssetCardDetailedCard from '@/components/FixedAssetDetailedCard';
 
 let db: SQLiteDatabase;
 export default function HomeScreen() {
   db = useSQLiteContext();
+  const textColor = useThemeColor({}, 'text');
 
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
@@ -28,6 +32,7 @@ export default function HomeScreen() {
   
   const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
 
+ 
   useEffect(() => {
     loadFixedAssetsFromDatabase(db);
   }, []);
@@ -176,6 +181,39 @@ const styles = StyleSheet.create({
 
 });
 
+const modalStyles = StyleSheet.create({
+  modalContainer: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      padding: 8,
+  },
+  modalHeader: {
+      display: 'flex',
+      backgroundColor: 'rgba(0, 0, 0, 0.0)',
+      flexDirection: 'row-reverse',
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
+      paddingBottom: 40,
+      marginRight: 20
+  },
+  modalCloseButton: {
+      justifyContent: 'flex-end',
+  textAlign: 'center',
+  alignItems: 'center',
+  alignSelf: 'center',
+  flex: 1,
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  borderRadius: 50,
+  backgroundColor: 'rgba(200,200,200, 0.8)',
+  },
+  modalSpaceFill: {
+      flex: 10,
+  }
+
+});
+
 
 function fixedAssetAdvancedFiltering(assets: any, setAssets: any) {
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
@@ -200,6 +238,14 @@ const renderNotch = useCallback(() => <Notch/>, []);
 const [rangeDisabled, setRangeDisabled] = useState(false);
 const [floatingLabel, setFloatingLabel] = useState(false);
 
+
+const [isCameraScannerVisible, setIsCameraScannerVisible] = useState<boolean>(false);
+const [cameraScanned, setCameraScanned] = useState<boolean>(false);
+const [scannedBarCode, setScannedBarCode] = useState<string | undefined>(undefined);
+
+const openModalScanner = () => {setIsCameraScannerVisible(true);}
+const closeModalScanner = () => {setIsCameraScannerVisible(false); setCameraScanned(false);}
+
 const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
   setMinPrice(low as number);
   setMaxPrice(high as number);
@@ -219,6 +265,37 @@ const advancedFilterBarcode = () => {
   
 };
 
+const [foundAsset, setFoundAsset] = useState<FixedAsset | undefined>(undefined);
+
+function isObjectEmpty(obj: any) { 
+  return Object.keys(obj).length === 0; 
+} 
+
+const handleScannedValue = async (myScannedValue : any) => {
+  //console.log(myScannedValue); //For testing purposes
+  
+
+  const searchedAsset : any = await getAllFixedAssetsWithBarcode(db, myScannedValue);
+  setCameraScanned(true);
+  setScannedBarCode(myScannedValue.toString());
+
+  if(searchedAsset == null || isObjectEmpty(searchedAsset))
+    {
+
+    setFoundAsset(undefined);
+  }
+  else{
+
+    setFoundAsset({...searchedAsset});
+    
+  }
+}
+
+
+
+const handleNewScan = () => {
+  setCameraScanned(false);
+}
 
 
   return (
@@ -253,7 +330,7 @@ const advancedFilterBarcode = () => {
         />
         <ThemedText>{maxPrice?.toString()}</ThemedText>
       </ThemedView>
-      <Pressable style={styles.advancedBarCodeButton} onPress={advancedFilterBarcode}>
+      <Pressable style={styles.advancedBarCodeButton} onPress={openModalScanner}>
         <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
         <ThemedText style={styles.advancedFilterButtonText}>Scan Code</ThemedText>
       </Pressable>
@@ -261,6 +338,62 @@ const advancedFilterBarcode = () => {
         <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
         <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
       </Pressable>
+
+
+      <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}> 
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
+                                <Icon name="undo" type="material" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
+                    </ThemedView>
+
+                    
+                {
+                    (!cameraScanned) ? 
+                    (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                          <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                      </ThemedView>
+                      <ThemedView style={{minHeight: '66%'}}>
+                          {/* Fill with Content here */}
+                          <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                      </ThemedView>
+                    </ThemedView>)
+                    :
+                    (
+                      (foundAsset == undefined) ?
+                    (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                      <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                    </ThemedView>
+                    <ThemedView style={{minHeight: '66%'}}>
+                        {/* Fill with Content here */}
+                        <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                    </ThemedView>
+                    <ThemedView style={{minWidth: '100%',backgroundColor:'rgba(200,0,0,0.8', alignItems:'center'}}>
+                      <ThemedText type='defaultSemiBold' style={{backgroundColor:'rgba(0,0,0,0)'}}>Item with barcode: {scannedBarCode}</ThemedText>
+                      <ThemedText lightColor='red' darkColor='red' style={{backgroundColor:'rgba(0,0,0,0)'}}>Not found.</ThemedText>
+                    </ThemedView>
+                  </ThemedView>
+                  )
+                    :
+                    (
+                    <ThemedView style={{paddingVertical:'20%', backgroundColor:'rgba(0,0,0,0)' }}>
+                      {
+                        <FixedAssetCardDetailedCard setFixedAssetState={setFoundAsset} fixedAssetState={foundAsset}/>
+                      }
+                  </ThemedView>) 
+                      
+                      
+                    )
+                }
+                </ThemedView>
+            </Modal>
+
+
     </ThemedView>
 
   )

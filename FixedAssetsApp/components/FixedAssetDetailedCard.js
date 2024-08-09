@@ -206,8 +206,9 @@ const FixedAssetCardDetailedCard = (
 
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
-
+                
                 setEditMode(false);
+                Alert.alert("Fixed Asset Updated", "The fixed asset data has been successfully updated.");
             }
             catch(myError){
                 console.error(myError);

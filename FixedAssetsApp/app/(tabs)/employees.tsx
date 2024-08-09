@@ -1,4 +1,4 @@
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -58,6 +58,8 @@ export default function Employees() {
 
   const handleEmployeeAdded = async() => {
     setLoadedEmployees(await getAllEmployees(db));
+    Alert.alert("Employee Updated", "The Employee information has been successfully updated.");
+    closeShowAdd();
   }
 
 

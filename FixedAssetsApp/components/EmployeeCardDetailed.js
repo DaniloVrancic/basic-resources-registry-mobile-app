@@ -66,6 +66,7 @@ const EmployeeCardDetailed = (
             
 
             setEditMode(false);
+            Alert.alert("Employee Updated", "The Employee data has been successfully updated.");
         }
         else{
             setEditMode(true);

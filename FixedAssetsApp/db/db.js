@@ -405,6 +405,27 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  const updateLocationQuery = "UPDATE LOCATION SET name=$name, size=$size, latitude=$latitude, longitude=$longitude where id=$id;";
+
+  export const updateLocation = async (db, location) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateLocationQuery, { $name: location.name, 
+                                                                     $size: location.size, 
+                                                                     $latitude: location.latitude,
+                                                                     $longitude: location.longitude, 
+                                                                     $id: location.id});
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+}
+
   //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";

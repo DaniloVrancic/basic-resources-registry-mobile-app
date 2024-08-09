@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     textInput: {
-        paddingHorizontal: 5,   
+        paddingHorizontal: 5,
     }
     
 

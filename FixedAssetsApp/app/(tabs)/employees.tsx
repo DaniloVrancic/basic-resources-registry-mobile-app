@@ -56,7 +56,7 @@ export default function Employees() {
 
   const textColor = useThemeColor({}, 'text');
 
-  const handleEmployeeAdded = async() => {
+  const handleEmployeeAdded = async () => {
     setLoadedEmployees(await getAllEmployees(db));
     Alert.alert("Employee Updated", "The Employee information has been successfully updated.");
     closeShowAdd();

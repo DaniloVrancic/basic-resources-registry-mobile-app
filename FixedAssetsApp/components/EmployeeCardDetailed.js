@@ -296,7 +296,7 @@ const EmployeeCardDetailed = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
                         onPress={openCamera}
-                    ></Button>
+                        />
 
                     <Button
                         title="Open Photo from Gallery"
@@ -304,7 +304,7 @@ const EmployeeCardDetailed = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
                         onPress={openGallery}
-                    ></Button>
+                    />
 
                     <Button
                         title="Cancel"
@@ -312,7 +312,7 @@ const EmployeeCardDetailed = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
                         onPress={() => {setPhotoBottomSheetVisible(false);}}
-                    ></Button>
+                    />
                 
             </BottomSheet>                
         </ThemedView>

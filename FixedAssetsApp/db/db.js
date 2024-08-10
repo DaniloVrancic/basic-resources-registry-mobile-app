@@ -426,6 +426,25 @@ import * as SQLite from 'expo-sqlite';
     });
 }
 
+const addLocationQuery = `INSERT INTO location (name, size, latitude, longitude) VALUES ($name, $size, $latitude, $longitude)`;
+
+export const addLocation = async (db, location) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(addLocationQuery, { $name: location.name, 
+                                                                   $size: location.size, 
+                                                                   $latitude: location.latitude,
+                                                                   $longitude: location.longitude, 
+                                                                  });
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
   //GETTING ALL THE FIXED ASSETS ////////////////////////////////////////////////////////////////////
   
   const getAllFixedAssetsQuery = "SELECT * FROM 'fixed_asset';";
@@ -552,6 +571,28 @@ import * as SQLite from 'expo-sqlite';
     });
 }
 
+const addFixedAssetQuery = `INSERT INTO fixed_asset (name, description, barcode, price, location_id, employee_id, photoUrl) VALUES ($name, $description, $barcode, $price, $location_id, $employee_id, $photoUrl);`;
+
+export const addFixedAsset = async (db, asset) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(addFixedAssetQuery, {  $name: asset.name, 
+                                                                   $description: asset.description, 
+                                                                   $barcode: asset.barcode,
+                                                                   $price: asset.price,
+                                                                   $location_id: asset.location_id,
+                                                                   $employee_id: asset.employee_id,
+                                                                   $photoUrl: asset.photoUrl});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
 
   // GETTING INVENTORY ITEMS ////////////////////////////////////////////////////////////////////
 
@@ -573,7 +614,51 @@ import * as SQLite from 'expo-sqlite';
     });
   };
 
+  const addInventoryItemForListQuery = `INSERT INTO inventory_item (fixed_asset_id, transfer_list_id, currentEmployeeId, new_employee_id, currentLocationId, newLocationId) VALUES ($fixed_asset_id, $transfer_list_id, $currentEmployeeId, $new_employee_id, $currentLocationId, $newLocationId)`;
 
+  export const addInventoryItemForList = async (db, item) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(addInventoryItemForListQuery, {  $fixed_asset_id: item.fixed_asset_id, 
+                                                                     $transfer_list_id: item.transfer_list_id, 
+                                                                     $currentEmployeeId: item.currentEmployeeId,
+                                                                     $new_employee_id: item.new_employee_id,
+                                                                     $currentLocationId: item.currentLocationId,
+                                                                     $newLocationId: item.newLocationId,
+                                                                     });
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  }
+
+  const updateInventoryItemForListQuery = `UPDATE inventory_item SET currentEmployeeId = $currentEmployeeId, new_employee_id = $new_employee_id, currentLocationId = $currentLocationId, newLocationId = $newLocationId WHERE (fixed_asset_id = $fixed_asset_id AND transfer_list_id = $transfer_list_id)`;
+
+  export const updateInventoryItemForList = async (db, item) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateInventoryItemForListQuery, {  $fixed_asset_id: item.fixed_asset_id, 
+                                                                     $transfer_list_id: item.transfer_list_id, 
+                                                                     $currentEmployeeId: item.currentEmployeeId,
+                                                                     $new_employee_id: item.new_employee_id,
+                                                                     $currentLocationId: item.currentLocationId,
+                                                                     $newLocationId: item.newLocationId,
+                                                                     });
+          
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  }
   //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
 
   const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
@@ -693,4 +778,24 @@ import * as SQLite from 'expo-sqlite';
       });
     });
   };
+
+  const addTransferListQuery = `INSERT INTO transfer_list (name) VALUES ($name)`;
+
+  export const addTransferList = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(addFiaddTransferListQueryxedAssetQuery, {  $name: name, 
+                                                                    });
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  }
+
+  
+  
 

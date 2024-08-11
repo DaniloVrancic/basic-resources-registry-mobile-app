@@ -206,16 +206,12 @@ const FixedAssetCardDetailedCard = (
 
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
-
                 setEditMode(false);
+                Alert.alert("Fixed Asset Updated", "The fixed asset data has been successfully updated.");
             }
             catch(myError){
                 console.error(myError);
             }
-            
-            
-
-            
         }
     }
 
@@ -236,8 +232,7 @@ const FixedAssetCardDetailedCard = (
                 style={styles.icon}
                 color="black"
                 name="Safety"
-                size={20}
-              />
+                size={20}/>
             )}
           </ThemedView>
         );
@@ -540,7 +535,7 @@ const FixedAssetCardDetailedCard = (
                     />
 
                     <Button
-                        title="Cancel"
+                        title="Close"
                         buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}

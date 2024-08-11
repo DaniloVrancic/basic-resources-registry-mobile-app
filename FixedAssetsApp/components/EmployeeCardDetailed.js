@@ -66,6 +66,7 @@ const EmployeeCardDetailed = (
             
 
             setEditMode(false);
+            Alert.alert("Employee Updated", "The Employee data has been successfully updated.");
         }
         else{
             setEditMode(true);
@@ -295,7 +296,7 @@ const EmployeeCardDetailed = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
                         onPress={openCamera}
-                    ></Button>
+                        />
 
                     <Button
                         title="Open Photo from Gallery"
@@ -303,15 +304,15 @@ const EmployeeCardDetailed = (
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
                         onPress={openGallery}
-                    ></Button>
+                    />
 
                     <Button
-                        title="Cancel"
+                        title="Close"
                         buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
                         onPress={() => {setPhotoBottomSheetVisible(false);}}
-                    ></Button>
+                    />
                 
             </BottomSheet>                
         </ThemedView>

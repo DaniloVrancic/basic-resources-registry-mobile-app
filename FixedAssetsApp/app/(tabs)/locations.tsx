@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "../../components/ThemedText"
 import { ThemedView } from "../..//components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -17,6 +17,7 @@ import LoadingAnimation from '@/components/fallback/LoadingAnimation';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForContainsNameAndBetweenRange } from '@/db/db';
 import { Location } from '../data_interfaces/location';
+import AddLocationForm from '@/components/AddLocationForm';
 
 let db: SQLiteDatabase;
 export default function Locations() {
@@ -24,9 +25,16 @@ export default function Locations() {
   db = useSQLiteContext();
   const [loadedLocations, setLoadedLocations] = useState([]);
 
+  const [showAddLocation, setShowAddLocation] = useState<boolean>(false);
+
+  const openShowAdd = () => {setShowAddLocation(true);}
+  const closeShowAdd = () => {setShowAddLocation(false);}
+
   useEffect(() => {
     loadLocationsFromDatabase(db);
   }, []);
+
+  const textColor = useThemeColor({}, 'text');
 
   const loadLocationsFromDatabase = async (db: SQLiteDatabase) => {
     try {
@@ -42,6 +50,10 @@ export default function Locations() {
     } catch (error) {
       console.error('Error loading Fixed Assets: ', error);
     }
+  }
+
+  const handleLocationAdded = () => {
+
   }
 
   return (
@@ -73,6 +85,23 @@ export default function Locations() {
               </ScrollView>
           </Suspense>
           </ThemedView>
+
+          <Modal visible={showAddLocation} animationType="slide">
+          <ScrollView>
+            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+              <ThemedView style={modalStyles.modalHeader}>
+                <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
+                  <Ionicons name="close" size={24} color={textColor} />
+                </Pressable>
+                <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
+              </ThemedView>
+                {
+                  //Rest of the container here
+                }
+                <AddLocationForm onAddNewLocation={() => handleLocationAdded()}/>
+            </ThemedView>
+            </ScrollView>
+        </Modal>
       </SafeAreaView>
     
   )
@@ -148,6 +177,40 @@ const styles = StyleSheet.create({
       // Add additional styling as needed
     },
   });
+
+  const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+        overflow:'scroll'
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20,
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+
+});
 
 
 

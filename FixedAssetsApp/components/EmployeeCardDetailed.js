@@ -76,7 +76,7 @@ const EmployeeCardDetailed = (
 
         if(isNaN(parseInt(myNumber)))
         {
-            myNumber.replace("NaN", "");
+            myNumber.replace("NaN", ""); // Will convert the output which is "NaN" to an empty string to display properly.
             setInputIncome(0);
         }
         else{

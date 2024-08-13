@@ -20,6 +20,7 @@ import { FixedAsset } from '../data_interfaces/fixed-asset';
 import { Icon } from '@rneui/themed';
 import CameraScanner from '@/components/camera/CameraScanner';
 import FixedAssetCardDetailedCard from '@/components/FixedAssetDetailedCard';
+import AddNewFixedAsset from '@/components/AddFixedAssetForm';
 
 let db: SQLiteDatabase;
 export default function HomeScreen() {
@@ -31,6 +32,10 @@ export default function HomeScreen() {
 
   
   const [loadedFixedAssets, setLoadedFixedAssets] = useState([]);
+  const [showAddFixedAsset, setShowAddList] = useState<boolean>(false);
+
+  const openShowAdd = () => {setShowAddList(true);}
+  const closeShowAdd = () => {setShowAddList(false);}
 
  
   useEffect(() => {
@@ -53,6 +58,14 @@ export default function HomeScreen() {
     }
   }
 
+  const handleFixedAssetAdded = async () => {
+    try {
+      setLoadedFixedAssets(await getAllFixedAssets(db));
+    } catch (error) {
+      console.error('Error loading Fixed Assets: ', error);
+    }
+  }
+
 
   return (
     
@@ -60,7 +73,7 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
-                onAddClick={() => { console.log("Employees default click") }}
+                onAddClick={() => { openShowAdd(); }}
                 filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
                 renderAddButton={true}
                 renderAdvancedFilterButton={true}
@@ -82,6 +95,24 @@ export default function HomeScreen() {
                 )}
             </ScrollView>
           </ThemedView>
+
+          <Modal visible={showAddFixedAsset} animationType="slide">
+          <ScrollView>
+            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+              <ThemedView style={modalStyles.modalHeader}>
+                <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
+                  <Ionicons name="close" size={24} color={textColor} />
+                </Pressable>
+                <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
+              </ThemedView>
+                {
+                  //Rest of the container here
+                  <AddNewFixedAsset onAssetAdded={() => handleFixedAssetAdded()}/>
+                }
+               
+            </ThemedView>
+            </ScrollView>
+        </Modal>
       
     </SafeAreaView>
   );

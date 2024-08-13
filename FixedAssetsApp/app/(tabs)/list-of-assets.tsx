@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -18,11 +18,14 @@ import { getAllInventoryLists, getAllInventoryListsForContainsName, getAllInvent
 import InventoryItemList from '@/components/InventoryItemList';
 import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
+import AddLocationForm from '@/components/AddLocationForm';
 
 let db: SQLiteDatabase;
 export default function ListOfAssets() {
 
   db = useSQLiteContext();
+  const textColor = useThemeColor({}, 'text');
+
   const [loadedLists, setLoadedLists] = useState([]);
 
   const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "", isChangingEmployee: true, isChangingLocation: true};
@@ -30,6 +33,11 @@ export default function ListOfAssets() {
     
   const [searchChangingEmployee, setSearchChangingEmployee] = useState(true);
   const [searchChangingLocation, setSearchChangingLocation] = useState(true);
+
+  const [showAddFixedAsset, setShowAddList] = useState<boolean>(false);
+
+  const openShowAdd = () => {setShowAddList(true);}
+  const closeShowAdd = () => {setShowAddList(false);}
 
   useEffect(() => {
     loadInventoryTransferLists(db);
@@ -50,6 +58,10 @@ export default function ListOfAssets() {
       console.error('Error loading Inventory Lists: ', error);
     }
   }
+
+  const handleListAdded = async () => {}
+
+
 
   return (
       <SafeAreaView style={styles.safeArea}>
@@ -77,6 +89,25 @@ export default function ListOfAssets() {
              }
             </ScrollView>
           </ThemedView>
+
+
+        <Modal visible={showAddFixedAsset} animationType="slide">
+          <ScrollView>
+            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+              <ThemedView style={modalStyles.modalHeader}>
+                <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
+                  <Ionicons name="close" size={24} color={textColor} />
+                </Pressable>
+                <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
+              </ThemedView>
+                {
+                  //Rest of the container here
+                }
+               
+            </ThemedView>
+            </ScrollView>
+        </Modal>
+
       </SafeAreaView>
   )
 }
@@ -158,6 +189,40 @@ const styles = StyleSheet.create({
       marginRight: 10,
     },
   });
+
+  const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+        overflow:'scroll'
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20,
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+
+});
 
   function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any, loadedLists: any, setLoadedLists: any) {
 

@@ -1,27 +1,38 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert, Pressable, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Dropdown } from 'react-native-element-dropdown'; // assuming you're using a dropdown library
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addFixedAsset } from '@/db/db';
+import { ThemedView } from './ThemedView';
+import { ThemedText } from './ThemedText';
+import { Icon } from '@rneui/themed';
+import CameraScanner from './camera/CameraScanner';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 
 let db: SQLiteDatabase;
 const AddNewFixedAsset = ({ onAssetAdded }: any) => {
+
+    const textColor = useThemeColor({}, 'text');
+
     const [name, setName] = useState('');
-    const [category, setCategory] = useState('');
+    const [description, setDescription] = useState('');
+    const [employee, setEmployee] = useState('');
     const [location, setLocation] = useState('');
     const [value, setValue] = useState('');
     const [barcode, setBarcode] = useState('');
-    const [image, setImage] = useState(null);
+    const [photoUrl, setPhotoUrl] = useState(null);
+
     const [isScanning, setIsScanning] = useState(false);
+    const [cameraScanned, setCameraScanned] = useState(false);
 
 
     db = useSQLiteContext();
 
     const validateForm = () => {
-        if (!name || !category || !location || !value || !barcode) {
+        if (!name || !employee || !location || !value || !barcode) {
             Alert.alert("Error", "All fields except image are mandatory.");
             return false;
         }
@@ -41,7 +52,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setPhotoUrl(result.assets[0].uri);
         }
     };
 
@@ -50,11 +61,12 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             // Add asset to database here
             const newAsset = {
                 name,
-                category,
+                description,
                 location,
                 value: parseFloat(value),
                 barcode,
-                image
+                employee,
+                photoUrl
             };
             // Assume addAssetToDatabase is a function that adds the asset to your database
             addFixedAsset(newAsset);
@@ -64,11 +76,12 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
             // Clear form
             setName('');
-            setCategory('');
+            setDescription('');
             setLocation('');
             setValue('');
             setBarcode('');
-            setImage(null);
+            setEmployee('');
+            setPhotoUrl(null);
         }
     };
 
@@ -77,9 +90,25 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
         setIsScanning(false);
     };
 
+    const handleScannedValue = (myScannedValue: any) => {
+        setBarcode(myScannedValue);
+        setCameraScanned(true);
+    }
+
+    const handleNewScan = () => {
+        setBarcode('');
+        setCameraScanned(false);
+    }
+
+    const openModalScanner = () => {setCameraScanned(false); setIsScanning(true)};
+    const closeModalScanner = () => setIsScanning(false);
+
     return (
-        <View style={styles.formContainer}>
-            <Text style={styles.label}>Name</Text>
+        <ThemedView style={styles.formContainer}>
+            <ThemedView>
+                <ThemedText type='title'>Add New Fixed Asset</ThemedText>
+            </ThemedView>
+            <ThemedText style={styles.label}>Name</ThemedText>
             <TextInput
                 style={styles.textInput}
                 value={name}
@@ -87,33 +116,52 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 placeholder="Enter asset name"
             />
 
-            <Text style={styles.label}>Category</Text>
+            <ThemedText style={styles.label}>Description</ThemedText>
+            <TextInput
+                style={[styles.textInput, styles.descriptionInput]}
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Enter asset description"
+                multiline
+            />
+
+            <ThemedText style={styles.label}>Location</ThemedText>
             <Dropdown
                 style={dropdownStyles.dropdown}
                 placeholderStyle={dropdownStyles.placeholderStyle}
                 selectedTextStyle={dropdownStyles.selectedTextStyle}
                 data={[
-                    { label: 'Category 1', value: 'category1' },
-                    { label: 'Category 2', value: 'category2' },
-                    // Add more categories as needed
+                    { label: 'Location 1', value: 'location1' },
+                    { label: 'Location 2', value: 'location2' },
+                    // Add more locations as needed
                 ]}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder="Select category"
-                value={category}
-                onChange={item => setCategory(item.value)}
-            />
-
-            <Text style={styles.label}>Location</Text>
-            <TextInput
-                style={styles.textInput}
+                placeholder="Select location"
                 value={location}
-                onChangeText={setLocation}
-                placeholder="Enter asset location"
+                onChange={item => setLocation(item.value)}
             />
 
-            <Text style={styles.label}>Value</Text>
+            <ThemedText style={styles.label}>Employee</ThemedText>
+            <Dropdown
+                style={dropdownStyles.dropdown}
+                placeholderStyle={dropdownStyles.placeholderStyle}
+                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                data={[
+                    { label: 'Employee 1', value: 'employee1' },
+                    { label: 'Employee 2', value: 'employee2' },
+                    // Add more employees as needed
+                ]}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Select employee"
+                value={employee}
+                onChange={item => setEmployee(item.value)}
+            />
+
+            <ThemedText style={styles.label}>Value</ThemedText>
             <TextInput
                 style={styles.textInput}
                 value={value}
@@ -122,37 +170,65 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 keyboardType="numeric"
             />
 
-            <Text style={styles.label}>Barcode</Text>
-            <View style={styles.barcodeInputContainer}>
+            <ThemedText style={styles.label}>Barcode</ThemedText>
+            <ThemedView style={styles.barcodeInputContainer}>
                 <TextInput
                     style={[styles.textInput, styles.barcodeInput]}
                     value={barcode}
                     onChangeText={setBarcode}
                     placeholder="Scan or enter barcode"
                 />
-                <Button title="Scan Barcode" onPress={() => setIsScanning(true)} />
-            </View>
+                <ThemedView>
+                    <Button title="Scan Barcode" onPress={() => setIsScanning(true)} color='#F4A300' />
+                </ThemedView>
+            </ThemedView>
 
-            {isScanning && (
-                <BarCodeScanner
-                    onBarCodeScanned={handleBarCodeScanned}
-                    style={StyleSheet.absoluteFillObject}
-                />
-            )}
-
-            <Text style={styles.label}>Photo (Optional)</Text>
-            <TouchableOpacity onPress={handleImagePicker}>
-                <View style={styles.imagePicker}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={styles.image} />
+            <ThemedText style={styles.label}>Photo (Optional)</ThemedText>
+            <Pressable onPress={handleImagePicker}>
+                <ThemedView style={styles.imagePicker}>
+                    {photoUrl ? (
+                        <Image source={{ uri: photoUrl }} style={styles.image} />
                     ) : (
                         <Text style={styles.imagePlaceholder}>Select Image</Text>
                     )}
-                </View>
-            </TouchableOpacity>
+                </ThemedView>
+            </Pressable>
 
             <Button title="Add Asset" onPress={handleAddAsset} />
-        </View>
+
+            {isScanning && (
+                <Modal animationType="fade" transparent={true}> 
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
+                                <Icon name="undo" type="material" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
+                    </ThemedView>
+
+                    <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                    </ThemedView>
+                    <ThemedView>
+                         {/* Fill with Content here */}
+                         <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                    </ThemedView>
+                </ThemedView>
+                {
+                    (!cameraScanned) ? 
+                    (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>No Code Found</ThemedText>
+                    </ThemedView>)
+                    :
+                    (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
+                    </ThemedView>)
+                }
+              </Modal>  
+            )}
+        </ThemedView>
     );
 };
 
@@ -169,7 +245,6 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 8,
         padding: 8,
-        marginBottom: 16,
     },
     barcodeInputContainer: {
         flexDirection: 'row',
@@ -177,7 +252,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     barcodeInput: {
-        flex: 1,
+        minWidth: '40%',
+        marginRight: 10,
     },
     imagePicker: {
         borderWidth: 1,
@@ -196,6 +272,10 @@ const styles = StyleSheet.create({
     },
     imagePlaceholder: {
         color: 'gray',
+    },
+    descriptionInput: {
+        height: 100,
+        textAlignVertical: 'top',
     },
 });
 
@@ -251,6 +331,39 @@ const dropdownStyles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
+});
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+
 });
 
 export default AddNewFixedAsset;

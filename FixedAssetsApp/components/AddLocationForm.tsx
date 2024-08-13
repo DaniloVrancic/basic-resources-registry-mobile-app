@@ -37,16 +37,17 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
     };
 
     
-    Alert.alert("Added new location", "New location has been saved.");
+    
     var newAddedLocation = await addLocation(db, newLocation);
 
-    console.log(newAddedLocation);
     
     // Reset state after saving
     setLocationName('');
     setLocationSize('');
     setMarkerCoords(null);
     onAddNewLocation(); //Trigger this method
+
+    Alert.alert("Added new location", "New location has been saved.");
   };
 
   return (
@@ -64,15 +65,17 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
         keyboardType="numeric"
         onChangeText={setLocationSize}
       />
-      <MapView style={styles.map} onPress={handleMapPress}>
-        {markerCoords && (
-          <Marker
-            coordinate={markerCoords}
-            draggable
-            onDragEnd={(e) => setMarkerCoords(e.nativeEvent.coordinate)}
-          />
-        )}
-      </MapView>
+      <ThemedView style={styles.mapContainer}>
+          <MapView style={styles.map} onPress={handleMapPress}>
+            {markerCoords && (
+              <Marker
+                coordinate={markerCoords}
+                draggable
+                onDragEnd={(e) => setMarkerCoords(e.nativeEvent.coordinate)}
+              />
+            )}
+          </MapView>
+      </ThemedView>
       <ThemedView style={styles.buttonContainer}>
         <Pressable style={styles.saveButton} onPress={handleSaveLocation}>
           <ThemedText style={styles.buttonText}>Save</ThemedText>
@@ -110,12 +113,17 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-    height: 300,
+    minHeight: '90%',
+    height: '100%',
     marginBottom: 16,
+  },
+  mapContainer: {
+    height: 350
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    backgroundColor: 'rgba(0,0,0,0.0)'
   },
   saveButton: {
     backgroundColor: 'green',

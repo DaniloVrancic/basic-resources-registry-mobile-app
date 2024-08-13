@@ -52,15 +52,16 @@ export default function Locations() {
     }
   }
 
-  const handleLocationAdded = () => {
-
+  const handleLocationAdded = async () => {
+    setLoadedLocations(await getAllLocations(db));
+    closeShowAdd();
   }
 
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
-              onAddClick={() => { console.log("Location default click") }}
+              onAddClick={() => { openShowAdd(); }}
               filterChildren={locationAdvancedFiltering(loadedLocations, setLoadedLocations)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}

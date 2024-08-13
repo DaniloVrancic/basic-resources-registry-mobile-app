@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert, Pressable, Modal } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {  Text, TextInput, StyleSheet, Image, Alert, Pressable, Modal, PermissionsAndroid } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Dropdown } from 'react-native-element-dropdown'; // assuming you're using a dropdown library
-import { BarCodeScanner } from 'expo-barcode-scanner';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { addFixedAsset } from '@/db/db';
+import { addFixedAsset, getAllEmployees, getAllLocations } from '@/db/db';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
-import { Icon } from '@rneui/themed';
+import { BottomSheet, Button, Icon } from '@rneui/themed';
 import CameraScanner from './camera/CameraScanner';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
+
 
 
 let db: SQLiteDatabase;
@@ -19,24 +20,105 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [employee, setEmployee] = useState('');
-    const [location, setLocation] = useState('');
-    const [value, setValue] = useState('');
+    const [employee, setEmployee] = useState<number>(-1);
+    const [location, setLocation] = useState<number>(-1);
+    const [price, setPrice] = useState<string>('');
     const [barcode, setBarcode] = useState('');
     const [photoUrl, setPhotoUrl] = useState(null);
 
     const [isScanning, setIsScanning] = useState(false);
     const [cameraScanned, setCameraScanned] = useState(false);
 
+    const [possibleEmployees, setPossibleEmployees] = useState<any[]>([]);
+    const [possibleLocations, setPossibleLocations] = useState<any[]>([]);
+
+    const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
+
 
     db = useSQLiteContext();
 
+    useEffect(() => {
+        loadEmployeesFromDatabase(db);
+        loadLocationsFromDatabase(db);
+    }, 
+    []);
+
+          /*
+       * The code below will fetch all the Employee data from the database and correctly filter only the data that we will use.
+       * This data is then bound to the State which will be used to display all the possible Employees to select in a drop down menu.
+       */
+          const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
+            try {
+                var fetchedEmployees = (await getAllEmployees(db));
+                var valuesToReturn: any[] = [];
+    
+                fetchedEmployees.forEach((element: any) => {
+                    var mappedElement: any = { label: element.name, value: element.id};
+                    valuesToReturn.push(mappedElement);
+                });
+                setPossibleEmployees(valuesToReturn);
+            } catch (error) {
+              console.error('Error loading employees:', error);
+            }
+          };
+    
+    
+          /*
+           * The code below will fetch all the Location data from the database and correctly filter only the data that we will use.
+           * This data is then bound to the State which will be used to display all the possible locations to select in a drop down menu.
+           */
+        const loadLocationsFromDatabase = async (db : SQLiteDatabase) => {
+            try {
+                var fetchedLocations = (await getAllLocations(db));
+                var valuesToReturn : any[] = [];
+    
+                fetchedLocations.forEach((element : any) => {
+                    var mappedElement = { label: element.name, value: element.id};
+                    valuesToReturn.push(mappedElement);
+                });
+                setPossibleLocations(valuesToReturn);
+            } catch (error) {
+              console.error('Error loading employees:', error);
+            }
+          };
+
+    const handleChangePrice = (myNumber: any) => {
+        if(myNumber === ""){
+            setPrice(myNumber);
+            return;
+        }
+        // Allow only digits and a single dot
+        const validNumber = myNumber.replace(/[^0-9.]/g, '');
+        
+        // Check if the string has more than one dot
+        const dotCount = (validNumber.match(/\./g) || []).length;
+        
+        // If there is more than one dot, keep the current inputPrice
+        if (dotCount > 1) {
+            return;
+        }
+        
+        // Allow empty string to reset the input
+        if (validNumber === '') {
+            setPrice('');
+            return;
+        }
+        
+        // Parse the number
+        const parsedNumber = parseFloat(validNumber);
+        
+        // Set inputPrice to the parsed number if it's a valid number or just the validNumber
+        if (!isNaN(parsedNumber) || validNumber === '.') {
+            setPrice(validNumber);
+        }
+    };
+
     const validateForm = () => {
-        if (!name || !employee || !location || !value || !barcode) {
+        if (!name || !employee || !location || !price || !barcode) {
             Alert.alert("Error", "All fields except image are mandatory.");
             return false;
         }
-        if (isNaN(parseInt(value))) {
+        if (isNaN(parseInt(price))) {
             Alert.alert("Error", "Value must be a number.");
             return false;
         }
@@ -44,32 +126,78 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
     };
 
     const handleImagePicker = async () => {
-        let result : any = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
+        setPhotoBottomSheetVisible(true);
+    };
 
-        if (!result.canceled) {
-            setPhotoUrl(result.assets[0].uri);
+    let options: any = {
+        saveToPhotos: true,
+        mediaType: 'photo',
+        height: 1024,
+        width: 768
+    }
+
+    const openCamera = async () => {
+        try{
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                  title: "Camera Permission to use for App",
+                  message:"My Asset Manager needs access to your camera for this feature to work. ",
+                  buttonNeutral: "Ask Me Later",
+                  buttonNegative: "Cancel",
+                  buttonPositive: "OK"
+                }
+              );
+
+              let result: any;
+                
+                if(granted === PermissionsAndroid.RESULTS.GRANTED){
+                    console.log(granted);
+                    
+                    result = await ImagePicker.launchCameraAsync(options);
+                      
+                }
+                else{
+                    console.log("Permission not given.");
+                }
+               
+
+                    const resultPhotoUri = (result.assets[0].uri);
+                    setPhotoUrl(resultPhotoUri);
+                
+                
+        }
+        catch(error)
+        {
+            console.error(error);
         }
     };
 
-    const handleAddAsset = () => {
+
+
+    const openGallery = async () => {
+        const result: any = await ImagePicker.launchImageLibraryAsync(options);
+        const resultUri: any = result.assets[0].uri;
+        setPhotoUrl(resultUri);
+    }
+
+    const handleAddAsset = async () => {
         if (validateForm()) {
             // Add asset to database here
-            const newAsset = {
+            const newAsset: FixedAsset = {
                 name,
+                creationDate: new Date(),
                 description,
-                location,
-                value: parseFloat(value),
                 barcode,
-                employee,
-                photoUrl
+                price: parseFloat(price),
+                photoUrl: (photoUrl) ? photoUrl : "",
+                employee_id: employee,
+                location_id: location
+
+
             };
             // Assume addAssetToDatabase is a function that adds the asset to your database
-            addFixedAsset(newAsset);
+            let result = await addFixedAsset(db, newAsset);
 
             // Trigger callback to notify parent component
             onAssetAdded && onAssetAdded(newAsset);
@@ -77,10 +205,10 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             // Clear form
             setName('');
             setDescription('');
-            setLocation('');
-            setValue('');
+            setPrice('');
             setBarcode('');
-            setEmployee('');
+            setEmployee(-1);
+            setLocation(-1);
             setPhotoUrl(null);
         }
     };
@@ -130,17 +258,13 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 style={dropdownStyles.dropdown}
                 placeholderStyle={dropdownStyles.placeholderStyle}
                 selectedTextStyle={dropdownStyles.selectedTextStyle}
-                data={[
-                    { label: 'Location 1', value: 'location1' },
-                    { label: 'Location 2', value: 'location2' },
-                    // Add more locations as needed
-                ]}
+                data={possibleLocations}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="Select location"
                 value={location}
-                onChange={item => setLocation(item.value)}
+                onChange={item => setLocation(item.value as number)}
             />
 
             <ThemedText style={styles.label}>Employee</ThemedText>
@@ -148,11 +272,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 style={dropdownStyles.dropdown}
                 placeholderStyle={dropdownStyles.placeholderStyle}
                 selectedTextStyle={dropdownStyles.selectedTextStyle}
-                data={[
-                    { label: 'Employee 1', value: 'employee1' },
-                    { label: 'Employee 2', value: 'employee2' },
-                    // Add more employees as needed
-                ]}
+                data={possibleEmployees}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
@@ -164,9 +284,9 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedText style={styles.label}>Value</ThemedText>
             <TextInput
                 style={styles.textInput}
-                value={value}
-                onChangeText={setValue}
-                placeholder="Enter asset value"
+                value={price}
+                onChangeText={handleChangePrice}
+                placeholder="Enter asset value ($)"
                 keyboardType="numeric"
             />
 
@@ -226,8 +346,38 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
                     </ThemedView>)
                 }
-              </Modal>  
+              </Modal>
+                
             )}
+
+            <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
+                        
+                <Button
+                    title="Take Photo with Camera"
+                    buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
+                    titleStyle={{fontSize: 20}}
+                    icon={{name: 'camera', type: 'ionicon', color:"white"}}
+                    onPress={openCamera}
+                />
+
+                <Button
+                    title="Open Photo from Gallery"
+                    buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
+                    titleStyle={{fontSize: 20}}
+                    icon={{name: 'photo', color:"white"}}
+                    onPress={openGallery}
+                />
+
+                <Button
+                    title="Close"
+                    buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
+                    titleStyle={{fontSize: 20}}
+                    icon={{name: 'x', type: 'foundation'}}
+                    onPress={() => {setPhotoBottomSheetVisible(false);}}
+                    />
+            
+            </BottomSheet>
+
         </ThemedView>
     );
 };

@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable, Modal } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable, Modal, Alert } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -60,9 +60,10 @@ export default function HomeScreen() {
 
   const handleFixedAssetAdded = async () => {
     try {
-      setLoadedFixedAssets(await getAllFixedAssets(db));
+        setLoadedFixedAssets(await getAllFixedAssets(db));
+        Alert.alert("New Fixed Asset Added", "New Fixed Asset has been successfully added!");
     } catch (error) {
-      console.error('Error loading Fixed Assets: ', error);
+        console.error('Error loading Fixed Assets: ', error);
     }
   }
 

@@ -516,7 +516,7 @@ const FixedAssetCardDetailedCard = (
                             </Pressable>}
                         </ThemedView>
 
-                        <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
+                <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
                 
                     <Button
                         title="Take Photo with Camera"

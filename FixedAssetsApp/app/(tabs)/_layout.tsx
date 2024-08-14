@@ -22,7 +22,9 @@ export default function TabLayout() {
       if (!db) {
         throw new Error("Database connection returned null or undefined");
       }
+      
       await createTables(db);
+      
     } catch (error: any) {
       console.error(error.message);
       console.error(error.stack);

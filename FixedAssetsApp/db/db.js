@@ -8,6 +8,19 @@ import * as SQLite from 'expo-sqlite';
   }
 
   export const createTables = async (db) => {
+
+    console.log("CREATING TABLES!");
+    const dropViewQuery = `DROP VIEW IF EXISTS "transfer_list_view";`;
+
+    const dropTablesQuery = `
+      DROP TABLE IF EXISTS 'inventory_item';
+      DROP TABLE IF EXISTS 'fixed_asset';
+      DROP TABLE IF EXISTS 'transfer_list';
+      DROP TABLE IF EXISTS 'location';
+      DROP TABLE IF EXISTS 'employee';
+    `;
+
+
     const employeeTableQuery = `
       CREATE TABLE IF NOT EXISTS 'employee' (
         'id' INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,18 +113,48 @@ import * as SQLite from 'expo-sqlite';
     `
 
     try {
-      await db.execAsync('PRAGMA journal_mode = WAL');
-      await db.execAsync('PRAGMA foreign_keys = ON');
 
-      await db.runAsync(locationTableQuery);
+
+      /* //THIS IS GOING TO DROP AND RESET THE TABLES IF NECESSARY (Supposed to be easy to access for devs to quickly reset their (OLD) versions of the database for a quick reset)
+      await db.withTransactionSync( () => {
+        try{
+          
+          db.runSync(dropViewQuery);
+          db.runSync(dropTablesQuery);
+        }
+        catch(error){
+          console.error(error);
+        }
+      });
+      */
+
+      await db.withTransactionSync( () => {
+        try{
+          
+          db.runSync(locationTableQuery);
+          db.runSync(employeeTableQuery);
+          db.runSync(fixedAssetTableQuery);
+          db.runSync(transferListQuery);
+          db.runSync(inventoryItemQuery);
+          db.runSync(createViewForTransferLists);
+        }
+        catch(error){
+          console.error(error);
+        }
+      });
+      
+
+      //await db.execAsync(dropViewQuery + dropTablesQuery);
+      //await db.execAsync('PRAGMA journal_mode = WAL;')
+      //await db.runAsync(locationTableQuery);
       // console.log("after Location table");
-      await db.runAsync(employeeTableQuery);
+      //await db.runAsync(employeeTableQuery);
       // console.log("after Employee table");
-      await db.runAsync(fixedAssetTableQuery);
+      //await db.runAsync(fixedAssetTableQuery);
       // console.log("after Fixed Asset table");
-      await db.runAsync(transferListQuery);
+      //await db.runAsync(transferListQuery);
       // console.log("after Transfer List table");
-      await db.runAsync(inventoryItemQuery);
+      //await db.runAsync(inventoryItemQuery);
       // console.log("after Inventory Item table");
       
 
@@ -120,12 +163,14 @@ import * as SQLite from 'expo-sqlite';
       throw Error(`Failed to create tables`);
     }
 
+    
     try{
-      await db.runAsync(createViewForTransferLists)
+      //await db.runAsync(createViewForTransferLists)
     } catch(error) {
       console.error(error);
       throw Error('Failed to create Views');
     }
+      
 
     try{
       await insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty

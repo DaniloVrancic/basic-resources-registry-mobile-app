@@ -67,6 +67,17 @@ export default function HomeScreen() {
     }
   }
 
+  const handleDeletedFixedItem = (id: number) => {
+    try{
+      var fixedAssetsWithoutDeletedAsset = loadedFixedAssets.filter((val: FixedAsset) => val.id != id);
+      setLoadedFixedAssets(fixedAssetsWithoutDeletedAsset);
+      Alert.alert("Success", "Fixed Asset has been successfully deleted!");
+    } catch (error) {
+      console.error('Error Removing Fixed Asset: ', error);
+  }
+
+  }
+
 
   return (
     
@@ -91,7 +102,7 @@ export default function HomeScreen() {
               {/* Add more employees or your dynamic list here */}
                 {loadedFixedAssets.map((fixedAsset: FixedAsset) =>
                   <ThemedView key={fixedAsset.id} style={styles.fixedAssetCardContainer}>
-                    <FixedAssetCard key={fixedAsset.id} {...fixedAsset}/>
+                    <FixedAssetCard key={fixedAsset.id} onDeletedFixedAsset={() => {handleDeletedFixedItem(fixedAsset.id as number)}} {...fixedAsset}/>
                   </ThemedView> 
                 )}
             </ScrollView>

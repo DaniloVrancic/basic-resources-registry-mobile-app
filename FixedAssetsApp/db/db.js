@@ -35,11 +35,11 @@ import * as SQLite from 'expo-sqlite';
      'barcode' TEXT NOT NULL,
      'price' REAL NOT NULL,
      'creationDate' TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-     'location_id' INTEGER NOT NULL,
-     'employee_id' INTEGER NOT NULL,
+     'location_id' INTEGER,
+     'employee_id' INTEGER,
      'photoUrl' TEXT,
-      FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-      FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION);
+      FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE SET NULL ON UPDATE NO ACTION,
+      FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE SET NULL ON UPDATE NO ACTION);
     `
 
     const transferListQuery = `
@@ -58,12 +58,12 @@ import * as SQLite from 'expo-sqlite';
     'currentLocationId' INTEGER NOT NULL,
     'newLocationId' INTEGER NOT NULL,
     PRIMARY KEY ('fixed_asset_id', 'transfer_list_id'),
-    FOREIGN KEY ('fixed_asset_id') REFERENCES 'fixed_asset' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('transfer_list_id') REFERENCES 'transfer_list' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('currentEmployeeId') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('new_employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('currentLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('newLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION
+    FOREIGN KEY ('fixed_asset_id') REFERENCES 'fixed_asset' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('transfer_list_id') REFERENCES 'transfer_list' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentEmployeeId') REFERENCES 'employee' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('new_employee_id') REFERENCES 'employee' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentLocationId') REFERENCES 'location' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('newLocationId') REFERENCES 'location' ('id') ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
     CREATE INDEX IF NOT EXISTS 'fk_inventory_item_transfer_list1_idx' ON 'inventory_item' ('transfer_list_id');
@@ -569,6 +569,22 @@ export const addLocation = async (db, location) => {
         }
       });
     });
+}
+
+const deleteFixedAssetByIdQuery = "DELETE FROM fixed_asset WHERE id = $id;";
+export const deleteFixedAssetById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteFixedAssetByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
 }
 
 const addFixedAssetQuery = `INSERT INTO fixed_asset (name, description, barcode, price, location_id, employee_id, photoUrl) VALUES ($name, $description, $barcode, $price, $location_id, $employee_id, $photoUrl);`;

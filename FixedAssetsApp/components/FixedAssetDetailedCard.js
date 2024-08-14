@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal } from "react-native";
+import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal, Alert } from "react-native";
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
@@ -6,7 +6,7 @@ import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { updateFixedAsset, getAllEmployees, getAllLocations } from "@/db/db";
+import { updateFixedAsset, getAllEmployees, getAllLocations, deleteFixedAssetById } from "@/db/db";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Dropdown } from "react-native-element-dropdown";
@@ -15,7 +15,8 @@ import CameraScanner from "./camera/CameraScanner";
 let db;
 const FixedAssetCardDetailedCard = (
     {fixedAssetState,
-    setFixedAssetState
+    setFixedAssetState,
+    onDeleteFixedAsset = () => {}
     }
 ) => {
 
@@ -50,6 +51,19 @@ const FixedAssetCardDetailedCard = (
         loadLocationsFromDatabase(db);
     }, 
     [])
+
+    const confirmDeleteAssetAlert = (id) =>
+    {
+        Alert.alert('Confirm Deletion', 'Delete this Fixed Asset?', [
+            {
+              text: 'Cancel',
+              onPress: () => {},
+              style: 'cancel'
+            },
+            {text: 'OK', onPress: () => handleDeleteRequest(id)},
+          ]);
+    }
+        
     
 
       /*
@@ -305,6 +319,16 @@ const FixedAssetCardDetailedCard = (
         setCameraScanned(false);
     }
 
+    const handleDeleteRequest = async (id) => {
+        try{
+            let result = await deleteFixedAssetById(db, id);
+            onDeleteFixedAsset && onDeleteFixedAsset();
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+
     return (
             <ThemedView style={styles.cardContainer}>
                 <ThemedView lightColor="#17153B" style={styles.cardHeader}>
@@ -385,9 +409,15 @@ const FixedAssetCardDetailedCard = (
                         </ThemedView>
                     </ThemedView>
 
-                    <Pressable style={styles.editModeContainer} onPress={() => {setEditMode(!editMode)}}>
-                        <Icon name="edit" type="material" iconStyle={(editMode) ? {color: 'lime'} : {color: 'black'}}/>
-                    </Pressable>
+                    <ThemedView style={[styles.iconsContainer, {flexDirection: 'column', backgroundColor: 'rgba(0,0,0,0.0)'}]}>
+                        <Pressable style={[styles.editModeContainer]} onPress={() => {setEditMode(!editMode)}}>
+                            <Icon name="edit" type="material" iconStyle={(editMode) ? {color: 'lime'} : {color: 'black'}}/>
+                        </Pressable>
+                        <Pressable style={[styles.deleteModeContainer]} onPress={() => {confirmDeleteAssetAlert(fixedAssetState.id)}}>
+                            <Icon name="delete" type="material"/>
+                        </Pressable>
+                    </ThemedView>
+                    
 
                 </ThemedView>
 
@@ -653,6 +683,13 @@ const styles = StyleSheet.create({
      justifyContent: 'center'
        
     },
+    deleteModeContainer: {
+        backgroundColor: 'rgba(255,255,255,1.0)',
+        height: 40,
+        width: 40,
+        borderRadius: 100,
+        justifyContent: 'center'
+    },
     itemsInColumn: {
         alignItems: 'center',
         marginVertical: 5
@@ -667,6 +704,10 @@ const styles = StyleSheet.create({
     },
     textInput: {
         paddingHorizontal: 5,
+    },
+    iconsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     }
     
 

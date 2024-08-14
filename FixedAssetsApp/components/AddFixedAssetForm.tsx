@@ -10,6 +10,7 @@ import { BottomSheet, Button, Icon } from '@rneui/themed';
 import CameraScanner from './camera/CameraScanner';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
+import { AntDesign } from '@expo/vector-icons';
 
 
 
@@ -34,6 +35,10 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
 
+    const [value, setValue] = useState(null);
+    const [isFocusEmployee, setIsFocusEmployee] = useState(false);
+    const [isFocusLocation, setIsFocusLocation] = useState(false);
+
 
     db = useSQLiteContext();
 
@@ -42,6 +47,28 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
         loadLocationsFromDatabase(db);
     }, 
     []);
+
+    const renderLabelEmployee = () => {
+        if (value || isFocusEmployee) {
+          return (
+            <ThemedText style={[dropdownStyles.label, isFocusEmployee && { color: 'blue' }]}>
+              Select Employee:
+            </ThemedText>
+          );
+        }
+        return null;
+      };
+
+      const renderLabelLocation = () => {
+        if (value || isFocusLocation) {
+          return (
+            <ThemedText style={[dropdownStyles.label, isFocusLocation && { color: 'blue' }]}>
+              Select Location:
+            </ThemedText>
+          );
+        }
+        return null;
+      };
 
           /*
        * The code below will fetch all the Employee data from the database and correctly filter only the data that we will use.
@@ -254,31 +281,56 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             />
 
             <ThemedText style={styles.label}>Location</ThemedText>
+            {renderLabelLocation()}
             <Dropdown
                 style={dropdownStyles.dropdown}
                 placeholderStyle={dropdownStyles.placeholderStyle}
                 selectedTextStyle={dropdownStyles.selectedTextStyle}
+                search
                 data={possibleLocations}
-                maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="Select location"
                 value={location}
+                onFocus={() => setIsFocusEmployee(true)}
+                onBlur={() => setIsFocusEmployee(false)}
                 onChange={item => setLocation(item.value as number)}
+                renderLeftIcon={() => (
+                    <AntDesign
+                    style={dropdownStyles.icon}
+                    color={isFocusLocation ? 'blue' : 'black'}
+                    name="Safety"
+                    size={20}
+                    />
+                )}
             />
 
             <ThemedText style={styles.label}>Employee</ThemedText>
+            {renderLabelEmployee()}
             <Dropdown
                 style={dropdownStyles.dropdown}
                 placeholderStyle={dropdownStyles.placeholderStyle}
                 selectedTextStyle={dropdownStyles.selectedTextStyle}
+                search
+                dropdownPosition="top"
+                inverted={false}
                 data={possibleEmployees}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="Select employee"
                 value={employee}
+                onFocus={() => setIsFocusEmployee(true)}
+                onBlur={() => setIsFocusEmployee(false)}
                 onChange={item => setEmployee(item.value)}
+                renderLeftIcon={() => (
+                    <AntDesign
+                    style={dropdownStyles.icon}
+                    color={isFocusEmployee ? 'blue' : 'black'}
+                    name="Safety"
+                    size={20}
+                    />
+                )}
             />
 
             <ThemedText style={styles.label}>Value</ThemedText>

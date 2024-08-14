@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import FixedAssetCardDetailedCard from "./FixedAssetDetailedCard";
 import { Avatar } from "@rneui/themed";
 
-const FixedAssetCard: React.FC<FixedAsset> = ({
+const FixedAssetCard: React.FC<FixedAsset | any> = ({
     id,
     name,
     description,
@@ -17,7 +17,8 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
     creationDate,
     employee_id, // Reference to Employee
     location_id, // Reference to Location
-    photoUrl
+    photoUrl,
+    onDeletedFixedAsset = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
 
@@ -96,7 +97,8 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <FixedAssetCardDetailedCard setFixedAssetState={setFixedAssetDetails} fixedAssetState={fixedAssetDetails}/>
+                         <FixedAssetCardDetailedCard setFixedAssetState={setFixedAssetDetails} fixedAssetState={fixedAssetDetails}
+                         onDeleteFixedAsset={() => {onDeletedFixedAsset && onDeletedFixedAsset();}}/>
                     </ThemedView>
                 </ThemedView>
             </Modal>
@@ -105,6 +107,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
         
     );
 }
+
 
 export default FixedAssetCard;
 

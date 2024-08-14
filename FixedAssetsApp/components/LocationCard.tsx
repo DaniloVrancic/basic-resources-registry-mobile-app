@@ -11,8 +11,13 @@ import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import LocationMap from "./LocationMap";
 
 
-const LocationCard: React.FC<Location> = (
-    {id, name, size, latitude, longitude}
+const LocationCard: React.FC<Location | any> = (
+    {id, 
+    name, 
+    size, 
+    latitude, 
+    longitude,
+    onDeletedLocation = () => {}}
 ) => {
 
     const [thisLocation, setThisLocation] = useState<Location>({id, name, size, latitude, longitude})
@@ -68,7 +73,7 @@ const LocationCard: React.FC<Location> = (
                         </ThemedView>
 
                         <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContent}>
-                            <LocationMap locationState={thisLocation} setLocationState={setThisLocation}/>
+                            <LocationMap locationState={thisLocation} setLocationState={setThisLocation} onDeleteLocation={() => {onDeletedLocation && onDeletedLocation();}}/>
                         </ThemedView>
                     </ThemedView>
                 </Modal>

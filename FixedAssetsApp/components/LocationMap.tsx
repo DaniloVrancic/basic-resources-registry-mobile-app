@@ -9,14 +9,19 @@ import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import FixedAssetCard from './FixedAssetCard';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { getFixedItemsForLocationId, updateLocation } from '@/db/db';
+import { deleteLocationById, getFixedItemsForLocationId, updateLocation } from '@/db/db';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Button, Icon } from '@rneui/themed';
 import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
 
 
 let db: SQLiteDatabase;
-const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
+const LocationMap: React.FC<any> = ( {
+    locationState, 
+    setLocationState,
+    onDeleteLocation = () => {}
+
+} ) => {
 
             db = useSQLiteContext();
             const textColor = useThemeColor({}, 'text');
@@ -86,13 +91,35 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                 }
             }
 
+            
+    const confirmDeleteLocationAlert = (id: number) =>
+        {
+            Alert.alert('Confirm Deletion', 'Delete this Employee?', [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: 'OK', onPress: () => handleDeleteItem(id)},
+              ]);
+        }
+
+        const handleDeleteItem = async (id: number) => {
+            try{
+                let result = await deleteLocationById(db, id);
+                onDeleteLocation && onDeleteLocation();
+            }
+            catch(error){
+                console.error(error);
+            }
+        }
+    
+
             return (
                 <GestureHandlerRootView>
                 <ThemedView style={styles.container}>
                     <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
-                        <ThemedView style={[{backgroundColor:'rgba(0,0,0,0)', alignSelf:'flex-end', marginRight: 15}]}>
-                            <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 3, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
-                        </ThemedView>
+                        
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
                                 <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Location:</ThemedText>
                                 <TextInput  value={inputName} 
@@ -110,6 +137,13 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                                 </ThemedView>
                         </ThemedView>
                         
+
+                        <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, top: 20}]}>
+                            <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                        </ThemedView>
+                        <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, bottom: 20}]}>
+                            <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                        </ThemedView>
                     </ThemedView>
                     
               

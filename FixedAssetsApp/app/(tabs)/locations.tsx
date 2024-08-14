@@ -1,4 +1,4 @@
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "../../components/ThemedText"
 import { ThemedView } from "../..//components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -57,6 +57,16 @@ export default function Locations() {
     closeShowAdd();
   }
 
+  const handleDeletedLocation = (id: number) => {
+    try{
+        var locationsWithoutDeletedLocation = loadedLocations.filter((val: Location) => val.id !== id);
+        setLoadedLocations(locationsWithoutDeletedLocation);
+        Alert.alert("Success", "Location has been successfully deleted!");
+    } catch (error) {
+        console.error('Error Removing Location: ', error);
+    }
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
@@ -79,7 +89,7 @@ export default function Locations() {
                 {
                  loadedLocations.map((location: Location) =>
                   <ThemedView key={location.id} style={{paddingVertical: 20, backgroundColor: 'rgba(0,0,0,0.0)'}}>
-                    <LocationCard key={location.id} {...location}/>
+                    <LocationCard key={location.id} onDeletedLocation={() => {handleDeletedLocation(location.id);}} {...location}/>
                   </ThemedView>
                 )}
                 {/* Add more employees or your dynamic list here */}

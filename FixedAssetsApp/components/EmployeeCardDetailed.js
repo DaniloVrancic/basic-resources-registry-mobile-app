@@ -188,7 +188,7 @@ const EmployeeCardDetailed = (
         }
     }
 
-    const confirmDeleteAssetAlert = (id) =>
+    const confirmDeleteEmployeeAlert = (id) =>
         {
             Alert.alert('Confirm Deletion', 'Delete this Employee?', [
                 {
@@ -205,7 +205,7 @@ const EmployeeCardDetailed = (
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
-                    <Pressable style={styles.deleteButtonContainer} onPress={() => {confirmDeleteAssetAlert(employeeState.id)}}>
+                    <Pressable style={styles.deleteButtonContainer} onPress={() => {confirmDeleteEmployeeAlert(employeeState.id)}}>
                         <Icon type="material" name="delete" iconStyle={{color:'darkred'}}/>
                     </Pressable>
                     <ThemedView

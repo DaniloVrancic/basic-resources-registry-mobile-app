@@ -69,13 +69,12 @@ export default function HomeScreen() {
 
   const handleDeletedFixedItem = (id: number) => {
     try{
-      var fixedAssetsWithoutDeletedAsset = loadedFixedAssets.filter((val: FixedAsset) => val.id != id);
-      setLoadedFixedAssets(fixedAssetsWithoutDeletedAsset);
-      Alert.alert("Success", "Fixed Asset has been successfully deleted!");
+        var fixedAssetsWithoutDeletedAsset = loadedFixedAssets.filter((val: FixedAsset) => val.id != id);
+        setLoadedFixedAssets(fixedAssetsWithoutDeletedAsset);
+        Alert.alert("Success", "Fixed Asset has been successfully deleted!");
     } catch (error) {
-      console.error('Error Removing Fixed Asset: ', error);
-  }
-
+        console.error('Error Removing Fixed Asset: ', error);
+    }
   }
 
 

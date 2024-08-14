@@ -338,6 +338,22 @@ import * as SQLite from 'expo-sqlite';
     });
 }
 
+const deleteEmployeeByIdQuery = "DELETE FROM employee WHERE id = $id;";
+export const deleteEmployeeById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteEmployeeByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";
@@ -437,6 +453,22 @@ export const addLocation = async (db, location) => {
                                                                    $latitude: location.latitude,
                                                                    $longitude: location.longitude, 
                                                                   });
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
+const deleteLocationByIdQuery = "DELETE FROM location WHERE id = $id;";
+export const deleteLocationById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteLocationByIdQuery, {$id: id});
+        
         resolve(rowsChanged);
       }
       catch(error){
@@ -675,6 +707,27 @@ export const addFixedAsset = async (db, asset) => {
       });
     });
   }
+
+  const deleteInventoryItemByIdQuery = "DELETE FROM inventory_item WHERE id = $id;";
+/**
+ * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.
+ * @param {number} id The id the the Inventory Item to be deleted
+ * @returns The resolve of the function from execution on the database.
+ */
+export const deleteInventoryItemById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteInventoryItemByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
   //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
 
   const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
@@ -698,6 +751,12 @@ export const addFixedAsset = async (db, asset) => {
     });
   };
 
+  /**
+   * 
+   * @param {SQLite.SQLiteDatabase} db 
+   * @param {string} name 
+   * @returns All the rows that contain the parameter name as a substring. (Case insensetive)
+   */
   export const getAllInventoryListsForContainsName = async (db, name) => {
     return new Promise((resolve, reject) => {
       
@@ -811,6 +870,29 @@ export const addFixedAsset = async (db, asset) => {
       });
     });
   }
+
+const deleteTransferListByIdQuery = "DELETE FROM transfer_list WHERE id = $id;";
+/**
+ * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.
+ * @param {number} id The id the the Transfer List to be deleted
+ * @returns The resolve of the function from execution on the database.
+ */
+export const deleteTransferListById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteTransferListByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
+  
 
   
   

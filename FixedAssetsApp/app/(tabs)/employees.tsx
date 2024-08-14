@@ -62,6 +62,18 @@ export default function Employees() {
     closeShowAdd();
   }
 
+  const handleEmployeeDeleted = (id: number) => 
+    {
+      try{
+          var allEmployeesFiltered = loadedEmployees.filter((employee: Employee) => employee.id !== id);
+          setLoadedEmployees(allEmployeesFiltered);
+          Alert.alert("Success", "Employee has been successfully deleted!");
+      }
+      catch(error){
+          console.error('Error Removing Employee: ', error);
+      }
+    }
+
 
   return (
       <SafeAreaView style={styles.safeArea}>
@@ -84,7 +96,7 @@ export default function Employees() {
                 
                   {
                   loadedEmployees.map((employee: Employee) => 
-                    <EmployeeCard key={employee.id} {...employee}/>
+                    <EmployeeCard key={employee.id} onDeletedEmployee={() => {handleEmployeeDeleted(employee.id)}} {...employee}/>
                   )}
                   {/* Add more employees or your dynamic list here */}
                   

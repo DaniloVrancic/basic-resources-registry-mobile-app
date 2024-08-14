@@ -10,12 +10,13 @@ import { Avatar, Icon } from "@rneui/themed";
 
 
 
-const EmployeeCard: React.FC<Employee> = ({
+const EmployeeCard: React.FC<Employee | any> = ({
     id,
     name,
     email,
     income,
-    photoUrl
+    photoUrl,
+    onDeletedEmployee = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
@@ -112,7 +113,7 @@ const EmployeeCard: React.FC<Employee> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} />
+                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} onDeleteEmployee={() => {onDeletedEmployee && onDeletedEmployee();}} />
                     </ThemedView>
                 </ThemedView>
             </Modal>

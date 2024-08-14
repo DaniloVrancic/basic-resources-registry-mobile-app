@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid, Alert } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
-import { updateEmployee } from "@/db/db";
+import { deleteEmployeeById, updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 
@@ -13,7 +13,8 @@ import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 let db;
 const EmployeeCardDetailed = (
     {setEmployeeState, 
-    employeeState }
+    employeeState,
+    onDeleteEmployee = () => {} }
 ) => {
     
     const textColor = useThemeColor({}, 'text');
@@ -54,10 +55,22 @@ const EmployeeCardDetailed = (
             setErrorMessage('');
 
             //let currentEmployeeChanges = {id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl};
-            employeeState.name = inputName;
+
+            if(employeeState.name === inputName && 
+                employeeState.email === inputEmail &&
+                employeeState.income === inputIncome &&
+                employeeState.photoUrl === inputPhotoUrl) //Will get triggered if there were no changes made.
+                {
+                    setEditMode(false);
+                    return;
+                }
+
+            employeeState.name = inputName; //If there were changes made and Save Changes clicked -> Change the original as well.
             employeeState.email = inputEmail;
             employeeState.income = inputIncome;
             employeeState.photoUrl = inputPhotoUrl;
+
+            
 
             let rows = await updateEmployee(db, employeeState);
             
@@ -129,10 +142,8 @@ const EmployeeCardDetailed = (
               let result;
                 
                 if(granted === PermissionsAndroid.RESULTS.GRANTED){
-                    console.log(granted);
                     
                     result = await launchCameraAsync(options, (res) => {
-                        console.log('Response = ', res);
                   
                         if (res.didCancel) {
                           console.log('User cancelled image picker');
@@ -167,12 +178,36 @@ const EmployeeCardDetailed = (
         setInputPhotoUrl(resultUri);
     }
 
+    const handleDeleteItem = async (id) => {
+        try{
+            let result = await deleteEmployeeById(db, id);
+            onDeleteEmployee && onDeleteEmployee();
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+
+    const confirmDeleteAssetAlert = (id) =>
+        {
+            Alert.alert('Confirm Deletion', 'Delete this Employee?', [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: 'OK', onPress: () => handleDeleteItem(id)},
+              ]);
+        }
+
 
     return (
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
-                    
+                    <Pressable style={styles.deleteButtonContainer} onPress={() => {confirmDeleteAssetAlert(employeeState.id)}}>
+                        <Icon type="material" name="delete" iconStyle={{color:'darkred'}}/>
+                    </Pressable>
                     <ThemedView
                         style={{
                         flexDirection: 'row',
@@ -186,20 +221,19 @@ const EmployeeCardDetailed = (
                             (inputPhotoUrl == null || inputPhotoUrl.length === 0) ? 
                             
                             <Avatar
-                                size={90}
+                                size={100}
                                 rounded
                                 icon={{ name: 'person', type: 'material' }}
-                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                iconStyle={{ backgroundColor: 'purple', justifyContent: 'center', alignItems:'center', minWidth: '100%', minHeight: '100%' }}
                                 placeholderStyle={{backgroundColor: 'purple'}}
+
                                 
                             onPress={() => {
 
                                 if(editMode){
                                     onPressAvatar();
                                 }
-                                
-                                }}
-                            >
+                                }}>
                                 <Avatar.Accessory 
                                 size={26}
                                 style={{borderRadius: 100}}
@@ -410,7 +444,20 @@ const styles = StyleSheet.create(
             width: "70%",
             maxWidth: "80%",
             minWidth: "60%"
+        },
+        deleteButtonContainer: {
+            position: 'absolute',
+            minHeight: '36%',
+            minWidth: '20%',
+            maxHeight: '36%',
+            maxWidth: '20%',
+            backgroundColor: 'ghostwhite',
+            borderRadius: 100,
+            justifyContent:'center',
+            top: '10%',
+            right: 0
         }
+
     }
 
     

@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
+import { Icon } from "@rneui/themed";
 
 
 const InventoryItemCard: React.FC<TransferList> = ({
@@ -28,6 +29,12 @@ const InventoryItemCard: React.FC<TransferList> = ({
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
             <ThemedText type="subtitle" style={{marginBottom: 15}}>{fixedAssetName}</ThemedText>
+
+            <Icon type="materials" name="edit" style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}/>
+            <Icon type="materials" name="trash" style={styles.trashIcon} onPress={() => {console.log("Trash clicked")}}/>
+
+            
+
             <ThemedView style={styles.transferContainer}>
                 <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Person in Charge:</ThemedText>
                     <ThemedView style={styles.transferValues}>
@@ -113,4 +120,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    trashIcon: {
+        position: "absolute",
+        bottom: 10,
+        right: 10
+    },
+    editIcon: {
+        position: "absolute",
+        bottom: 10,
+        left: 10
+    }
 });

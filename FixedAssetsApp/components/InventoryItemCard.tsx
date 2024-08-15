@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
@@ -30,8 +30,11 @@ const InventoryItemCard: React.FC<TransferList> = ({
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
             <ThemedText type="subtitle" style={{marginBottom: 15}}>{fixedAssetName}</ThemedText>
 
-            <Icon type="materials" name="edit" style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}/>
-            <Icon type="materials" name="trash" style={styles.trashIcon} onPress={() => {console.log("Trash clicked")}}/>
+
+        <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
+            <Icon type="material" name="edit"/>
+        </Pressable>
+            <Icon type="material" name="delete" style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}/>
 
             
 
@@ -120,10 +123,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    trashIcon: {
+    deleteIcon: {
         position: "absolute",
         bottom: 10,
-        right: 10
+        right: 10,
+        color: 'red'
     },
     editIcon: {
         position: "absolute",

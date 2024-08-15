@@ -28,14 +28,15 @@ const InventoryItemCard: React.FC<TransferList> = ({
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
-            <ThemedText type="subtitle" style={{marginBottom: 15}}>{fixedAssetName}</ThemedText>
+            <ThemedText type="subtitle" style={{marginBottom: 25}}>{fixedAssetName}</ThemedText>
 
 
         <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
             <Icon type="material" name="edit"/>
         </Pressable>
-            <Icon type="material" name="delete" style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}/>
-
+        <Pressable style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}>
+            <Icon type="material" name="delete"/>
+        </Pressable>
             
 
             <ThemedView style={styles.transferContainer}>
@@ -125,13 +126,24 @@ const styles = StyleSheet.create({
     },
     deleteIcon: {
         position: "absolute",
-        bottom: 10,
-        right: 10,
-        color: 'red'
+        top: "10%",
+        right: "5%",
+        color: 'red',
+        backgroundColor: 'gold',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        borderRadius: 100
     },
     editIcon: {
         position: "absolute",
-        bottom: 10,
-        left: 10
+        top: "10%",
+        right: "25%",
+        color: 'red',
+        backgroundColor: 'gold',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        borderRadius: 100
     }
 });

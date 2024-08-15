@@ -8,9 +8,10 @@ import { ThemedText } from './ThemedText';
 import { getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
+import { Icon } from '@rneui/themed';
 
 let db: SQLiteDatabase;
 
@@ -51,6 +52,14 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
             <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.listTitle} type='subtitle'>{name}</ThemedText>
+
+            <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
+                <Icon type="material" name="edit" iconStyle={{color: 'ghostwhite'}}/>
+            </Pressable>
+            <Pressable style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}>
+                <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
+            </Pressable>
+
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
                 <ThemedView style={{borderRadius: 10}}>
                     {
@@ -78,11 +87,34 @@ const styles = StyleSheet.create({
     listContainer: {
         borderColor: 'black',
         borderRadius: 15,
-        paddingVertical: 12,
-        paddingHorizontal: 5,
+        paddingVertical: 20,
+        paddingHorizontal: 8,
     },
     listTitle: {
-        textAlign: 'center'
+        textAlign: 'center',
+        justifyContent: 'center',
+        paddingTop: 40,
+        paddingBottom: 15
+    },
+    deleteIcon: {
+        position: "absolute",
+        top: "2%",
+        right: "10%",
+        backgroundColor: 'purple',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        borderRadius: 100,
+    },
+    editIcon: {
+        position: "absolute",
+        top: "2%",
+        left: "10%",
+        backgroundColor: 'purple',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        borderRadius: 100
     }
 })
 

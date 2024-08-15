@@ -1,4 +1,4 @@
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -34,6 +34,9 @@ export default function ListOfAssets() {
   const [searchChangingEmployee, setSearchChangingEmployee] = useState(true);
   const [searchChangingLocation, setSearchChangingLocation] = useState(true);
 
+  const [showAddPrompt, setShowAddPrompt] = useState(false);
+  const [newListName, setNewListName] = useState('');
+
   const [showAddFixedAsset, setShowAddList] = useState<boolean>(false);
 
   const openShowAdd = () => {setShowAddList(true);}
@@ -59,7 +62,31 @@ export default function ListOfAssets() {
     }
   }
 
-  const handleListAdded = async () => {}
+  const handleAddClick = () => {
+    setShowAddPrompt(true);
+    console.log("IS PROMPT VISIBLE: " + showAddPrompt);
+  };
+
+  const handleConfirmAdd = async () => {
+    if (newListName.trim() === '') {
+      Alert.alert('Error', 'List name cannot be empty.');
+      return;
+    }
+    // Add the new list to the database here
+    try {
+      // Add your database insertion logic here
+      setShowAddPrompt(false);
+      setNewListName('');
+      await loadInventoryTransferLists(db); // Reload the list after adding
+    } catch (error) {
+      console.error('Error adding new list: ', error);
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setShowAddPrompt(false);
+    setNewListName('');
+  };
 
 
 
@@ -67,7 +94,7 @@ export default function ListOfAssets() {
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
-              onAddClick={() => { console.log("Location default click") }}
+              onAddClick={() => handleAddClick() }
               filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
@@ -107,6 +134,27 @@ export default function ListOfAssets() {
             </ThemedView>
             </ScrollView>
         </Modal>
+
+        <Modal visible={showAddPrompt} animationType="slide">
+        <ThemedView style={modalStyles.modalContainer}>
+          <ThemedText style={modalStyles.modalTitle}>Enter List Name</ThemedText>
+          <TextInput
+            style={modalStyles.textInput}
+            value={newListName}
+            onChangeText={setNewListName}
+            placeholder="Enter name"
+            placeholderTextColor="grey"
+          />
+          <ThemedView style={modalStyles.buttonContainer}>
+            <Pressable style={modalStyles.button} onPress={handleConfirmAdd}>
+              <ThemedText style={modalStyles.buttonText}>Confirm</ThemedText>
+            </Pressable>
+            <Pressable style={modalStyles.button} onPress={handleCancelAdd}>
+              <ThemedText style={modalStyles.buttonText}>Cancel</ThemedText>
+            </Pressable>
+          </ThemedView>
+        </ThemedView>
+      </Modal>
 
       </SafeAreaView>
   )
@@ -207,6 +255,10 @@ const styles = StyleSheet.create({
         paddingBottom: 40,
         marginRight: 20,
     },
+    modalTitle: {
+      fontSize: 20,
+      marginBottom: 20,
+    },
     modalCloseButton: {
         justifyContent: 'flex-end',
     textAlign: 'center',
@@ -220,7 +272,31 @@ const styles = StyleSheet.create({
     },
     modalSpaceFill: {
         flex: 10,
-    }
+    },
+    textInput: {
+      height: 40,
+      width: '80%',
+      borderColor: 'grey',
+      borderWidth: 1,
+      paddingHorizontal: 10,
+      marginBottom: 20,
+      backgroundColor: 'white',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '60%',
+    },
+    button: {
+      padding: 10,
+      backgroundColor: 'blue',
+      borderRadius: 5,
+      marginHorizontal: 10,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 16,
+    },
 
 });
 

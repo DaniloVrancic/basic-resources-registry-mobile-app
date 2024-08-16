@@ -48,9 +48,9 @@ export default function ListOfAssets() {
 
   const loadInventoryTransferLists = async (db: SQLiteDatabase) => {
     try {
-      setLoadedLists(await getAllInventoryLists(db));
+        setLoadedLists(await getAllInventoryLists(db));
     } catch (error) {
-      console.error('Error loading Inventory Lists: ', error);
+        console.error('Error loading Inventory Lists: ', error);
     }
   };
 
@@ -88,13 +88,11 @@ export default function ListOfAssets() {
     setNewListName('');
   };
 
-
-
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
-              onAddClick={() => handleAddClick() }
+              onAddClick={() => {handleAddClick()} }
               filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
@@ -118,7 +116,7 @@ export default function ListOfAssets() {
           </ThemedView>
 
 
-        <Modal visible={showAddFixedAsset} animationType="slide">
+        <Modal visible={showAddFixedAsset} animationType="slide" >
           <ScrollView>
             <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
               <ThemedView style={modalStyles.modalHeader}>
@@ -135,24 +133,28 @@ export default function ListOfAssets() {
             </ScrollView>
         </Modal>
 
-        <Modal visible={showAddPrompt} animationType="slide">
-        <ThemedView style={modalStyles.modalContainer}>
-          <ThemedText style={modalStyles.modalTitle}>Enter List Name</ThemedText>
+        <Modal visible={showAddPrompt} animationType="fade" transparent={true}>
+        <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
+
+        
+        <ThemedView style={modalStyles2.modalContainer}>
+          <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
           <TextInput
-            style={modalStyles.textInput}
+            style={modalStyles2.textInput}
             value={newListName}
             onChangeText={setNewListName}
             placeholder="Enter name"
             placeholderTextColor="grey"
           />
-          <ThemedView style={modalStyles.buttonContainer}>
-            <Pressable style={modalStyles.button} onPress={handleConfirmAdd}>
-              <ThemedText style={modalStyles.buttonText}>Confirm</ThemedText>
+          <ThemedView style={modalStyles2.buttonContainer}>
+            <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
+              <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
             </Pressable>
-            <Pressable style={modalStyles.button} onPress={handleCancelAdd}>
-              <ThemedText style={modalStyles.buttonText}>Cancel</ThemedText>
+            <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+              <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
             </Pressable>
           </ThemedView>
+        </ThemedView>
         </ThemedView>
       </Modal>
 
@@ -243,7 +245,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         padding: 8,
-        overflow:'scroll'
+        overflow:'scroll',
+        backgroundColor: 'rgba(0,0,0,0.0)'
     },
     modalHeader: {
         display: 'flex',
@@ -282,21 +285,67 @@ const styles = StyleSheet.create({
       marginBottom: 20,
       backgroundColor: 'white',
     },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '60%',
-    },
-    button: {
-      padding: 10,
-      backgroundColor: 'blue',
-      borderRadius: 5,
-      marginHorizontal: 10,
-    },
-    buttonText: {
-      color: 'white',
-      fontSize: 16,
-    },
+
+});
+
+const modalStyles2 = StyleSheet.create({
+  modalContainer: {
+      justifyContent: 'center',
+      alignSelf: 'center',
+      padding: 12,
+      marginTop: '40%',
+      overflow:'scroll',
+      backgroundColor: 'rgba(250,250,250,1.0)',
+      borderWidth: 4,
+      borderRadius: 10,
+      marginHorizontal: "1%"
+  },
+  modalTitle: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center'
+  },
+  modalCloseButton: {
+      justifyContent: 'flex-end',
+  textAlign: 'center',
+  alignItems: 'center',
+  alignSelf: 'center',
+  flex: 1,
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  borderRadius: 50,
+  backgroundColor: 'rgba(200,200,200, 0.8)',
+  },
+  modalSpaceFill: {
+      flex: 10,
+  },
+  textInput: {
+    height: 40,
+    width: '100%',
+    minWidth: '70%',
+    borderColor: 'grey',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    backgroundColor: 'white',
+    alignSelf: 'center'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    backgroundColor:'rgba(255,255,255,0.0)'
+  },
+  button: {
+    padding: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 
 });
 

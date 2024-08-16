@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   modalContainer: {
-    flex: 1,
     justifyContent: 'flex-start',
     padding: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.8)', // semi-transparent background

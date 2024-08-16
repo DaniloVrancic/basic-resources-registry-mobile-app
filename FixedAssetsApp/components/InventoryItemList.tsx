@@ -34,7 +34,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     let parametersForList;
 
     db = useSQLiteContext();
-    const [loadedItems, setLoadedItems]: any = useState([]);
+    const [loadedItems, setLoadedItems] = useState([]);
     const [showAddPrompt, setShowAddPrompt] = useState(false);
     const [inputEditedName, setInputEditedName] = useState<string>(name);
 
@@ -104,6 +104,15 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             setShowAddPrompt(false);
           };
 
+        const handleDeletedItem = async (fixedAssetId: number, transferListId: number) => {
+            try{
+                setLoadedItems(await getItemsFromViewForListId(db, id));
+                Alert.alert("Success", "Transfer List has been successfully deleted!");
+                } catch (error) {
+                    console.error('Error Removing Location: ', error);
+                }
+        }
+
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
@@ -131,7 +140,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                                 return;
                             }
                             else{
-                                return <InventoryItemCard key={element.fixedAssetId} {...element}/>
+                                return <InventoryItemCard key={element.fixedAssetId * 10_000 + element.transferListId} onDeleteItem={() => {handleDeletedItem(element.fixedAssetId, element.transferListId);}} {...element}/>
                             }
                         }
                         )

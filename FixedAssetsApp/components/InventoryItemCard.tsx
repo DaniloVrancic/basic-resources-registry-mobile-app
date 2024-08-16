@@ -1,14 +1,16 @@
 import React from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Pressable, StyleSheet } from "react-native";
+import { Alert, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
 import { Icon } from "@rneui/themed";
+import { deleteInventoryItemById } from "@/db/db";
+import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 
-
-const InventoryItemCard: React.FC<TransferList> = ({
+let db: SQLiteDatabase;
+const InventoryItemCard: React.FC<TransferList | any> = ({
     currentEmployeeId,
     currentEmployeeName,
     currentLocationId,
@@ -20,9 +22,35 @@ const InventoryItemCard: React.FC<TransferList> = ({
     newLocationId,
     newLocationName,
     transferListId,
-    transferListName
+    transferListName,
+    onDeleteItem = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
+    db = useSQLiteContext();
+    
+
+    const handleDeleteItem = async () => {
+        try{
+            let result = await deleteInventoryItemById(db, fixedAssetId, transferListId);
+            onDeleteItem && onDeleteItem();
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+
+    const confirmDelete = () => {
+        {
+            Alert.alert('Confirm Deletion', 'Delete this Transfer List Item?', [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: 'OK', onPress: () => handleDeleteItem()},
+              ]);
+        }
+    }
 
 
     return (
@@ -34,7 +62,7 @@ const InventoryItemCard: React.FC<TransferList> = ({
         <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
             <Icon type="material" name="edit"/>
         </Pressable>
-        <Pressable style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}>
+        <Pressable style={styles.deleteIcon} onPress={() => {confirmDelete()}}>
             <Icon type="material" name="delete"/>
         </Pressable>
             

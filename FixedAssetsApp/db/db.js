@@ -128,6 +128,7 @@ import * as SQLite from 'expo-sqlite';
       });
       */
 
+      /*
       await db.withTransactionSync( () => {
         try{
           
@@ -142,6 +143,7 @@ import * as SQLite from 'expo-sqlite';
           console.error(error);
         }
       });
+      */
       
 
       //await db.execAsync(dropViewQuery + dropTablesQuery);
@@ -753,17 +755,20 @@ export const addFixedAsset = async (db, asset) => {
     });
   }
 
-  const deleteInventoryItemByIdQuery = "DELETE FROM inventory_item WHERE id = $id;";
+  const deleteInventoryItemByIdQuery = "DELETE FROM inventory_item WHERE fixed_asset_id = $fixed_asset_id AND transfer_list_id = $transfer_list_id;";
 /**
  * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.
- * @param {number} id The id the the Inventory Item to be deleted
+ * @param {number} fixed_asset_id The id the the Fixed asset Item that is being transfered
+ * @param {number} transfer_list_id The id the the List that is refering this item.
  * @returns The resolve of the function from execution on the database.
  */
-export const deleteInventoryItemById = async (db, id) => {
+export const deleteInventoryItemById = async (db, fixed_asset_id, transfer_list_id) => {
   return new Promise((resolve, reject) => {
     db.withTransactionSync( async () => {
       try{
-        let rowsChanged = await db.runAsync(deleteInventoryItemByIdQuery, {$id: id});
+        let rowsChanged = await db.runAsync(deleteInventoryItemByIdQuery, {$fixed_asset_id: fixed_asset_id,
+                                                                           $transfer_list_id: transfer_list_id
+        });
         
         resolve(rowsChanged);
       }

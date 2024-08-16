@@ -905,7 +905,7 @@ export const deleteInventoryItemById = async (db, id) => {
     return new Promise((resolve, reject) => {
       db.withTransactionSync( async () => {
         try{
-          let rowsChanged = await db.runAsync(addFiaddTransferListQueryxedAssetQuery, {  $name: name, 
+          let rowsChanged = await db.runAsync(addTransferListQuery, {  $name: name, 
                                                                     });
           resolve(rowsChanged);
         }

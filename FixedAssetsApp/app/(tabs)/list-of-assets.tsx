@@ -14,7 +14,7 @@ import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inven
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
+import { addTransferList, getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
 import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
@@ -75,11 +75,16 @@ export default function ListOfAssets() {
     // Add the new list to the database here
     try {
       // Add your database insertion logic here
-      setShowAddPrompt(false);
-      setNewListName('');
-      await loadInventoryTransferLists(db); // Reload the list after adding
+        setShowAddPrompt(false);
+        setNewListName('');
+        var addedList: any = await addTransferList(db, newListName); // Reload the list after adding
+        var newList : any = {...loadedLists};
+        console.log(addedList);
+        
+
     } catch (error) {
       console.error('Error adding new list: ', error);
+      Alert.alert('Error adding new list');
     }
   };
 
@@ -134,10 +139,8 @@ export default function ListOfAssets() {
         </Modal>
 
         <Modal visible={showAddPrompt} animationType="fade" transparent={true}>
-        <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
-
-        
-        <ThemedView style={modalStyles2.modalContainer}>
+          <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
+          <ThemedView style={modalStyles2.modalContainer}>
           <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
           <TextInput
             style={modalStyles2.textInput}
@@ -147,11 +150,11 @@ export default function ListOfAssets() {
             placeholderTextColor="grey"
           />
           <ThemedView style={modalStyles2.buttonContainer}>
+          <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+              <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
+            </Pressable>
             <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
               <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
-            </Pressable>
-            <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
-              <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
             </Pressable>
           </ThemedView>
         </ThemedView>

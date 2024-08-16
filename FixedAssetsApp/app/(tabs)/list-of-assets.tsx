@@ -16,9 +16,8 @@ import { CheckBox } from '@rneui/themed/dist/CheckBox';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addTransferList, getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
-import { TransferList } from '../data_interfaces/transfer-list';
 import { InventoryList } from '../data_interfaces/inventory-list';
-import AddLocationForm from '@/components/AddLocationForm';
+
 
 let db: SQLiteDatabase;
 export default function ListOfAssets() {
@@ -64,7 +63,6 @@ export default function ListOfAssets() {
 
   const handleAddClick = () => {
     setShowAddPrompt(true);
-    console.log("IS PROMPT VISIBLE: " + showAddPrompt);
   };
 
   const handleConfirmAdd = async () => {
@@ -72,14 +70,19 @@ export default function ListOfAssets() {
       Alert.alert('Error', 'List name cannot be empty.');
       return;
     }
-    // Add the new list to the database here
     try {
-      // Add your database insertion logic here
+
         setShowAddPrompt(false);
         setNewListName('');
-        var addedList: any = await addTransferList(db, newListName); // Reload the list after adding
-        var newList : any = {...loadedLists};
-        console.log(addedList);
+        try{
+          await addTransferList(db, newListName); // Reload the list after adding
+          setLoadedLists(await getAllInventoryLists(db));
+        }
+        catch(error)
+        {
+          console.error(error);
+        }
+        
         
 
     } catch (error) {
@@ -92,6 +95,16 @@ export default function ListOfAssets() {
     setShowAddPrompt(false);
     setNewListName('');
   };
+
+  const handleDeleteList = (id: number) => {
+    try{
+      var listWithoutDeletedLocation = loadedLists.filter((val: InventoryList) => val.id !== id);
+      setLoadedLists(listWithoutDeletedLocation);
+      Alert.alert("Success", "Transfer List has been successfully deleted!");
+      } catch (error) {
+          console.error('Error Removing Location: ', error);
+      }
+  }
 
   return (
       <SafeAreaView style={styles.safeArea}>
@@ -113,7 +126,7 @@ export default function ListOfAssets() {
              {
                 loadedLists.map((inventoryList: InventoryList) =>
                   <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
-                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={searchChangingEmployee} showChangingLocations={searchChangingLocation}/>
+                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={searchChangingEmployee} showChangingLocations={searchChangingLocation} onDeleteList={() => {handleDeleteList(inventoryList.id);}}/>
                   </ThemedView>
                 )
              }
@@ -292,64 +305,63 @@ const styles = StyleSheet.create({
 });
 
 const modalStyles2 = StyleSheet.create({
-  modalContainer: {
-      justifyContent: 'center',
-      alignSelf: 'center',
-      padding: 12,
-      marginTop: '40%',
-      overflow:'scroll',
-      backgroundColor: 'rgba(250,250,250,1.0)',
-      borderWidth: 4,
-      borderRadius: 10,
-      marginHorizontal: "1%"
-  },
-  modalTitle: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  modalCloseButton: {
-      justifyContent: 'flex-end',
-  textAlign: 'center',
-  alignItems: 'center',
-  alignSelf: 'center',
-  flex: 1,
-  paddingHorizontal: 12,
-  paddingVertical: 10,
-  borderRadius: 50,
-  backgroundColor: 'rgba(200,200,200, 0.8)',
-  },
-  modalSpaceFill: {
-      flex: 10,
-  },
-  textInput: {
-    height: 40,
-    width: '100%',
-    minWidth: '70%',
-    borderColor: 'grey',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    backgroundColor: 'white',
-    alignSelf: 'center'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    backgroundColor:'rgba(255,255,255,0.0)'
-  },
-  button: {
-    padding: 10,
-    backgroundColor: 'blue',
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-
+    modalContainer: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+        padding: 12,
+        marginTop: '40%',
+        overflow:'scroll',
+        backgroundColor: 'rgba(250,250,250,1.0)',
+        borderWidth: 4,
+        borderRadius: 10,
+        marginHorizontal: "1%"
+    },
+    modalTitle: {
+      fontSize: 24,
+      marginBottom: 20,
+      textAlign: 'center'
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    },
+    textInput: {
+      height: 40,
+      width: '100%',
+      minWidth: '70%',
+      borderColor: 'grey',
+      borderWidth: 1,
+      paddingHorizontal: 10,
+      marginBottom: 20,
+      backgroundColor: 'white',
+      alignSelf: 'center'
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '80%',
+      backgroundColor:'rgba(255,255,255,0.0)'
+    },
+    button: {
+      padding: 10,
+      backgroundColor: 'blue',
+      borderRadius: 5,
+      marginHorizontal: 10,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 16,
+    },
 });
 
   function listOfAssetsAdvancedFiltering(searchChangingEmployee: any, setSearchChangingEmployee: any, searchChangingLocation: any, setSearchChangingLocation: any, currentSearchCriteria: any, loadedLists: any, setLoadedLists: any) {

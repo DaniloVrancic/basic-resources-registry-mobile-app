@@ -43,12 +43,12 @@ const InventoryItemCard: React.FC<TransferList> = ({
                 <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Person in Charge:</ThemedText>
                     <ThemedView style={styles.transferValues}>
                         { currentEmployeeId === new_employee_id ? (
-                                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                                        <ThemedText style={[styles.transferText, styles.transferTextValue]}>{(currentEmployeeName !== null && currentEmployeeName.length > 0) ? currentEmployeeName : "(empty)"}</ThemedText>
                             ) : (
                                 <>
-                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{currentEmployeeName}</ThemedText>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{(currentEmployeeName !== null && currentEmployeeName.length > 0) ? currentEmployeeName : "(empty)"}</ThemedText>
                                          <Ionicons name="arrow-forward-sharp" size={32} style={{marginBottom: 5, paddingBottom: 3}} color={textColor}/>
-                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{newEmployeeName}</ThemedText>
+                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{(newEmployeeName !== null && newEmployeeName.length > 0) ? newEmployeeName : "(empty)"}</ThemedText>
                                 </>
                             )
                         }

@@ -916,6 +916,22 @@ export const deleteInventoryItemById = async (db, id) => {
     });
   }
 
+  const updateTransferListQuery = `UPDATE transfer_list SET name = $name`;
+
+  export const updateTransferList = async (db, name) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateTransferListQuery, {  $name: name });
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  }
+
 const deleteTransferListByIdQuery = "DELETE FROM transfer_list WHERE id = $id;";
 /**
  * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.

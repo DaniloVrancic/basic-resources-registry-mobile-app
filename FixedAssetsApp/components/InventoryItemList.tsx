@@ -5,10 +5,10 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters } from '@/db/db';
+import { deleteTransferListById, getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters, updateTransferList } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
-import { Pressable, StyleSheet } from 'react-native';
+import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
 import { Icon } from '@rneui/themed';
@@ -23,17 +23,21 @@ interface InventoryItemListWithShowFilters {
     showChangingLocations?: boolean | undefined;
 }
 
-const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
+const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     id,
     name,
     showChangingEmployees,
-    showChangingLocations
+    showChangingLocations, 
+    onDeleteList = () => {},
+    setName = (name: string) => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
     let parametersForList;
 
     db = useSQLiteContext();
     const [loadedItems, setLoadedItems]: any = useState([]);
+    const [showAddPrompt, setShowAddPrompt] = useState(false);
+    const [inputEditedName, setInputEditedName] = useState<string>(name);
 
     useEffect(() => {
         loadItemsForList(db, id, showChangingEmployees, showChangingLocations);
@@ -48,6 +52,59 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
         }
       };
 
+      const handleDeleteItem = async () =>
+      {
+        try{
+            let result = await deleteTransferListById(db, id);
+            onDeleteList && onDeleteList();
+        }
+        catch(error){
+            console.error(error);
+        }
+      }
+
+      const confirmDeleteLocationAlert = () =>
+        {
+            Alert.alert('Confirm Deletion', 'Delete this Transfer List?', [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: 'OK', onPress: () => handleDeleteItem()},
+              ]);
+        }
+
+        const handleConfirmAdd = async () => {
+            if (inputEditedName.trim() === '') {
+              Alert.alert('Error', 'List name cannot be empty.');
+              return;
+            }
+            // Add the new list to the database here
+            try {
+              // Add your database insertion logic here
+                setShowAddPrompt(false);
+                try{
+                  await updateTransferList(db, inputEditedName); // Reload the list after adding
+                  setName(inputEditedName);
+                }
+                catch(error)
+                {
+                  console.error(error);
+                }
+                
+                
+        
+            } catch (error) {
+              console.error('Error adding new list: ', error);
+              Alert.alert('Error adding new list');
+            }
+          };
+
+        const handleCancelAdd = () => {
+            setShowAddPrompt(false);
+          };
+
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
@@ -56,7 +113,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
             <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
                 <Icon type="material" name="edit" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
-            <Pressable style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}>
+            <Pressable style={styles.deleteIcon} onPress={() => {confirmDeleteLocationAlert();}}>
                 <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
             <Pressable style={styles.addIcon} onPress={() => {console.log("Add clicked")}}>
@@ -82,6 +139,29 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
                     }
                 </ThemedView>
             </Suspense>
+
+            <Modal visible={showAddPrompt} animationType="fade" transparent={true}>
+                <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
+                <ThemedView style={modalStyles2.modalContainer}>
+                <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
+                <TextInput
+                    style={modalStyles2.textInput}
+                    value={inputEditedName}
+                    onChangeText={setInputEditedName}
+                    placeholder="Enter Name"
+                    placeholderTextColor="grey"
+                />
+                <ThemedView style={modalStyles2.buttonContainer}>
+                <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+                    <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
+                    </Pressable>
+                    <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
+                    <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
+                    </Pressable>
+                </ThemedView>
+                </ThemedView>
+                </ThemedView>
+            </Modal>
         </ThemedView>
     );
 }
@@ -90,7 +170,7 @@ const styles = StyleSheet.create({
     listContainer: {
         borderColor: 'black',
         borderRadius: 15,
-        paddingVertical: 20,
+        paddingVertical: 30,
         paddingHorizontal: 8,
     },
     listTitle: {
@@ -101,7 +181,7 @@ const styles = StyleSheet.create({
     },
     deleteIcon: {
         position: "absolute",
-        top: "2%",
+        top: 10,
         left: "47.5%",
         backgroundColor: 'purple',
         width: 40,
@@ -111,7 +191,7 @@ const styles = StyleSheet.create({
     },
     editIcon: {
         position: "absolute",
-        top: "2%",
+        top: 10,
         left: "10%",
         backgroundColor: 'purple',
         width: 40,
@@ -121,7 +201,7 @@ const styles = StyleSheet.create({
     },
     addIcon: {
         position: "absolute",
-        top: "2%",
+        top: 10,
         right: "10%",
         backgroundColor: 'purple',
         width: 40,
@@ -130,5 +210,65 @@ const styles = StyleSheet.create({
         borderRadius: 100
     }
 })
+
+const modalStyles2 = StyleSheet.create({
+    modalContainer: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+        padding: 12,
+        marginTop: '40%',
+        overflow:'scroll',
+        backgroundColor: 'rgba(250,250,250,1.0)',
+        borderWidth: 4,
+        borderRadius: 10,
+        marginHorizontal: "1%"
+    },
+    modalTitle: {
+      fontSize: 24,
+      marginBottom: 20,
+      textAlign: 'center'
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    },
+    textInput: {
+      height: 40,
+      width: '100%',
+      minWidth: '70%',
+      borderColor: 'grey',
+      borderWidth: 1,
+      paddingHorizontal: 10,
+      marginBottom: 20,
+      backgroundColor: 'white',
+      alignSelf: 'center'
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '80%',
+      backgroundColor:'rgba(255,255,255,0.0)'
+    },
+    button: {
+      padding: 10,
+      backgroundColor: 'blue',
+      borderRadius: 5,
+      marginHorizontal: 10,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 16,
+    },
+});
 
 export default InventoryItemList;

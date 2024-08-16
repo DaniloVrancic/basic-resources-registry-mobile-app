@@ -29,8 +29,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     showChangingEmployees,
     showChangingLocations, 
     onDeleteList = () => {},
-    setName = (name: string) => {}
-}) => {
+    }) => {
     const textColor = useThemeColor({}, 'text');
     let parametersForList;
 
@@ -75,7 +74,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
               ]);
         }
 
-        const handleConfirmAdd = async () => {
+        const handleConfirmUpdate = async () => {
             if (inputEditedName.trim() === '') {
               Alert.alert('Error', 'List name cannot be empty.');
               return;
@@ -86,7 +85,6 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 setShowAddPrompt(false);
                 try{
                   await updateTransferList(db, inputEditedName); // Reload the list after adding
-                  setName(inputEditedName);
                 }
                 catch(error)
                 {
@@ -101,16 +99,17 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             }
           };
 
-        const handleCancelAdd = () => {
+        const handleCancelUpdate = () => {
+            setInputEditedName(name);
             setShowAddPrompt(false);
           };
 
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
-            <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.listTitle} type='subtitle'>{name}</ThemedText>
+            <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.listTitle} type='subtitle'>{inputEditedName}</ThemedText>
 
-            <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
+            <Pressable style={styles.editIcon} onPress={() => {setShowAddPrompt(true)}}>
                 <Icon type="material" name="edit" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
             <Pressable style={styles.deleteIcon} onPress={() => {confirmDeleteLocationAlert();}}>
@@ -140,7 +139,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 </ThemedView>
             </Suspense>
 
-            <Modal visible={showAddPrompt} animationType="fade" transparent={true}>
+            <Modal visible={showAddPrompt} animationType="fade" transparent={false}>
                 <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
                 <ThemedView style={modalStyles2.modalContainer}>
                 <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
@@ -152,10 +151,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                     placeholderTextColor="grey"
                 />
                 <ThemedView style={modalStyles2.buttonContainer}>
-                <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+                <Pressable style={modalStyles2.button} onPress={handleCancelUpdate}>
                     <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
                     </Pressable>
-                    <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
+                    <Pressable style={modalStyles2.button} onPress={handleConfirmUpdate}>
                     <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
                     </Pressable>
                 </ThemedView>

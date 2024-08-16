@@ -59,6 +59,9 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters> = ({
             <Pressable style={styles.deleteIcon} onPress={() => {console.log("Trash clicked")}}>
                 <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
+            <Pressable style={styles.addIcon} onPress={() => {console.log("Add clicked")}}>
+                <Icon type="material" name="add" iconStyle={{color: 'ghostwhite'}}/>
+            </Pressable>
 
             <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
                 <ThemedView style={{borderRadius: 10}}>
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     deleteIcon: {
         position: "absolute",
         top: "2%",
-        right: "10%",
+        left: "47.5%",
         backgroundColor: 'purple',
         width: 40,
         height: 40,
@@ -110,6 +113,16 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: "2%",
         left: "10%",
+        backgroundColor: 'purple',
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        borderRadius: 100
+    },
+    addIcon: {
+        position: "absolute",
+        top: "2%",
+        right: "10%",
         backgroundColor: 'purple',
         width: 40,
         height: 40,

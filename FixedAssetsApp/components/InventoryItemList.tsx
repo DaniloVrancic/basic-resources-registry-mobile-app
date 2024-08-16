@@ -124,7 +124,8 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             <Pressable style={styles.deleteIcon} onPress={() => {confirmDeleteLocationAlert();}}>
                 <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
-            <Pressable style={styles.addIcon} onPress={() => {console.log("Add clicked")}}>
+            <Pressable style={styles.addIcon} onPress={() => {console.log("Add clicked")}}> 
+                {/* FIX ADD CLICKED */}
                 <Icon type="material" name="add" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
 
@@ -151,7 +152,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             <Modal visible={showAddPrompt} animationType="fade" transparent={false}>
                 <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
                 <ThemedView style={modalStyles2.modalContainer}>
-                <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
+                <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText> 
                 <TextInput
                     style={modalStyles2.textInput}
                     value={inputEditedName}

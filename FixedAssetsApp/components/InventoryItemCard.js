@@ -8,10 +8,11 @@ import { TransferList } from "@/app/data_interfaces/transfer-list";
 import { Button, Icon } from "@rneui/themed";
 import { deleteInventoryItemById, getAllEmployees, getAllFixedAssets, getAllLocations, updateInventoryItemForList } from "@/db/db";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import InventoryItemSelectors from "@/components/custom_for_this_project/InventoryItemSelectors"
 import { Dropdown } from "react-native-element-dropdown";
 
 let db;
-const InventoryItemCard = ({
+const InventoryItemCard = ( {
     currentEmployeeId,
     currentEmployeeName,
     currentLocationId,
@@ -24,6 +25,9 @@ const InventoryItemCard = ({
     newLocationName,
     transferListId,
     transferListName,
+    possibleEmployees,
+    possibleFixedAssets,
+    possibleLocations,
     onUpdateItem = () => {},
     onDeleteItem = () => {}
 }) => {
@@ -32,66 +36,9 @@ const InventoryItemCard = ({
 
     const [editModal, setEditModal] = useState(false);
 
-    const [possibleEmployees, setPossibleEmployees] = useState([]);
-    const [possibleLocations, setPossibleLocations] = useState([]);
-    const [possibleFixedAssets, setPossibleFixedAssets] = useState([]);
-
-    const loadFixedAssetsFromDatabase = async (db) => {
-        try {
-            var fetchedEmployees = (await getAllFixedAssets(db));
-            var valuesToReturn = [];
-
-            fetchedEmployees.forEach(element => {
-                var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
-                valuesToReturn.push(mappedElement);
-            });
-            setPossibleFixedAssets(valuesToReturn);
-        } catch (error) {
-          console.error('Error loading employees:', error);
-        }
-      };
-
-    const loadEmployeesFromDatabase = async (db) => {
-        try {
-            var fetchedEmployees = (await getAllEmployees(db));
-            var valuesToReturn = [];
-
-            fetchedEmployees.forEach(element => {
-                var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
-                valuesToReturn.push(mappedElement);
-            });
-            setPossibleEmployees(valuesToReturn);
-        } catch (error) {
-          console.error('Error loading employees:', error);
-        }
-      };
 
 
-      /*
-       * The code below will fetch all the Location data from the database and correctly filter only the data that we will use.
-       * This data is then bound to the State which will be used to display all the possible locations to select in a drop down menu.
-       */
-    const loadLocationsFromDatabase = async (db) => {
-        try {
-            var fetchedLocations = (await getAllLocations(db));
-            var valuesToReturn = [];
-
-            fetchedLocations.forEach(element => {
-                var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
-                valuesToReturn.push(mappedElement);
-            });
-            setPossibleLocations(valuesToReturn);
-        } catch (error) {
-          console.error('Error loading employees:', error);
-        }
-      };
-
-    useEffect(() => {
-        loadEmployeesFromDatabase(db);
-        loadLocationsFromDatabase(db);
-        loadFixedAssetsFromDatabase(db);
-    }, 
-    [])
+    
     
 
     const handleDeleteItem = async () => {
@@ -117,71 +64,9 @@ const InventoryItemCard = ({
         }
     }
 
-    const [value, setValue] = useState(null);
-
-    const [isFocusFixedAsset, setIsFocusFixedAsset] = useState(false);
-    const [isFocusCurrentEmployee, setIsFocusCurrentEmployee] = useState(false);
-    const [isFocusNewEmployee, setIsFocusNewEmployee] = useState(false);
-    const [isFocusCurrentLocation, setIsFocusCurrentLocation] = useState(false);
-    const [isFocusNewLocation, setIsFocusNewLocation] = useState(false);
-
-    const [inputAssignedFixedAssetId, setInputAssignedFixedAssetId] = useState(fixedAssetId);
-    const [inputAssignedCurrentEmployeeId, setInputAssignedCurrentEmployeeId] = useState(currentEmployeeId);
-    const [inputAssignedNewEmployeeId, setInputAssignedNewEmployeeId] = useState(new_employee_id);
-    const [inputAssignedCurrentLocationId, setInputAssignedCurrentLocationId] = useState(currentLocationId);
-    const [inputAssignedNewLocationId, setInputAssignedNewLocationId] = useState(newLocationId);
 
 
-    const renderLabelFixedAsset = (myIsFocusFixedAsset) => {
-        if (value || myIsFocusFixedAsset) {
-          return (
-            <ThemedText style={[dropdownStyles.label, myIsFocusFixedAsset && { color: 'green' }]}>
-              Select Fixed Asset:
-            </ThemedText>
-          );
-        }
-        return null;
-      };
-
-    const renderLabelEmployee = (myIsFocusEmployee) => {
-        if (value || myIsFocusEmployee) {
-          return (
-            <ThemedText style={[dropdownStyles.label, myIsFocusEmployee && { color: 'blue' }]}>
-              Select Employee:
-            </ThemedText>
-          );
-        }
-        return null;
-      };
-
-      const renderLabelLocation = (myIsFocusLocation) => {
-        if (value || myIsFocusLocation) {
-          return (
-            <ThemedText style={[dropdownStyles.labelBottom, myIsFocusLocation && { color: 'gold' }]}>
-              Select Location:
-            </ThemedText>
-          );
-        }
-        return null;
-      };
-
-      const resetDefaultStates = () => {
-        setInputAssignedFixedAssetId(fixedAssetId);
-        setInputAssignedCurrentEmployeeId(currentEmployeeId);
-        setInputAssignedNewEmployeeId(new_employee_id);
-        setInputAssignedCurrentLocationId(currentLocationId);
-        setInputAssignedNewLocationId(newLocationId);
-      }
-
-      const handleUpdateItem = async () => {
-        var item = {
-            fixed_asset_id : inputAssignedFixedAssetId,
-            transfer_list_id : transferListId,
-            currentEmployeeId : inputAssignedCurrentEmployeeId,
-            new_employee_id : inputAssignedNewEmployeeId,
-            currentLocationId : inputAssignedCurrentLocationId,
-            newLocationId : inputAssignedNewLocationId,
-        };
+    const handleUpdateItem = async (item) => {
 
         try{
             var result = await updateInventoryItemForList(db, item);
@@ -198,13 +83,16 @@ const InventoryItemCard = ({
 
 
 
+
+
+
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
             <ThemedText type="subtitle" style={{marginBottom: 25}}>{fixedAssetName}</ThemedText>
 
 
-        <Pressable style={styles.editIcon} onPress={() => {resetDefaultStates(); setEditModal(true);}}>
+        <Pressable style={styles.editIcon} onPress={() => {setEditModal(true);}}>
             <Icon type="material" name="edit"/>
         </Pressable>
         <Pressable style={styles.deleteIcon} onPress={() => {confirmDelete()}}>
@@ -245,237 +133,22 @@ const InventoryItemCard = ({
             </ThemedView>
 
             <Modal animationType="slide" visible={editModal}>
-                <ScrollView>
-                    <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
-                    <ThemedView style={modalStyles.modalHeader}>
-                        <Pressable style={modalStyles.modalCloseButton} onPress={() => {setEditModal(false)}}>
-                            <Ionicons name="close" size={24} color={textColor} />
-                        </Pressable>
-                        <Pressable style={modalStyles.modalSpaceFill} onPress={() => {setEditModal(false)}}></Pressable>
-                    </ThemedView>
-
-                    <ThemedView style={modalStyles.elementGroup}>
-                        <ThemedView style={modalStyles.elementGroupLabel}>
-                            <ThemedText>Fixed Asset</ThemedText>
-                        </ThemedView>
-                        <ThemedView style={dropdownStyles.container}>
-                                            {renderLabelFixedAsset(isFocusFixedAsset)}
-                                            <Dropdown
-                                            dropdownPosition="bottom"
-                                            inverted={false}
-                                            style={[dropdownStyles.dropdown, isFocusFixedAsset && { borderColor: 'green' }]}
-                                            placeholderStyle={dropdownStyles.placeholderStyle}
-                                            selectedTextStyle={dropdownStyles.selectedTextStyle}
-                                            inputSearchStyle={dropdownStyles.inputSearchStyle}
-                                            iconStyle={dropdownStyles.iconStyle}
-                                            data={possibleFixedAssets}
-                                            search
-                                            maxHeight={'90%'}
-                                            labelField="label"
-                                            valueField="value"
-                                            placeholder={!isFocusFixedAsset ? 'Select item' : '...'}
-                                            searchPlaceholder="Search Fixed Asset..."
-                                            value={inputAssignedFixedAssetId}
-                                            onFocus={() => setIsFocusFixedAsset(true)}
-                                            onBlur={() => setIsFocusFixedAsset(false)}
-                                            onChange={item => {
-                                                setInputAssignedFixedAssetId(item.value);
-                                                setIsFocusFixedAsset(false);
-                                            }}
-                                            renderLeftIcon={() => (
-                                                <AntDesign
-                                                style={dropdownStyles.icon}
-                                                color={isFocusFixedAsset ? 'green' : 'black'}
-                                                name="CodeSandbox"
-                                                size={20}
-                                                />
-                                            )}
-                                            />
-                            </ThemedView>
-                        </ThemedView>
-
-                    <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>                        
-
-                    <ThemedView style={modalStyles.elementGroup}>
-                        <ThemedView style={modalStyles.elementGroupLabel}>
-                            <ThemedText >Employees Transfer</ThemedText>
-                        </ThemedView>    
-                            <ThemedView style={dropdownStyles.container}>
-                                        {renderLabelEmployee(isFocusCurrentEmployee)}
-                                        <Dropdown
-                                        dropdownPosition="bottom"
-                                        inverted={false}
-                                        style={[dropdownStyles.dropdown, isFocusCurrentEmployee && { borderColor: 'blue' }]}
-                                        placeholderStyle={dropdownStyles.placeholderStyle}
-                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
-                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
-                                        iconStyle={dropdownStyles.iconStyle}
-                                        data={possibleEmployees}
-                                        search
-                                        maxHeight={'90%'}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder={!isFocusCurrentEmployee ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Employee..."
-                                        value={inputAssignedCurrentEmployeeId}
-                                        onFocus={() => setIsFocusCurrentEmployee(true)}
-                                        onBlur={() => setIsFocusCurrentEmployee(false)}
-                                        onChange={item => {
-                                            setInputAssignedCurrentEmployeeId(item.value);
-                                            setIsFocusCurrentEmployee(false);
-                                        }}
-                                        renderLeftIcon={() => (
-                                            <AntDesign
-                                            style={dropdownStyles.icon}
-                                            color={isFocusCurrentEmployee ? 'blue' : 'black'}
-                                            name="idcard"
-                                            size={20}
-                                            />
-                                        )}
-                                        />
-                            </ThemedView>
-                            <Icon name="arrow-downward" type="material"/>
-                            <ThemedView style={dropdownStyles.container}>
-                                        {renderLabelEmployee(isFocusNewEmployee)}
-                                        <Dropdown
-                                        dropdownPosition="bottom"
-                                        inverted={false}
-                                        style={[dropdownStyles.dropdown, isFocusNewEmployee && { borderColor: 'blue' }]}
-                                        placeholderStyle={dropdownStyles.placeholderStyle}
-                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
-                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
-                                        iconStyle={dropdownStyles.iconStyle}
-                                        data={possibleEmployees}
-                                        search
-                                        maxHeight={'90%'}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder={!isFocusNewEmployee ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Employee..."
-                                        value={inputAssignedNewEmployeeId}
-                                        onFocus={() => setIsFocusNewEmployee(true)}
-                                        onBlur={() => setIsFocusNewEmployee(false)}
-                                        onChange={item => {
-                                            setInputAssignedNewEmployeeId(item.value);
-                                            setIsFocusNewEmployee(false);
-                                        }}
-                                        renderLeftIcon={() => (
-                                            <AntDesign
-                                            style={dropdownStyles.icon}
-                                            color={isFocusNewEmployee ? 'blue' : 'black'}
-                                            name="idcard"
-                                            size={20}
-                                            />
-                                        )}
-                                        />
-                            </ThemedView>
-                        </ThemedView>
-
-
-                        <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>
-
-                        <ThemedView style={modalStyles.elementGroup}>
-                        <ThemedView style={modalStyles.elementGroupLabel}>
-                            <ThemedText >Location Transfer</ThemedText>
-                        </ThemedView>    
-                            <ThemedView style={dropdownStyles.container}>
-                                        {renderLabelLocation(isFocusCurrentLocation)}
-                                        <Dropdown
-                                        dropdownPosition="top"
-                                        inverted={false}
-                                        style={[dropdownStyles.dropdown, isFocusCurrentLocation && { borderColor: 'gold' }]}
-                                        placeholderStyle={dropdownStyles.placeholderStyle}
-                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
-                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
-                                        iconStyle={dropdownStyles.iconStyle}
-                                        data={possibleLocations}
-                                        search
-                                        maxHeight={'90%'}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder={!isFocusCurrentLocation ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Location..."
-                                        value={inputAssignedCurrentLocationId}
-                                        onFocus={() => setIsFocusCurrentLocation(true)}
-                                        onBlur={() => setIsFocusCurrentLocation(false)}
-                                        onChange={item => {
-                                            setInputAssignedCurrentLocationId(item.value);
-                                            setIsFocusCurrentLocation(false);
-                                        }}
-                                        renderLeftIcon={() => (
-                                            <AntDesign
-                                            style={dropdownStyles.icon}
-                                            color={isFocusCurrentLocation ? 'gold' : 'black'}
-                                            name="earth"
-                                            size={20}
-                                            />
-                                        )}
-                                        />
-                            </ThemedView>
-                            <Icon name="arrow-downward" type="material"/>
-                            <ThemedView style={dropdownStyles.container}>
-                                        {renderLabelLocation(isFocusNewLocation)}
-                                        <Dropdown
-                                        dropdownPosition="top"
-                                        inverted={false}
-                                        style={[dropdownStyles.dropdown, isFocusNewLocation && { borderColor: 'gold' }]}
-                                        placeholderStyle={dropdownStyles.placeholderStyle}
-                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
-                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
-                                        iconStyle={dropdownStyles.iconStyle}
-                                        data={possibleLocations}
-                                        search
-                                        maxHeight={'90%'}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder={!isFocusNewLocation ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Location..."
-                                        value={inputAssignedNewLocationId}
-                                        onFocus={() => setIsFocusNewLocation(true)}
-                                        onBlur={() => setIsFocusNewLocation(false)}
-                                        onChange={item => {
-                                            setInputAssignedNewLocationId(item.value);
-                                            setIsFocusNewLocation(false);
-                                        }}
-                                        renderLeftIcon={() => (
-                                            <AntDesign
-                                            style={dropdownStyles.icon}
-                                            color={isFocusNewLocation ? 'gold' : 'black'}
-                                            name="earth"
-                                            size={20}
-                                            />
-                                        )}
-                                        />
-                            </ThemedView>
-                        </ThemedView>
-
-                        <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>
-
-                        <ThemedView style={{justifyContent:'center', alignItems: 'center', width: '100%', minWidth: '100%'}}>
-                            <Button
-                                buttonStyle={{ justifyContent:'center', backgroundColor: 'purple' }}
-                                containerStyle={{width: '90%', borderRadius: 10}}
-                                disabledStyle={{
-                                    borderWidth: 2,
-                                    borderColor: "#00F"
-                                }}
-                                disabledTitleStyle={{ color: "#00F" }}
-                                icon={
-                                    <Icon
-                                    name="save"
-                                    type="material"
-                                    size={15}
-                                    color="#FFF"
-                                    />
-                                }
-                                iconContainerStyle={{ background: "#000" }}
-                                onPress={() => {    handleUpdateItem(); }}
-                                title="Save Changes"
-                                titleStyle={{ marginHorizontal: 5 }}
-                            />
-                        </ThemedView>                  
-                    </ThemedView>
-                </ScrollView>
+                <InventoryItemSelectors 
+                fixedAssetId={fixedAssetId}
+                currentEmployeeId={currentEmployeeId}
+                currentLocationId={currentLocationId}
+                new_employee_id={new_employee_id}
+                newLocationId={newLocationId}
+                transferListId={transferListId}
+                possibleFixedAssets={possibleFixedAssets}
+                possibleEmployees={possibleEmployees} 
+                possibleLocations={possibleLocations}
+                titleToDisplay="Edit Transfer Item"
+                onPressClose={() => {setEditModal(false)}}
+                onPressSave={ item => {
+                    handleUpdateItem(item);
+                } }
+                />
             </Modal>
 
         </ThemedView>
@@ -605,54 +278,4 @@ const modalStyles = StyleSheet.create({
         
     }
   
-  });
-
-  const dropdownStyles = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
-        padding: 16,
-        width: '90%'
-      },
-      dropdown: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-      },
-      icon: {
-        marginRight: 5,
-      },
-      label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 26,
-        top: 0,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
-      },
-      labelBottom: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 26,
-        top: 56,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
-      },
-      placeholderStyle: {
-        fontSize: 16,
-      },
-      selectedTextStyle: {
-        fontSize: 16,
-      },
-      iconStyle: {
-        width: 20,
-        height: 20,
-      },
-      inputSearchStyle: {
-        height: 40,
-        fontSize: 16,
-      },
   });

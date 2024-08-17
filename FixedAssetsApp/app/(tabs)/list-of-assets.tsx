@@ -14,7 +14,7 @@ import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inven
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
-import { addTransferList, getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocationsForContainsName } from '@/db/db';
+import { addTransferList, getAllEmployees, getAllFixedAssets, getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocations, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
 import { InventoryList } from '../data_interfaces/inventory-list';
 
@@ -29,6 +29,10 @@ export default function ListOfAssets() {
 
   const currentSearchCriteria: InventoryListSearchCriteria = {keywordToSearch: "", isChangingEmployee: true, isChangingLocation: true};
 
+
+  const [possibleEmployees, setPossibleEmployees] = useState([]);
+  const [possibleLocations, setPossibleLocations] = useState([]);
+  const [possibleFixedAssets, setPossibleFixedAssets] = useState([]);
     
   const [searchChangingEmployee, setSearchChangingEmployee] = useState(true);
   const [searchChangingLocation, setSearchChangingLocation] = useState(true);
@@ -41,9 +45,66 @@ export default function ListOfAssets() {
   const openShowAdd = () => {setShowAddList(true);}
   const closeShowAdd = () => {setShowAddList(false);}
 
-  useEffect(() => {
-    loadInventoryTransferLists(db);
-  }, []);
+
+  const loadFixedAssetsFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+        var fetchedEmployees = (await getAllFixedAssets(db));
+        var valuesToReturn: any = [];
+
+        fetchedEmployees.forEach((element: any) => {
+            var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+            valuesToReturn.push(mappedElement);
+        });
+        setPossibleFixedAssets(valuesToReturn);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
+  };
+
+const loadEmployeesFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+        var fetchedEmployees = (await getAllEmployees(db));
+        var valuesToReturn: any = [];
+
+        fetchedEmployees.forEach((element: any) => {
+            var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+            valuesToReturn.push(mappedElement);
+        });
+        setPossibleEmployees(valuesToReturn);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
+  };
+
+
+  /*
+   * The code below will fetch all the Location data from the database and correctly filter only the data that we will use.
+   * This data is then bound to the State which will be used to display all the possible locations to select in a drop down menu.
+   */
+const loadLocationsFromDatabase = async (db: SQLiteDatabase) => {
+    try {
+        var fetchedLocations = (await getAllLocations(db));
+        var valuesToReturn: any = [];
+
+        fetchedLocations.forEach((element: any) => {
+            var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+            valuesToReturn.push(mappedElement);
+        });
+        setPossibleLocations(valuesToReturn);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    }
+  };
+
+useEffect(() => {
+
+  loadInventoryTransferLists(db);
+  loadLocationsFromDatabase(db);
+  loadEmployeesFromDatabase(db);
+  loadFixedAssetsFromDatabase(db);
+
+}, 
+[])
 
   const loadInventoryTransferLists = async (db: SQLiteDatabase) => {
     try {
@@ -126,7 +187,16 @@ export default function ListOfAssets() {
              {
                 loadedLists.map((inventoryList: InventoryList) =>
                   <ThemedView key={inventoryList.id } style={{marginVertical: 10, borderRadius: 15}}>
-                    <InventoryItemList key={inventoryList.id} id={inventoryList.id} name={inventoryList.name} showChangingEmployees={searchChangingEmployee} showChangingLocations={searchChangingLocation} onDeleteList={() => {handleDeleteList(inventoryList.id);}}/>
+                    <InventoryItemList 
+                    key={inventoryList.id} 
+                    id={inventoryList.id} 
+                    name={inventoryList.name} 
+                    possibleEmployees={possibleEmployees}
+                    possibleFixedAssets={possibleFixedAssets}
+                    possibleLocations={possibleLocations}
+                    showChangingEmployees={searchChangingEmployee} 
+                    showChangingLocations={searchChangingLocation} 
+                    onDeleteList={() => {handleDeleteList(inventoryList.id);}}/>
                   </ThemedView>
                 )
              }

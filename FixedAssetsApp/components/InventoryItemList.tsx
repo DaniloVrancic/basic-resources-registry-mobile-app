@@ -12,6 +12,7 @@ import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
 import { Icon } from '@rneui/themed';
+import InventoryItemSelectors from './custom_for_this_project/InventoryItemSelectors';
 
 let db: SQLiteDatabase;
 
@@ -27,7 +28,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     id,
     name,
     showChangingEmployees,
-    showChangingLocations, 
+    showChangingLocations,
+    possibleEmployees,
+    possibleLocations,
+    possibleFixedAssets,
     onDeleteList = () => {},
     }) => {
     const textColor = useThemeColor({}, 'text');
@@ -37,6 +41,8 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     const [loadedItems, setLoadedItems] = useState([]);
     const [showAddPrompt, setShowAddPrompt] = useState(false);
     const [inputEditedName, setInputEditedName] = useState<string>(name);
+
+    const [addModal, setAddModal] = useState(false);
 
     useEffect(() => {
         loadItemsForList(db, id, showChangingEmployees, showChangingLocations);
@@ -122,6 +128,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 }
         }
 
+        const handleAddItem = (item: any) => {
+
+        }
+
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
@@ -150,7 +160,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                                 return;
                             }
                             else{
-                                return <InventoryItemCard key={element.fixedAssetId * 10_000 + element.transferListId} 
+                                return <InventoryItemCard key={element.fixedAssetId * 10_000 + element.transferListId}
+                                possibleEmployees={possibleEmployees}
+                                possibleFixedAssets={possibleFixedAssets}
+                                possibleLocations={possibleLocations}
                                 onDeleteItem={() => {handleDeletedItem(element.fixedAssetId, element.transferListId);}}
                                 onUpdateItem={() => {handleUpdatedItem(element.fixedAssetId, element.transferListId);}}
                                 {...element}/>
@@ -182,6 +195,19 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 </ThemedView>
                 </ThemedView>
                 </ThemedView>
+            </Modal>
+
+            <Modal animationType="slide" visible={addModal}>
+                <InventoryItemSelectors
+                possibleEmployees={possibleEmployees}
+                possibleFixedAssets={possibleFixedAssets}
+                possibleLocations={possibleLocations}
+                titleToDisplay="Add Transfer Item"
+                onPressClose={() => {setAddModal(false)}}
+                onPressSave={ item => {
+                    handleAddItem(item);
+                } }
+                />
             </Modal>
         </ThemedView>
     );

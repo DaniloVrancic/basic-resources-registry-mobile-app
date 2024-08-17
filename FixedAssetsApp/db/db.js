@@ -788,7 +788,7 @@ export const deleteInventoryItemById = async (db, fixed_asset_id, transfer_list_
 
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
           

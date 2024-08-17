@@ -156,7 +156,7 @@ const InventoryItemCard = ({
       const renderLabelLocation = (myIsFocusLocation) => {
         if (value || myIsFocusLocation) {
           return (
-            <ThemedText style={[dropdownStyles.label, myIsFocusLocation && { color: 'blue' }]}>
+            <ThemedText style={[dropdownStyles.labelBottom, myIsFocusLocation && { color: 'gold' }]}>
               Select Location:
             </ThemedText>
           );
@@ -255,7 +255,7 @@ const InventoryItemCard = ({
                                                 <AntDesign
                                                 style={dropdownStyles.icon}
                                                 color={isFocusFixedAsset ? 'green' : 'black'}
-                                                name="Safety"
+                                                name="CodeSandbox"
                                                 size={20}
                                                 />
                                             )}
@@ -297,7 +297,7 @@ const InventoryItemCard = ({
                                             <AntDesign
                                             style={dropdownStyles.icon}
                                             color={isFocusCurrentEmployee ? 'blue' : 'black'}
-                                            name="Safety"
+                                            name="idcard"
                                             size={20}
                                             />
                                         )}
@@ -332,7 +332,7 @@ const InventoryItemCard = ({
                                             <AntDesign
                                             style={dropdownStyles.icon}
                                             color={isFocusNewEmployee ? 'blue' : 'black'}
-                                            name="Safety"
+                                            name="idcard"
                                             size={20}
                                             />
                                         )}
@@ -341,7 +341,82 @@ const InventoryItemCard = ({
                         </ThemedView>
 
 
-                        <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>    
+                        <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>
+
+                        <ThemedView style={modalStyles.elementGroup}>
+                        <ThemedView style={modalStyles.elementGroupLabel}>
+                            <ThemedText >Location Transfer</ThemedText>
+                        </ThemedView>    
+                            <ThemedView style={dropdownStyles.container}>
+                                        {renderLabelLocation(isFocusCurrentLocation)}
+                                        <Dropdown
+                                        dropdownPosition="top"
+                                        inverted={false}
+                                        style={[dropdownStyles.dropdown, isFocusCurrentLocation && { borderColor: 'gold' }]}
+                                        placeholderStyle={dropdownStyles.placeholderStyle}
+                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
+                                        iconStyle={dropdownStyles.iconStyle}
+                                        data={possibleLocations}
+                                        search
+                                        maxHeight={'90%'}
+                                        labelField="label"
+                                        valueField="value"
+                                        placeholder={!isFocusCurrentLocation ? 'Select item' : '...'}
+                                        searchPlaceholder="Search Location..."
+                                        value={inputAssignedCurrentLocationId}
+                                        onFocus={() => setIsFocusCurrentLocation(true)}
+                                        onBlur={() => setIsFocusCurrentLocation(false)}
+                                        onChange={item => {
+                                            setInputAssignedCurrentLocationId(item.value);
+                                            setIsFocusCurrentLocation(false);
+                                        }}
+                                        renderLeftIcon={() => (
+                                            <AntDesign
+                                            style={dropdownStyles.icon}
+                                            color={isFocusCurrentLocation ? 'gold' : 'black'}
+                                            name="earth"
+                                            size={20}
+                                            />
+                                        )}
+                                        />
+                            </ThemedView>
+                            <Icon name="arrow-downward" type="material"/>
+                            <ThemedView style={dropdownStyles.container}>
+                                        {renderLabelLocation(isFocusNewLocation)}
+                                        <Dropdown
+                                        dropdownPosition="top"
+                                        inverted={false}
+                                        style={[dropdownStyles.dropdown, isFocusNewLocation && { borderColor: 'gold' }]}
+                                        placeholderStyle={dropdownStyles.placeholderStyle}
+                                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                        inputSearchStyle={dropdownStyles.inputSearchStyle}
+                                        iconStyle={dropdownStyles.iconStyle}
+                                        data={possibleLocations}
+                                        search
+                                        maxHeight={'90%'}
+                                        labelField="label"
+                                        valueField="value"
+                                        placeholder={!isFocusNewLocation ? 'Select item' : '...'}
+                                        searchPlaceholder="Search Location..."
+                                        value={inputAssignedNewLocationId}
+                                        onFocus={() => setIsFocusNewLocation(true)}
+                                        onBlur={() => setIsFocusNewLocation(false)}
+                                        onChange={item => {
+                                            setInputAssignedNewLocationId(item.value);
+                                            setIsFocusNewLocation(false);
+                                        }}
+                                        renderLeftIcon={() => (
+                                            <AntDesign
+                                            style={dropdownStyles.icon}
+                                            color={isFocusNewLocation ? 'gold' : 'black'}
+                                            name="earth"
+                                            size={20}
+                                            />
+                                        )}
+                                        />
+                            </ThemedView>
+                        </ThemedView>
 
 
                     </ThemedView>
@@ -462,7 +537,10 @@ const modalStyles = StyleSheet.create({
         borderColor: 'grey',
         borderRadius: 15,
         margin: 5,
-        padding: 5
+        padding: 5,
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center'
     },
     elementGroupLabel:{
         position: 'absolute',
@@ -495,6 +573,15 @@ const modalStyles = StyleSheet.create({
         backgroundColor: 'white',
         left: 26,
         top: 0,
+        zIndex: 999,
+        paddingHorizontal: 8,
+        fontSize: 14,
+      },
+      labelBottom: {
+        position: 'absolute',
+        backgroundColor: 'white',
+        left: 26,
+        top: 56,
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 14,

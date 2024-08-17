@@ -113,6 +113,15 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 }
         }
 
+        const handleUpdatedItem = async(fixedAssetId: number, transferListId: number) => {
+            try{
+                setLoadedItems(await getItemsFromViewForListId(db, id));
+                Alert.alert("Transferred Item Updated", "The data transfer information has been successfully updated.");
+                } catch (error) {
+                    console.error('Error Removing Location: ', error);
+                }
+        }
+
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
@@ -141,7 +150,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                                 return;
                             }
                             else{
-                                return <InventoryItemCard key={element.fixedAssetId * 10_000 + element.transferListId} onDeleteItem={() => {handleDeletedItem(element.fixedAssetId, element.transferListId);}} {...element}/>
+                                return <InventoryItemCard key={element.fixedAssetId * 10_000 + element.transferListId} 
+                                onDeleteItem={() => {handleDeletedItem(element.fixedAssetId, element.transferListId);}}
+                                onUpdateItem={() => {handleUpdatedItem(element.fixedAssetId, element.transferListId);}}
+                                {...element}/>
                             }
                         }
                         )

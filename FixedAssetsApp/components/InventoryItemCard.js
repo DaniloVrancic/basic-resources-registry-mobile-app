@@ -5,8 +5,8 @@ import { Alert, Modal, Pressable, ScrollView, StyleSheet } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
-import { Icon } from "@rneui/themed";
-import { deleteInventoryItemById, getAllEmployees, getAllFixedAssets, getAllLocations } from "@/db/db";
+import { Button, Icon } from "@rneui/themed";
+import { deleteInventoryItemById, getAllEmployees, getAllFixedAssets, getAllLocations, updateInventoryItemForList } from "@/db/db";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -24,6 +24,7 @@ const InventoryItemCard = ({
     newLocationName,
     transferListId,
     transferListName,
+    onUpdateItem = () => {},
     onDeleteItem = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
@@ -124,7 +125,7 @@ const InventoryItemCard = ({
     const [isFocusCurrentLocation, setIsFocusCurrentLocation] = useState(false);
     const [isFocusNewLocation, setIsFocusNewLocation] = useState(false);
 
-    const [inputAssignedFixedAssetId, setInputAssignedFixedAssetId] = useState(currentEmployeeId);
+    const [inputAssignedFixedAssetId, setInputAssignedFixedAssetId] = useState(fixedAssetId);
     const [inputAssignedCurrentEmployeeId, setInputAssignedCurrentEmployeeId] = useState(currentEmployeeId);
     const [inputAssignedNewEmployeeId, setInputAssignedNewEmployeeId] = useState(new_employee_id);
     const [inputAssignedCurrentLocationId, setInputAssignedCurrentLocationId] = useState(currentLocationId);
@@ -164,6 +165,36 @@ const InventoryItemCard = ({
         return null;
       };
 
+      const resetDefaultStates = () => {
+        setInputAssignedFixedAssetId(fixedAssetId);
+        setInputAssignedCurrentEmployeeId(currentEmployeeId);
+        setInputAssignedNewEmployeeId(new_employee_id);
+        setInputAssignedCurrentLocationId(currentLocationId);
+        setInputAssignedNewLocationId(newLocationId);
+      }
+
+      const handleUpdateItem = async () => {
+        var item = {
+            fixed_asset_id : inputAssignedFixedAssetId,
+            transfer_list_id : transferListId,
+            currentEmployeeId : inputAssignedCurrentEmployeeId,
+            new_employee_id : inputAssignedNewEmployeeId,
+            currentLocationId : inputAssignedCurrentLocationId,
+            newLocationId : inputAssignedNewLocationId,
+        };
+
+        try{
+            var result = await updateInventoryItemForList(db, item);
+            onUpdateItem && onUpdateItem(); //Invoke the onUpdateItem user sent method if it exists;
+
+            setEditModal(false);
+        }
+        catch(error){
+            console.error(error);
+            Alert.alert("Error", "An error occurred while updating the item. Please try again.");
+        }
+      }
+
 
 
 
@@ -173,7 +204,7 @@ const InventoryItemCard = ({
             <ThemedText type="subtitle" style={{marginBottom: 25}}>{fixedAssetName}</ThemedText>
 
 
-        <Pressable style={styles.editIcon} onPress={() => {setEditModal(true);}}>
+        <Pressable style={styles.editIcon} onPress={() => {resetDefaultStates(); setEditModal(true);}}>
             <Icon type="material" name="edit"/>
         </Pressable>
         <Pressable style={styles.deleteIcon} onPress={() => {confirmDelete()}}>
@@ -213,7 +244,7 @@ const InventoryItemCard = ({
                     </ThemedView>
             </ThemedView>
 
-            <Modal animationType="fade" visible={editModal}>
+            <Modal animationType="slide" visible={editModal}>
                 <ScrollView>
                     <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
                     <ThemedView style={modalStyles.modalHeader}>
@@ -225,7 +256,7 @@ const InventoryItemCard = ({
 
                     <ThemedView style={modalStyles.elementGroup}>
                         <ThemedView style={modalStyles.elementGroupLabel}>
-                            <ThemedText >Fixed Asset</ThemedText>
+                            <ThemedText>Fixed Asset</ThemedText>
                         </ThemedView>
                         <ThemedView style={dropdownStyles.container}>
                                             {renderLabelFixedAsset(isFocusFixedAsset)}
@@ -244,7 +275,7 @@ const InventoryItemCard = ({
                                             valueField="value"
                                             placeholder={!isFocusFixedAsset ? 'Select item' : '...'}
                                             searchPlaceholder="Search Fixed Asset..."
-                                            value={inputAssignedCurrentEmployeeId}
+                                            value={inputAssignedFixedAssetId}
                                             onFocus={() => setIsFocusFixedAsset(true)}
                                             onBlur={() => setIsFocusFixedAsset(false)}
                                             onChange={item => {
@@ -418,7 +449,31 @@ const InventoryItemCard = ({
                             </ThemedView>
                         </ThemedView>
 
+                        <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>
 
+                        <ThemedView style={{justifyContent:'center', alignItems: 'center', width: '100%', minWidth: '100%'}}>
+                            <Button
+                                buttonStyle={{ justifyContent:'center', backgroundColor: 'purple' }}
+                                containerStyle={{width: '90%', borderRadius: 10}}
+                                disabledStyle={{
+                                    borderWidth: 2,
+                                    borderColor: "#00F"
+                                }}
+                                disabledTitleStyle={{ color: "#00F" }}
+                                icon={
+                                    <Icon
+                                    name="save"
+                                    type="material"
+                                    size={15}
+                                    color="#FFF"
+                                    />
+                                }
+                                iconContainerStyle={{ background: "#000" }}
+                                onPress={() => {    handleUpdateItem(); }}
+                                title="Save Changes"
+                                titleStyle={{ marginHorizontal: 5 }}
+                            />
+                        </ThemedView>                  
                     </ThemedView>
                 </ScrollView>
             </Modal>

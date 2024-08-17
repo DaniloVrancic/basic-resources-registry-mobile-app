@@ -921,13 +921,13 @@ export const deleteInventoryItemById = async (db, fixed_asset_id, transfer_list_
     });
   }
 
-  const updateTransferListQuery = `UPDATE transfer_list SET name = $name`;
+  const updateTransferListQuery = `UPDATE transfer_list SET name = $name WHERE id = $id`;
 
-  export const updateTransferList = async (db, name) => {
+  export const updateTransferList = async (db, name, id) => {
     return new Promise((resolve, reject) => {
       db.withTransactionSync( async () => {
         try{
-          let rowsChanged = await db.runAsync(updateTransferListQuery, {  $name: name });
+          let rowsChanged = await db.runAsync(updateTransferListQuery, {  $name: name, $id: id });
           resolve(rowsChanged);
         }
         catch(error){

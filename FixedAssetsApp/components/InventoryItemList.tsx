@@ -84,7 +84,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
               // Add your database insertion logic here
                 setShowAddPrompt(false);
                 try{
-                  await updateTransferList(db, inputEditedName); // Reload the list after adding
+                  await updateTransferList(db, inputEditedName, id); // Reload the list after adding
                 }
                 catch(error)
                 {

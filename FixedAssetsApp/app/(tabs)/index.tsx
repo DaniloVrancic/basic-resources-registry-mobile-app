@@ -108,20 +108,20 @@ export default function HomeScreen() {
           </ThemedView>
 
           <Modal visible={showAddFixedAsset} animationType="slide">
-          <ScrollView>
-            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
-              <ThemedView style={modalStyles.modalHeader}>
-                <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
-                  <Ionicons name="close" size={24} color={textColor} />
-                </Pressable>
-                <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
-              </ThemedView>
-                {
-                  //Rest of the container here
-                  <AddNewFixedAsset onAssetAdded={() => handleFixedAssetAdded()}/>
-                }
-               
-            </ThemedView>
+            <ScrollView>
+                <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+                  <ThemedView style={modalStyles.modalHeader}>
+                    <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
+                      <Ionicons name="close" size={24} color={textColor} />
+                    </Pressable>
+                    <Pressable style={modalStyles.modalSpaceFill} onPress={() => {closeShowAdd()}}></Pressable>
+                  </ThemedView>
+                    {
+                      //Rest of the container here
+                      <AddNewFixedAsset onAssetAdded={() => handleFixedAssetAdded()}/>
+                    }
+                
+                </ThemedView>
             </ScrollView>
         </Modal>
       

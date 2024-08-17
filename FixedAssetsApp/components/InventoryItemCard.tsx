@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Alert, Pressable, StyleSheet } from "react-native";
+import { Alert, Modal, Pressable, ScrollView, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { TransferList } from "@/app/data_interfaces/transfer-list";
@@ -27,6 +27,8 @@ const InventoryItemCard: React.FC<TransferList | any> = ({
 }) => {
     const textColor = useThemeColor({}, 'text');
     db = useSQLiteContext();
+
+    const [editModal, setEditModal] = useState<boolean>(false);
     
 
     const handleDeleteItem = async () => {
@@ -59,7 +61,7 @@ const InventoryItemCard: React.FC<TransferList | any> = ({
             <ThemedText type="subtitle" style={{marginBottom: 25}}>{fixedAssetName}</ThemedText>
 
 
-        <Pressable style={styles.editIcon} onPress={() => {console.log("Edit clicked")}}>
+        <Pressable style={styles.editIcon} onPress={() => {setEditModal(true);}}>
             <Icon type="material" name="edit"/>
         </Pressable>
         <Pressable style={styles.deleteIcon} onPress={() => {confirmDelete()}}>
@@ -97,6 +99,25 @@ const InventoryItemCard: React.FC<TransferList | any> = ({
                     )}
                     </ThemedView>
             </ThemedView>
+
+            <Modal animationType="fade" visible={editModal}>
+                <ScrollView>
+                    <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+                    <ThemedView style={modalStyles.modalHeader}>
+                        <Pressable style={modalStyles.modalCloseButton} onPress={() => {setEditModal(false)}}>
+                            <Ionicons name="close" size={24} color={textColor} />
+                        </Pressable>
+                        <Pressable style={modalStyles.modalSpaceFill} onPress={() => {setEditModal(false)}}></Pressable>
+                    </ThemedView>
+                        {
+                        //Rest of the container here
+                        
+                        }
+                    
+                    </ThemedView>
+                </ScrollView>
+            </Modal>
+
         </ThemedView>
     );
 }
@@ -175,3 +196,36 @@ const styles = StyleSheet.create({
         borderRadius: 100
     }
 });
+
+const modalStyles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 8,
+    },
+    modalHeader: {
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.0)',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingBottom: 40,
+        marginRight: 20
+    },
+    modalCloseButton: {
+        justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 50,
+    backgroundColor: 'rgba(200,200,200, 0.8)',
+    },
+    modalSpaceFill: {
+        flex: 10,
+    }
+  
+  });

@@ -716,7 +716,7 @@ export const addFixedAsset = async (db, asset) => {
       db.withTransactionSync( async () => {
         try{
           let rowsChanged = await db.runAsync(addInventoryItemForListQuery, {  $fixed_asset_id: item.fixed_asset_id, 
-                                                                     $transfer_list_id: item.transfer_list_id, 
+                                                                     $transfer_list_id: item.transferListId, 
                                                                      $currentEmployeeId: item.currentEmployeeId,
                                                                      $new_employee_id: item.new_employee_id,
                                                                      $currentLocationId: item.currentLocationId,

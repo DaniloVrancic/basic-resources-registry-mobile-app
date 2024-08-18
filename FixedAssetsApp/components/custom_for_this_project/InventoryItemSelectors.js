@@ -80,7 +80,7 @@ const InventoryItemSelectors = ({
       const handleSaveChangesPress = () => {
         var item = {
             fixed_asset_id : inputAssignedFixedAssetId,
-            transfer_list_id : transferListId,
+            transferListId : transferListId,
             currentEmployeeId : inputAssignedCurrentEmployeeId,
             new_employee_id : inputAssignedNewEmployeeId,
             currentLocationId : inputAssignedCurrentLocationId,

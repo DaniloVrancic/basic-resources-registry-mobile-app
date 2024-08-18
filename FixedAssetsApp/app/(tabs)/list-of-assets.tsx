@@ -167,6 +167,10 @@ useEffect(() => {
       }
   }
 
+  const handleAddedToList = (listId : number) => {
+    
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
           <ThemedView style={{flex: 18}}>
@@ -196,7 +200,9 @@ useEffect(() => {
                     possibleLocations={possibleLocations}
                     showChangingEmployees={searchChangingEmployee} 
                     showChangingLocations={searchChangingLocation} 
-                    onDeleteList={() => {handleDeleteList(inventoryList.id);}}/>
+                    onDeleteList={() => {handleDeleteList(inventoryList.id);}}
+                    onAddedToList={(id: number) => {handleAddedToList(id)}}
+                    />
                   </ThemedView>
                 )
              }

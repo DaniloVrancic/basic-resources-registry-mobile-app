@@ -5,11 +5,9 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { ThemedView } from './ThemedView';
 import LoadingAnimation from './fallback/LoadingAnimation';
 import { ThemedText } from './ThemedText';
-import { deleteTransferListById, getItemsForList, getItemsFromViewForListId, getItemsFromViewForListIdWithShowFilters, updateTransferList } from '@/db/db';
+import { addInventoryItemForList, deleteTransferListById, getItemsFromViewForListId, updateTransferList } from '@/db/db';
 import InventoryItemCard from './InventoryItemCard';
-import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
 import { Icon } from '@rneui/themed';
 import InventoryItemSelectors from './custom_for_this_project/InventoryItemSelectors';
@@ -33,6 +31,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     possibleLocations,
     possibleFixedAssets,
     onDeleteList = () => {},
+    onAddedToList = (listId: number) => {}
     }) => {
     const textColor = useThemeColor({}, 'text');
     let parametersForList;
@@ -128,8 +127,28 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 }
         }
 
-        const handleAddItem = (item: any) => {
+        const handleAddItem = async (item: any) => {
+            const { currentEmployeeId, currentLocationId, fixed_asset_id, newLocationId, new_employee_id, transferListId } = item;
 
+            if([currentEmployeeId, currentLocationId, fixed_asset_id, newLocationId, new_employee_id, transferListId].includes(-1))
+            {
+                Alert.alert("Error", "One of the necessary options hasn't been set. Please check and try again.");
+                return; // Exit the function if any attribute is -1 (Not set)
+            }
+            else{
+                try{
+
+                    var result = await addInventoryItemForList(db, item);
+                    
+                    
+                    Alert.alert("Success", "New Transfer Item has been successfully added to the list.");
+                    onAddedToList && onAddedToList(id);
+                }
+                catch(error){
+                    console.error(error);
+                    Alert.alert("Error", "An error occured, couldn't add Transfer Item to list.")
+                }
+            }
         }
 
 
@@ -143,7 +162,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             <Pressable style={styles.deleteIcon} onPress={() => {confirmDeleteLocationAlert();}}>
                 <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
-            <Pressable style={styles.addIcon} onPress={() => {console.log("Add clicked")}}> 
+            <Pressable style={styles.addIcon} onPress={() => {setAddModal(true);}}> 
                 {/* FIX ADD CLICKED */}
                 <Icon type="material" name="add" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
@@ -203,6 +222,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 possibleFixedAssets={possibleFixedAssets}
                 possibleLocations={possibleLocations}
                 titleToDisplay="Add Transfer Item"
+                transferListId={id}
                 onPressClose={() => {setAddModal(false)}}
                 onPressSave={ item => {
                     handleAddItem(item);

@@ -263,9 +263,9 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedView>
                 <ThemedText type='title'>Add New Fixed Asset</ThemedText>
             </ThemedView>
-            <ThemedText style={styles.label}>Name</ThemedText>
+            <ThemedText style={[styles.label, , {color: textColor}]}>Name</ThemedText>
             <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, {color: textColor}]}
                 value={name}
                 onChangeText={setName}
                 placeholder="Enter asset name"
@@ -273,7 +273,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
             <ThemedText style={styles.label}>Description</ThemedText>
             <TextInput
-                style={[styles.textInput, styles.descriptionInput]}
+                style={[styles.textInput, styles.descriptionInput, {color: textColor}]}
                 value={description}
                 onChangeText={setDescription}
                 placeholder="Enter asset description"
@@ -335,7 +335,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
             <ThemedText style={styles.label}>Value</ThemedText>
             <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, {color: textColor}]}
                 value={price}
                 onChangeText={handleChangePrice}
                 placeholder="Enter asset value ($)"
@@ -345,7 +345,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedText style={styles.label}>Barcode</ThemedText>
             <ThemedView style={styles.barcodeInputContainer}>
                 <TextInput
-                    style={[styles.textInput, styles.barcodeInput]}
+                    style={[styles.textInput, styles.barcodeInput, {color: textColor}]}
                     value={barcode}
                     onChangeText={setBarcode}
                     placeholder="Scan or enter barcode"
@@ -389,11 +389,11 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 </ThemedView>
                 {
                     (!cameraScanned) ? 
-                    (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>No Code Found</ThemedText>
+                    (<ThemedView style={{backgroundColor:'rgba(220,0,0,1.0)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>No Code Found</ThemedText>
                     </ThemedView>)
                     :
-                    (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>
+                    (<ThemedView style={{backgroundColor:'rgba(0,220,0,1.0)'}}>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
                     </ThemedView>)

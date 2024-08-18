@@ -107,7 +107,7 @@ const InventoryItemSelectors = ({
                             <ThemedView style={{marginVertical: 10, padding: 10, alignItems: 'center'}}>
                                 <ThemedText type="title">{titleToDisplay}</ThemedText>
                             </ThemedView>
-                        <ThemedView style={modalStyles.elementGroup}>
+                        <ThemedView style={modalStyles.elementGroup} darkColor="white">
                             <ThemedView style={modalStyles.elementGroupLabel}>
                                 <ThemedText>Fixed Asset</ThemedText>
                             </ThemedView>
@@ -149,7 +149,7 @@ const InventoryItemSelectors = ({
 
                     <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>                        
 
-                    <ThemedView style={modalStyles.elementGroup}>
+                    <ThemedView style={modalStyles.elementGroup}  darkColor="white">
                         <ThemedView style={modalStyles.elementGroupLabel}>
                             <ThemedText >Employees Transfer</ThemedText>
                         </ThemedView>    
@@ -227,7 +227,7 @@ const InventoryItemSelectors = ({
 
                         <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>
 
-                        <ThemedView style={modalStyles.elementGroup}>
+                        <ThemedView style={modalStyles.elementGroup}  darkColor="white">
                         <ThemedView style={modalStyles.elementGroupLabel}>
                             <ThemedText >Location Transfer</ThemedText>
                         </ThemedView>    
@@ -379,7 +379,9 @@ const modalStyles = StyleSheet.create({
         position: 'absolute',
         fontSize: 18,
         top: -16,
-        left: 15,
+        left: 19,
+        borderRadius: 20,
+        paddingHorizontal: 20,
         
     }
   

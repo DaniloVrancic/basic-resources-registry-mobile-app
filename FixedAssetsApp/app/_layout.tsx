@@ -2,8 +2,12 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+
+import {en, sr} from "@/localizations";
+import * as Localization from 'expo-localization';
+import i18n from 'i18next';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 

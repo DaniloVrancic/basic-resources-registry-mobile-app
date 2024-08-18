@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Dropdown } from "react-native-element-dropdown";
 import { Button, Icon } from "@rneui/themed";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import CameraScanner from "../camera/CameraScanner";
+import { getAllFixedAssetsWithBarcode } from "@/db/db";
+import { useSQLiteContext } from "expo-sqlite";
 
+
+let db;
 const InventoryItemSelectors = ({
     currentEmployeeId = -1,
     currentLocationId = -1,
@@ -19,10 +24,12 @@ const InventoryItemSelectors = ({
     possibleLocations,
     titleToDisplay = "Default Text",
     onPressClose = () => {},
-    onPressSave = item => {}
+    onPressSave = item => {},
+    isAddingItem = true,
 }) => {
 
     const textColor = useThemeColor({}, 'text');
+    db = useSQLiteContext();
 
     const [isFocusFixedAsset, setIsFocusFixedAsset] = useState(false);
     const [isFocusCurrentEmployee, setIsFocusCurrentEmployee] = useState(false);
@@ -35,6 +42,15 @@ const InventoryItemSelectors = ({
     const [inputAssignedNewEmployeeId, setInputAssignedNewEmployeeId] = useState(new_employee_id);
     const [inputAssignedCurrentLocationId, setInputAssignedCurrentLocationId] = useState(currentLocationId);
     const [inputAssignedNewLocationId, setInputAssignedNewLocationId] = useState(newLocationId);
+
+    const [barcode, setBarcode] = useState('');
+    const [isScanning, setIsScanning] = useState(false);
+    const [cameraScanned, setCameraScanned] = useState(false);
+
+    function isObjectEmpty(obj) { 
+      return Object.keys(obj).length === 0; 
+    } 
+    
 
     const resetDefaultStates = () => {
         setInputAssignedFixedAssetId(fixedAssetId);
@@ -91,6 +107,54 @@ const InventoryItemSelectors = ({
 
       }
 
+    const handleScannedValue = async (myScannedValue) => {
+
+        const searchedAsset = await getAllFixedAssetsWithBarcode(db, myScannedValue);
+        setCameraScanned(true);
+        setBarcode(myScannedValue.toString());
+
+        if(searchedAsset == null || isObjectEmpty(searchedAsset))
+          {
+
+          Alert.alert("No such Asset found.", "No asset with this barcode has been found.");
+          
+        }
+        else{
+          var foundItem = {...searchedAsset};
+          if(foundItem.id == null){
+            setInputAssignedFixedAssetId(-1);
+          }
+          else{
+            setInputAssignedFixedAssetId(foundItem.id);
+          }
+
+          if(foundItem.employee_id == null){
+            setInputAssignedCurrentEmployeeId(-1);
+          }
+          else{
+            setInputAssignedCurrentEmployeeId(foundItem.employee_id);
+          }
+
+          if(foundItem.location_id == null){
+            setInputAssignedCurrentLocationId(-1);
+          }
+          else{
+            setInputAssignedCurrentLocationId(foundItem.location_id);
+          }
+          Alert.alert("Success.", "An asset with this barcode was found and relevant data has been filled in.");
+          closeModalScanner();
+          
+        }
+    }
+
+    const handleNewScan = () => {
+        setBarcode('');
+        setCameraScanned(false);
+    }
+
+    const openModalScanner = () => {setCameraScanned(false); setIsScanning(true)};
+    const closeModalScanner = () => setIsScanning(false);
+
     return (
     <ThemedView>
         <ScrollView>
@@ -145,6 +209,18 @@ const InventoryItemSelectors = ({
                                             )}
                                             />
                             </ThemedView>
+                            {
+                              (isAddingItem === true) ? 
+                                <View style={{alignItems: 'center'}}>
+                                  <ThemedText style={{color: 'black', marginBottom: 20}}>OR</ThemedText>
+                                  <ThemedView>
+                                    <Button title="Scan Barcode" onPress={() => setIsScanning(true)} color='#F4A300' />
+                                  </ThemedView>
+                                </View>
+                                : 
+                                <></>
+                            }
+                            
                         </ThemedView>
 
                     <ThemedView style={{marginVertical: 20, borderWidth: 1, padding: 0}}/>                        
@@ -329,6 +405,40 @@ const InventoryItemSelectors = ({
                         </ThemedView>                  
                     </ThemedView>
                 </ScrollView>
+
+                {isScanning && (
+                <Modal animationType="fade" transparent={true}> 
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+
+                    <ThemedView style={modalStyles.modalHeader}>
+                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
+                                <Icon name="undo" type="material" size={24} color={textColor} />
+                            </Pressable>
+                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
+                    </ThemedView>
+
+                    <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                    </ThemedView>
+                    <ThemedView>
+                         {/* Fill with Content here */}
+                         <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                    </ThemedView>
+                </ThemedView>
+                {
+                    (!cameraScanned) ? 
+                    (<ThemedView style={{backgroundColor:'rgba(220,0,0,1.0)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>No Code Found</ThemedText>
+                    </ThemedView>)
+                    :
+                    (<ThemedView style={{backgroundColor:'rgba(0,220,0,1.0)'}}>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
+                    </ThemedView>)
+                }
+              </Modal>
+                
+            )}
     </ThemedView>
     )
 }

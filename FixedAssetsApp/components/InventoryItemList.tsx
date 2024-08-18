@@ -11,6 +11,7 @@ import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
 import { TransferList } from '@/app/data_interfaces/transfer-list';
 import { Icon } from '@rneui/themed';
 import InventoryItemSelectors from './custom_for_this_project/InventoryItemSelectors';
+import { InventoryItem } from '@/app/data_interfaces/inventory-item';
 
 let db: SQLiteDatabase;
 
@@ -37,7 +38,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     let parametersForList;
 
     db = useSQLiteContext();
-    const [loadedItems, setLoadedItems] = useState([]);
+    const [loadedItems, setLoadedItems] = useState<any[]>([]);
     const [showAddPrompt, setShowAddPrompt] = useState(false);
     const [inputEditedName, setInputEditedName] = useState<string>(name);
 
@@ -141,8 +142,9 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                     var result = await addInventoryItemForList(db, item);
                     
                     
-                    Alert.alert("Success", "New Transfer Item has been successfully added to the list.");
+                    
                     onAddedToList && onAddedToList(id);
+                    setLoadedItems(await getItemsFromViewForListId(db, id));
                 }
                 catch(error){
                     console.error(error);

@@ -168,7 +168,7 @@ useEffect(() => {
   }
 
   const handleAddedToList = (listId : number) => {
-    
+    Alert.alert("Success", "New Transfer Item has been successfully added to the list.");
   }
 
   return (

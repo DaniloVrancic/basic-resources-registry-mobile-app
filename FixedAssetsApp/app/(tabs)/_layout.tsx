@@ -12,6 +12,8 @@ import * as FileSystem from 'expo-file-system';
 import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
 import { SQLiteProvider } from 'expo-sqlite';
 
+import '@/i18n'; // This line imports the i18n configuration
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();

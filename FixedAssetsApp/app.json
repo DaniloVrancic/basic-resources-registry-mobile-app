@@ -31,7 +31,8 @@
     "plugins": [
       "expo-router",
       "expo-document-picker",
-      "expo-camera"
+      "expo-camera",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

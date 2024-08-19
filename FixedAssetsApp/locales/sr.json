@@ -1,9 +1,13 @@
 {
-    
-        "fixedAssets": "Основна средства",
-        "employees": "Запослени",
-        "locations": "Локације",
-        "listOfAssets": "Пописна листа",
-        "settings": "Подешавања"
-    
-}
+        "tabs":{
+            "fixedAssets": "Основна средства",
+            "employees": "Запослени",
+            "locations": "Локације",
+            "listOfAssets": "Пописне листе",
+            "settings": "Подешавања"
+        },
+        "settings":{
+            "chooseLanguage": "Изаберите језик:"
+        }
+          
+    }

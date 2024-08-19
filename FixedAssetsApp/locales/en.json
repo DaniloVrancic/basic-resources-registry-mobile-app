@@ -6,8 +6,63 @@
         "listOfAssets": "List of Assets",
         "settings": "Settings"
     },
+    "fixedAssets":{
+        "productId": "Product ID",
+        "addNewTitle": "Add New Fixed Asset",
+        "enterAssetName": "Enter asset name",
+        "enterAssetDescription": "Enter asset description",
+        "selectLocation": "Select Location",
+        "selectEmployee": "Select Employee",
+        "enterAssetValue": "Enter asset Value ($)",
+        "scanOrEnterBarcode": "Scan or enter barcode",
+        "selectImage": "Select Image",
+        "addAsset": "Add Asset",
+        "noCodeFound": "No Code Found",
+        "scannedCode": "Scanned Code",
+        "selectItem": "Select Item",
+        "assignedEmployee": "Assigned Employee",
+        "assignedLocation": "Assigned Location"
+    },
     "settings":{
         "chooseLanguage": "Choose Language:"
+    },
+    "alertMessages":{
+        "fixedAssetAdded": "New Fixed Asset Added",
+        "fixedAssetAddedMessage": "New Fixed Asset has been successfully added!",
+        "success": "Success",
+        "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
+        "confirmDeletion": "Confirm Deletion",
+        "deleteFixedAssetQuestion": "Delete this Fixed Asset?"
+    },
+    "errorMessages":{
+        "loadingFixedAssets": ""
+    },
+    "filter":{
+        "searchByAssetName": "Search by asset name",
+        "valueAssetRange": "Value of Asset (Range)",
+        "scanCode": "Scan Code",
+        "applyFilter": "Apply Filter"
+    },
+    "labels":{
+        "name": "Name",
+        "location": "Location",
+        "value": "Value",
+        "price": "Price",
+        "creationDate": "Creation Date",
+        "employee": "Employee",
+        "description": "Description",
+        "barcode": "Barcode",
+        "scanBarcode": "Scan Barcode",
+        "scanCode": "Scan Code",
+        "photo": "Photo",
+        "photoOptional": "Photo (Optional)",
+        "search": "Search",
+        "cancel": "Cancel",
+        "ok": "OK"
+    },
+    "bottomSheet": {
+        "takePhotoWithCamera": "Take Photo with Camera",
+        "openPhotoFromGallery": "Open Photo from Gallery",
+        "close": "Close"
     }
-      
 }

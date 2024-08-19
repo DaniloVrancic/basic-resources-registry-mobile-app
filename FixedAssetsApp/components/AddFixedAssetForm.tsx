@@ -11,6 +11,7 @@ import CameraScanner from './camera/CameraScanner';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import { AntDesign } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -18,6 +19,7 @@ let db: SQLiteDatabase;
 const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -261,14 +263,14 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
     return (
         <ThemedView style={styles.formContainer}>
             <ThemedView>
-                <ThemedText type='title'>Add New Fixed Asset</ThemedText>
+                <ThemedText type='title' style={{textAlign: 'center'}}>{t("fixedAssets.addNewTitle")}</ThemedText>
             </ThemedView>
-            <ThemedText style={[styles.label, , {color: textColor}]}>Name</ThemedText>
+            <ThemedText style={[styles.label, , {color: textColor}]}>{t("labels.name")}</ThemedText>
             <TextInput
                 style={[styles.textInput, {color: textColor}]}
                 value={name}
                 onChangeText={setName}
-                placeholder="Enter asset name"
+                placeholder={t("fixedAssets.enterAssetName")}
             />
 
             <ThemedText style={styles.label}>Description</ThemedText>
@@ -276,11 +278,11 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 style={[styles.textInput, styles.descriptionInput, {color: textColor}]}
                 value={description}
                 onChangeText={setDescription}
-                placeholder="Enter asset description"
+                placeholder={t("fixedAssets.enterAssetDescription")}
                 multiline
             />
 
-            <ThemedText style={styles.label}>Location</ThemedText>
+            <ThemedText style={styles.label}>{t("labels.location")}</ThemedText>
             {renderLabelLocation()}
             <Dropdown
                 style={dropdownStyles.dropdown}
@@ -290,7 +292,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 data={possibleLocations}
                 labelField="label"
                 valueField="value"
-                placeholder="Select location"
+                placeholder={t("fixedAssets.selectLocation")}
                 value={location}
                 onFocus={() => setIsFocusEmployee(true)}
                 onBlur={() => setIsFocusEmployee(false)}
@@ -305,7 +307,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 )}
             />
 
-            <ThemedText style={styles.label}>Employee</ThemedText>
+            <ThemedText style={styles.label}>{t("labels.employee")}</ThemedText>
             {renderLabelEmployee()}
             <Dropdown
                 style={dropdownStyles.dropdown}
@@ -318,7 +320,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder="Select employee"
+                placeholder={t("fixedAssets.selectEmployee")}
                 value={employee}
                 onFocus={() => setIsFocusEmployee(true)}
                 onBlur={() => setIsFocusEmployee(false)}
@@ -333,40 +335,40 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 )}
             />
 
-            <ThemedText style={styles.label}>Value</ThemedText>
+            <ThemedText style={styles.label}>{t("labels.value")}</ThemedText>
             <TextInput
                 style={[styles.textInput, {color: textColor}]}
                 value={price}
                 onChangeText={handleChangePrice}
-                placeholder="Enter asset value ($)"
+                placeholder={t("fixedAssets.enterAssetValue")}
                 keyboardType="numeric"
             />
 
-            <ThemedText style={styles.label}>Barcode</ThemedText>
+            <ThemedText style={styles.label}>{t("labels.barcode")}</ThemedText>
             <ThemedView style={styles.barcodeInputContainer}>
                 <TextInput
                     style={[styles.textInput, styles.barcodeInput, {color: textColor}]}
                     value={barcode}
                     onChangeText={setBarcode}
-                    placeholder="Scan or enter barcode"
+                    placeholder={t("fixedAssets.scanOrEnterBarcode")}
                 />
                 <ThemedView>
-                    <Button title="Scan Barcode" onPress={() => setIsScanning(true)} color='#F4A300' />
+                    <Button title={t("labels.scanBarcode")} onPress={() => setIsScanning(true)} color='#F4A300' />
                 </ThemedView>
             </ThemedView>
 
-            <ThemedText style={styles.label}>Photo (Optional)</ThemedText>
+            <ThemedText style={styles.label}>{t("labels.photoOptional")}</ThemedText>
             <Pressable onPress={handleImagePicker}>
                 <ThemedView style={styles.imagePicker}>
                     {photoUrl ? (
                         <Image source={{ uri: photoUrl }} style={styles.image} />
                     ) : (
-                        <Text style={styles.imagePlaceholder}>Select Image</Text>
+                        <Text style={styles.imagePlaceholder}>{t("fixedAssets.selectImage")}</Text>
                     )}
                 </ThemedView>
             </Pressable>
 
-            <Button title="Add Asset" onPress={handleAddAsset} />
+            <Button title={t("fixedAssets.addAsset")} onPress={handleAddAsset} />
 
             {isScanning && (
                 <Modal animationType="fade" transparent={true} onRequestClose={closeModalScanner}> 
@@ -380,7 +382,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                     </ThemedView>
 
                     <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>{t("labels.scanBarcode")}:</ThemedText>
                     </ThemedView>
                     <ThemedView>
                          {/* Fill with Content here */}
@@ -390,11 +392,11 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 {
                     (!cameraScanned) ? 
                     (<ThemedView style={{backgroundColor:'rgba(220,0,0,1.0)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>No Code Found</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>{t("fixedAssets.noCodeFound")}</ThemedText>
                     </ThemedView>)
                     :
                     (<ThemedView style={{backgroundColor:'rgba(0,220,0,1.0)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{t("fixedAssets.scannedCode")}:</ThemedText>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
                     </ThemedView>)
                 }
@@ -405,7 +407,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
                         
                 <Button
-                    title="Take Photo with Camera"
+                    title={t("bottomSheet.takePhotoWithCamera")}
                     buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                     titleStyle={{fontSize: 20}}
                     icon={{name: 'camera', type: 'ionicon', color:"white"}}
@@ -413,7 +415,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 />
 
                 <Button
-                    title="Open Photo from Gallery"
+                    title={t("bottomSheet.openPhotoFromGallery")}
                     buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                     titleStyle={{fontSize: 20}}
                     icon={{name: 'photo', color:"white"}}
@@ -421,7 +423,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 />
 
                 <Button
-                    title="Close"
+                    title={t("bottomSheet.close")}
                     buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                     titleStyle={{fontSize: 20}}
                     icon={{name: 'x', type: 'foundation'}}

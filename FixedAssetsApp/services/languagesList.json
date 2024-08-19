@@ -301,7 +301,7 @@
     },
     "ks": {
       "name": "Kashmiri",
-      "nativeName": "कश्मीरी, كشميري‎"
+      "nativeName": "कश्मीरी, كشميري"
     },
     "kk": {
       "name": "Kazakh",
@@ -337,7 +337,7 @@
     },
     "ku": {
       "name": "Kurdish",
-      "nativeName": "Kurdî, كوردی‎"
+      "nativeName": "Kurdî, كوردی"
     },
     "kj": {
       "name": "Kwanyama, Kuanyama",
@@ -393,7 +393,7 @@
     },
     "ms": {
       "name": "Malay",
-      "nativeName": "bahasa Melayu, بهاس ملايو‎"
+      "nativeName": "bahasa Melayu, بهاس ملايو"
     },
     "ml": {
       "name": "Malayalam",
@@ -485,7 +485,7 @@
     },
     "pa": {
       "name": "Panjabi, Punjabi",
-      "nativeName": "ਪੰਜਾਬੀ, پنجابی‎"
+      "nativeName": "ਪੰਜਾਬੀ, پنجابی"
     },
     "pi": {
       "name": "Pāli",
@@ -537,7 +537,7 @@
     },
     "sd": {
       "name": "Sindhi",
-      "nativeName": "सिन्धी, سنڌي، سندھی‎"
+      "nativeName": "सिन्धी, سنڌي، سندھی"
     },
     "se": {
       "name": "Northern Sami",
@@ -553,7 +553,7 @@
     },
     "sr": {
       "name": "Serbian",
-      "nativeName": "српски језик"
+      "nativeName": "Српски"
     },
     "gd": {
       "name": "Scottish Gaelic; Gaelic",
@@ -613,7 +613,7 @@
     },
     "tg": {
       "name": "Tajik",
-      "nativeName": "тоҷикӣ, toğikī, تاجیکی‎"
+      "nativeName": "тоҷикӣ, toğikī, تاجیکی"
     },
     "th": {
       "name": "Thai",
@@ -653,7 +653,7 @@
     },
     "tt": {
       "name": "Tatar",
-      "nativeName": "татарча, tatarça, تاتارچا‎"
+      "nativeName": "татарча, tatarça, تاتارچا"
     },
     "tw": {
       "name": "Twi",
@@ -665,7 +665,7 @@
     },
     "ug": {
       "name": "Uighur, Uyghur",
-      "nativeName": "Uyƣurqə, ئۇيغۇرچە‎"
+      "nativeName": "Uyƣurqə, ئۇيغۇرچە"
     },
     "uk": {
       "name": "Ukrainian",
@@ -677,7 +677,7 @@
     },
     "uz": {
       "name": "Uzbek",
-      "nativeName": "zbek, Ўзбек, أۇزبېك‎"
+      "nativeName": "zbek, Ўзбек, أۇزبېك"
     },
     "ve": {
       "name": "Venda",

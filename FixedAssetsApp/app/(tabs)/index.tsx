@@ -6,7 +6,7 @@ import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import FixedAssetCard from '@/components/FixedAssetCard';
 import RangeSlider from 'rn-range-slider';
 import { FixedAssetSearchCriteria } from '../search_criteria_interfaces/fixed-asset-search-criteria';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
+import { SetStateAction, useCallback, useEffect, useState, useTransition } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Thumb from '@/components/slider_components/Thumb';
 import Rail from '@/components/slider_components/Rail';
@@ -21,11 +21,14 @@ import { Icon } from '@rneui/themed';
 import CameraScanner from '@/components/camera/CameraScanner';
 import FixedAssetCardDetailedCard from '@/components/FixedAssetDetailedCard';
 import AddNewFixedAsset from '@/components/AddFixedAssetForm';
+import { useTranslation } from 'react-i18next';
 
 let db: SQLiteDatabase;
+let t: any;
 export default function HomeScreen() {
   db = useSQLiteContext();
   const textColor = useThemeColor({}, 'text');
+  ({t} = useTranslation());
 
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);
@@ -61,7 +64,7 @@ export default function HomeScreen() {
   const handleFixedAssetAdded = async () => {
     try {
         setLoadedFixedAssets(await getAllFixedAssets(db));
-        Alert.alert("New Fixed Asset Added", "New Fixed Asset has been successfully added!");
+        Alert.alert(t('fixedAssetAdded'), t("fixedAssetAddedMessage"));
     } catch (error) {
         console.error('Error loading Fixed Assets: ', error);
     }
@@ -71,7 +74,7 @@ export default function HomeScreen() {
     try{
         var fixedAssetsWithoutDeletedAsset = loadedFixedAssets.filter((val: FixedAsset) => val.id != id);
         setLoadedFixedAssets(fixedAssetsWithoutDeletedAsset);
-        Alert.alert("Success", "Fixed Asset has been successfully deleted!");
+        Alert.alert(t('success'), t('fixedAssetDeleteMessage'));
     } catch (error) {
         console.error('Error Removing Fixed Asset: ', error);
     }
@@ -93,7 +96,7 @@ export default function HomeScreen() {
       </ThemedView>
 
       <ThemedView style={[styles.fixedAssetHeader]}>
-            <ThemedText type="title">Fixed Assets:</ThemedText>
+            <ThemedText type="title">{t('tabs.fixedAssets')}:</ThemedText>
       </ThemedView>
 
           <ThemedView style={styles.fixedAssetContent} lightColor='ghostwhite' darkColor='#17153B'>
@@ -302,6 +305,7 @@ const advancedFilter = async () => {
 
 };
 
+
 const advancedFilterBarcode = () => {
   
   
@@ -343,15 +347,15 @@ const handleNewScan = () => {
   return (
 
     <ThemedView style={[styles.advancedFilterContainer]}>
-      <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
+      <ThemedText style={[styles.advancedFilterLabel]}>{t("labels.name")}:</ThemedText>
       <TextInput
         style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-        placeholder="Search by asset name..."
+        placeholder= {t("filter.searchByAssetName") + "..."}
         value={nameToSearch}
         onChangeText={handleNameChange}
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
-      <ThemedText style={[styles.advancedFilterLabel]}>Value of Asset Range:</ThemedText>
+      <ThemedText style={[styles.advancedFilterLabel]}>{t("filter.valueAssetRange")}:</ThemedText>
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minPrice?.toString()}</ThemedText>
         <RangeSlider
@@ -374,11 +378,11 @@ const handleNewScan = () => {
       </ThemedView>
       <Pressable style={styles.advancedBarCodeButton} onPress={openModalScanner}>
         <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
-        <ThemedText style={styles.advancedFilterButtonText}>Scan Code</ThemedText>
+        <ThemedText style={styles.advancedFilterButtonText}>{t("filter.scanCode")}</ThemedText>
       </Pressable>
       <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
         <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-        <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+        <ThemedText style={styles.advancedFilterButtonText}>{t("filter.applyFilter")}</ThemedText>
       </Pressable>
 
 

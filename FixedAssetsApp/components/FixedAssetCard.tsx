@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import FixedAssetCardDetailedCard from "./FixedAssetDetailedCard";
 import { Avatar } from "@rneui/themed";
+import { useTranslation } from "react-i18next";
 
 const FixedAssetCard: React.FC<FixedAsset | any> = ({
     id,
@@ -21,6 +22,7 @@ const FixedAssetCard: React.FC<FixedAsset | any> = ({
     onDeletedFixedAsset = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
 
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
@@ -75,9 +77,9 @@ const FixedAssetCard: React.FC<FixedAsset | any> = ({
                         }
                 </ThemedView>
                 <ThemedView style={{flex: 3}}>
-                        <ThemedText style={{fontWeight: 600}}>Price: ${fixedAssetDetails.price}</ThemedText>
+                        <ThemedText style={{fontWeight: 600}}>{t('labels.price')}: ${fixedAssetDetails.price}</ThemedText>
                         <ThemedView style={styles.creationDateContainer}>
-                            <ThemedText>Creation Date: </ThemedText>
+                            <ThemedText>{t('labels.creationDate')}: </ThemedText>
                             <ThemedText style={{fontWeight: 600}}>{fixedAssetDetails.creationDate.toString()}</ThemedText>
                         </ThemedView>
                             

@@ -10,6 +10,7 @@ import { deleteInventoryItemById, getAllEmployees, getAllFixedAssets, getAllLoca
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import InventoryItemSelectors from "@/components/custom_for_this_project/InventoryItemSelectors"
 import { Dropdown } from "react-native-element-dropdown";
+import { useTranslation } from "react-i18next";
 
 let db;
 const InventoryItemCard = ( {
@@ -33,6 +34,7 @@ const InventoryItemCard = ( {
 }) => {
     const textColor = useThemeColor({}, 'text');
     db = useSQLiteContext();
+    const {t} = useTranslation();
 
     const [editModal, setEditModal] = useState(false);
 
@@ -53,13 +55,13 @@ const InventoryItemCard = ( {
 
     const confirmDelete = () => {
         {
-            Alert.alert('Confirm Deletion', 'Delete this Transfer List Item?', [
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteTransferListQuestion'), [
                 {
-                  text: 'Cancel',
+                  text: t('labels.cancel'),
                   onPress: () => {},
                   style: 'cancel'
                 },
-                {text: 'OK', onPress: () => handleDeleteItem()},
+                {text: t('labels.ok'), onPress: () => handleDeleteItem()},
               ]);
         }
     }
@@ -76,7 +78,7 @@ const InventoryItemCard = ( {
         }
         catch(error){
             console.error(error);
-            Alert.alert("Error", "An error occurred while updating the item. Please try again.");
+            Alert.alert(t('alertMessages.error'), t('alertMessages.itemUpdateError'));
         }
       }
 
@@ -88,7 +90,7 @@ const InventoryItemCard = ( {
 
     return (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
-            <ThemedText type="defaultSemiBold">Fixed Asset:</ThemedText>
+            <ThemedText type="defaultSemiBold">{t('fixedAssets.fixedAsset')}:</ThemedText>
             <ThemedText type="subtitle" style={{marginBottom: 25}}>{fixedAssetName}</ThemedText>
 
 
@@ -101,7 +103,7 @@ const InventoryItemCard = ( {
             
 
             <ThemedView style={styles.transferContainer}>
-                <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Person in Charge:</ThemedText>
+                <ThemedText style={[styles.transferText, styles.transferHeaderText]}>{t('listOfAssets.personInCharge')}:</ThemedText>
                     <ThemedView style={styles.transferValues}>
                         { currentEmployeeId === new_employee_id ? (
                                         <ThemedText style={[styles.transferText, styles.transferTextValue]}>{(currentEmployeeName !== null && currentEmployeeName.length > 0) ? currentEmployeeName : "(empty)"}</ThemedText>
@@ -117,7 +119,7 @@ const InventoryItemCard = ( {
                     </ThemedView>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
-                    <ThemedText style={[styles.transferText, styles.transferHeaderText]}>Location of Asset:</ThemedText>
+                    <ThemedText style={[styles.transferText, styles.transferHeaderText]}>{t('listOfAssets.listOfAssets')}:</ThemedText>
                     <ThemedView style={styles.transferValues}>
                     {
                         (currentLocationId === newLocationId) ? (

@@ -7,6 +7,7 @@
         "settings": "Settings"
     },
     "fixedAssets":{
+        "fixedAsset": "Fixed Asset",
         "productId": "Product ID",
         "addNewTitle": "Add New Fixed Asset",
         "enterAssetName": "Enter asset name",
@@ -45,7 +46,9 @@
     },
     "listOfAssets": {
         "enterListName": "Enter List Name",
-        "enterName": "Enter name"
+        "enterName": "Enter name",
+        "personInCharge": "Person in Charge",
+        "locationOfAsset": "Location of Asset"
         
     },
     "settings":{
@@ -67,6 +70,7 @@
         "locationUpdated": "Location Updated",
         "locationUpdatedMessage": "The location coordinates have been successfully updated.",
         "locationUpdateError": "An error occurred while updating the location.",
+        "itemUpdateError": "An error occurred while updating the item. Please try again.",
         "transferListAddedMessage": "New Transfer Item has been successfully added to the list.",
         "transferListDeletedMessage" : "Transfer List has been successfully deleted!",
         "success": "Success",
@@ -79,6 +83,7 @@
         "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
         "deleteEmployeeQuestion": "Delete this Employee?",
         "deleteLocationQuestion": "Delete this Location?",
+        "deleteTransferListQuestion": "Delete this Transfer List Item?",
         "loadingData": "Loading data"
     },
     "errorMessages":{

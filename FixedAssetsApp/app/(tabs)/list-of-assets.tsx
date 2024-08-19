@@ -17,12 +17,15 @@ import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addTransferList, getAllEmployees, getAllFixedAssets, getAllInventoryLists, getAllInventoryListsForContainsName, getAllInventoryListsFromView, getAllLocations, getAllLocationsForContainsName } from '@/db/db';
 import InventoryItemList from '@/components/InventoryItemList';
 import { InventoryList } from '../data_interfaces/inventory-list';
+import { useTranslation } from 'react-i18next';
 
 
 let db: SQLiteDatabase;
+let t : any;
 export default function ListOfAssets() {
 
   db = useSQLiteContext();
+  ({t} = useTranslation());
   const textColor = useThemeColor({}, 'text');
 
   const [loadedLists, setLoadedLists] = useState([]);
@@ -128,7 +131,7 @@ useEffect(() => {
 
   const handleConfirmAdd = async () => {
     if (newListName.trim() === '') {
-      Alert.alert('Error', 'List name cannot be empty.');
+      Alert.alert(t('alertMessages.error'), t('errorMessages.listNameCanNotBeEmpty'));
       return;
     }
     try {
@@ -148,7 +151,7 @@ useEffect(() => {
 
     } catch (error) {
       console.error('Error adding new list: ', error);
-      Alert.alert('Error adding new list');
+      Alert.alert(t('errorMessages.errorAddingNewList'));
     }
   };
 
@@ -161,14 +164,14 @@ useEffect(() => {
     try{
       var listWithoutDeletedLocation = loadedLists.filter((val: InventoryList) => val.id !== id);
       setLoadedLists(listWithoutDeletedLocation);
-      Alert.alert("Success", "Transfer List has been successfully deleted!");
+      Alert.alert(t('alertMessages.success'), t('alertMessages.transferListDeletedMessage'));
       } catch (error) {
           console.error('Error Removing Location: ', error);
       }
   }
 
   const handleAddedToList = (listId : number) => {
-    Alert.alert("Success", "New Transfer Item has been successfully added to the list.");
+    Alert.alert(t('alertMessages.success'), t('alertMessages.transferListAddedMessage'));
   }
 
   return (
@@ -184,7 +187,7 @@ useEffect(() => {
 
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText style={{paddingHorizontal: 20}} type="title">List of Assets</ThemedText>
+            <ThemedText style={{paddingHorizontal: 20}} type="title">{t('tabs.listOfAssets')}</ThemedText>
           </ThemedView>
           <ThemedView lightColor='ghostwhite' darkColor='black' style={{ flex: 84}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -230,20 +233,20 @@ useEffect(() => {
         <Modal visible={showAddPrompt} animationType="fade" transparent={true}  onRequestClose={() => {setShowAddPrompt(false);}}>
           <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
           <ThemedView style={modalStyles2.modalContainer}>
-          <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>
+          <ThemedText style={modalStyles2.modalTitle}>{t('listOfAssets.enterListName')}</ThemedText>
           <TextInput
             style={modalStyles2.textInput}
             value={newListName}
             onChangeText={setNewListName}
-            placeholder="Enter name"
+            placeholder={t('listOfAssets.enterName')}
             placeholderTextColor="grey"
           />
           <ThemedView style={modalStyles2.buttonContainer}>
           <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
-              <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
+              <ThemedText style={modalStyles2.buttonText}>{t('labels.cancel')}</ThemedText>
             </Pressable>
             <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
-              <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
+              <ThemedText style={modalStyles2.buttonText}>{t('labels.confirm')}</ThemedText>
             </Pressable>
           </ThemedView>
         </ThemedView>
@@ -451,17 +454,6 @@ const modalStyles2 = StyleSheet.create({
       currentSearchCriteria.keywordToSearch = keywordToSearch;
     };
   
-    
-  
-  
-  const renderThumb = useCallback(() => <Thumb name={"Income range"}/>, []);
-  const renderRail = useCallback(() => <Rail/>, []);
-  const renderRailSelected = useCallback(() => <RailSelected/>, []);
-  const renderLabel = useCallback((value: any) => <Label text={value}/>, []);
-  const renderNotch = useCallback(() => <Notch/>, []);
-  const [rangeDisabled, setRangeDisabled] = useState(false);
-  const [floatingLabel, setFloatingLabel] = useState(false);
-  
 
   const handleValueChange = useCallback((low: SetStateAction<number>, high: SetStateAction<number>) => {
     
@@ -484,15 +476,15 @@ const modalStyles2 = StyleSheet.create({
     return (
   
       <ThemedView style={[styles.advancedFilterContainer]}>
-        <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
+        <ThemedText style={[styles.advancedFilterLabel]}>{t('labels.name')}:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by name of Transfer List..."
+          placeholder={t('filter.searchByTransferListName')+"..."}
           value={keywordToSearch}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
         />
-        <ThemedText style={[styles.advancedFilterLabel]}>Filters:</ThemedText>
+        <ThemedText style={[styles.advancedFilterLabel]}>{t('filter.filters')}:</ThemedText>
         
         <ThemedView style={styles.checkboxContainer}>
         <CheckBox
@@ -512,7 +504,7 @@ const modalStyles2 = StyleSheet.create({
             }}
             size={40}
             textStyle={{}}
-            title="Show Changing Employees"
+            title={t('filter.showChangingEmployees')}
             titleProps={{}}
             uncheckedColor="#F00"
             style={{backgroundColor: 'rgba(0,0,0,1)'}}
@@ -538,7 +530,7 @@ const modalStyles2 = StyleSheet.create({
             }}
             size={40}
             textStyle={{}}
-            title="Show Changing Location"
+            title={t('filter.showChangingLocations')}
             titleProps={{}}
             uncheckedColor="#F00"
           />

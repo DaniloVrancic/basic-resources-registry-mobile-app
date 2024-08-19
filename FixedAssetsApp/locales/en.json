@@ -40,7 +40,13 @@
         "enterLocationSize": "Enter Location Size (m2)",
         "latitude": "Latitude",
         "longitude": "Longitude",
-        "showOnMap": "Show on Map"
+        "showOnMap": "Show on Map",
+        "assetsAt": "Assets at"
+    },
+    "listOfAssets": {
+        "enterListName": "Enter List Name",
+        "enterName": "Enter name"
+        
     },
     "settings":{
         "chooseLanguage": "Choose Language:"
@@ -58,6 +64,11 @@
         "employeeDeletedMessage": "Employee has been successfully deleted!",
         "locationAdded": "Added new location",
         "locationAddedMessage": "New location has been saved.",
+        "locationUpdated": "Location Updated",
+        "locationUpdatedMessage": "The location coordinates have been successfully updated.",
+        "locationUpdateError": "An error occurred while updating the location.",
+        "transferListAddedMessage": "New Transfer Item has been successfully added to the list.",
+        "transferListDeletedMessage" : "Transfer List has been successfully deleted!",
         "success": "Success",
         "error": "Error",
         "accessDenied": "Access Denied",
@@ -67,6 +78,7 @@
         "confirmDeletion": "Confirm Deletion",
         "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
         "deleteEmployeeQuestion": "Delete this Employee?",
+        "deleteLocationQuestion": "Delete this Location?",
         "loadingData": "Loading data"
     },
     "errorMessages":{
@@ -74,16 +86,22 @@
         "enterValidName":"Please enter a valid name",
         "enterValidEmail":"Please enter a valid email address",
         "incomeValidNumber":"Income must be a valid number",
-        "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map."
+        "listNameCanNotBeEmpty": "List name cannot be empty.",
+        "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",
+        "errorAddingNewList": "Error adding new list"
     },
     "filter":{
+        "filters": "Filters",
         "searchByAssetName": "Search by asset name",
         "searchByEmployeeName": "Search by name of employee",
         "searchByLocationName": "Search by location name",
+        "searchByTransferListName": "Search by name of Transfer List",
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
         "applyFilter": "Apply Filter",
-        "incomeRange": "Income Range"
+        "incomeRange": "Income Range",
+        "showChangingEmployees": "Show Changing Employees",
+        "showChangingLocations": "Show Changing Locations"
     },
     "labels":{
         "name": "Name",
@@ -102,6 +120,7 @@
         "photoOptional": "Photo (Optional)",
         "search": "Search",
         "cancel": "Cancel",
+        "size": "Size",
         "ok": "OK",
         "askMeLater": "Ask Me Later",
         "save": "Save",

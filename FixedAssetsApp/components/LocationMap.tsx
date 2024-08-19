@@ -13,6 +13,7 @@ import { deleteLocationById, getFixedItemsForLocationId, updateLocation } from '
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Button, Icon } from '@rneui/themed';
 import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
+import { useTranslation } from 'react-i18next';
 
 
 let db: SQLiteDatabase;
@@ -24,6 +25,7 @@ const LocationMap: React.FC<any> = ( {
 } ) => {
 
             db = useSQLiteContext();
+            const {t} = useTranslation();
             const textColor = useThemeColor({}, 'text');
             const oppositeTextColor = useOppositeThemeColor({}, 'text');
   
@@ -65,14 +67,14 @@ const LocationMap: React.FC<any> = ( {
               const handleSave = async () => {
                 try {
                   var locationStateToSave: Location = {id: locationState.id, name: inputName, size: inputSize, latitude: markerPosition.latitude, longitude: markerPosition.longitude}
-                  let changes = await updateLocation(db, locationStateToSave); // Update location in DB
+                  let changes = await updateLocation(db, locationStateToSave); // Updates location in DB
                   setLocationState(locationStateToSave);
-                  Alert.alert("Location Updated", "The location coordinates have been successfully updated.");
+                  Alert.alert(t('alertMessages.locationUpdated'), t('alertMessages.locationUpdatedMessage'));
                   setEditMode(false);
                   
                 } catch (error) {
                   console.error("Failed to update location:", error);
-                  Alert.alert("Error", "An error occurred while updating the location.");
+                  Alert.alert(t('alertMessages.error'), t('alertMessages.locationUpdateError'));
                 }
               };
 
@@ -94,13 +96,13 @@ const LocationMap: React.FC<any> = ( {
             
     const confirmDeleteLocationAlert = (id: number) =>
         {
-            Alert.alert('Confirm Deletion', 'Delete this Employee?', [
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteLocationQuestion'), [
                 {
-                  text: 'Cancel',
+                  text: t('labels.cancel'),
                   onPress: () => {},
                   style: 'cancel'
                 },
-                {text: 'OK', onPress: () => handleDeleteItem(id)},
+                {text: t('labels.ok'), onPress: () => handleDeleteItem(id)},
               ]);
         }
 
@@ -121,14 +123,14 @@ const LocationMap: React.FC<any> = ( {
                     <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
                         
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Location:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('tabs.locations')}:</ThemedText>
                                 <TextInput  value={inputName} 
                                                         onChangeText={setInputName}
                                                         style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
                                                         readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Size:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('labels.size')}:</ThemedText>
                                 <ThemedView style={[styles.transparentBackground, {flexDirection:'row'}]}>
                                 <TextInput  value={inputSize.toString()} 
                                                         onChangeText={handleChangeSize}
@@ -176,7 +178,7 @@ const LocationMap: React.FC<any> = ( {
                                     <Pressable style={[modalStyles.modalSpaceFill]} onPress={() => setShowAssetList(false)}></Pressable>
                             </ThemedView>
 
-                                <ThemedText style={styles.assetListTitle}>Assets at {locationState.name}</ThemedText>
+                                <ThemedText style={styles.assetListTitle}>{t('locations.assetsAt')} {locationState.name}</ThemedText>
                             <ThemedView style={modalStyles.modalContent}>
                                 <ScrollView>
                                     {loadedAssets.map((asset: FixedAsset) => 
@@ -192,8 +194,8 @@ const LocationMap: React.FC<any> = ( {
 
                      {editMode ? (
                             <ThemedView style={styles.buttonContainer}>
-                                <Button title="Save" onPress={handleSave} />
-                                <Button title="Cancel" onPress={() => setEditMode(false)} />
+                                <Button title={t('labels.save')} onPress={handleSave} />
+                                <Button title={t('labels.cancel')} onPress={() => setEditMode(false)} />
                             </ThemedView>
                         ) : (
                                 <></>

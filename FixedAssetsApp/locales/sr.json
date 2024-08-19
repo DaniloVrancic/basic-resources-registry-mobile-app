@@ -6,8 +6,128 @@
             "listOfAssets": "Пописне листе",
             "settings": "Подешавања"
         },
-        "settings":{
-            "chooseLanguage": "Изаберите језик:"
-        }
-          
+    "fixedAssets":{
+        "productId": "Идентификатор продукта",
+        "addNewTitle": "Додај ново основно средство",
+        "enterAssetName": "Унеси име основног средства",
+        "enterAssetDescription": "Унеси опис основног средства",
+        "selectLocation": "Изабери локацију",
+        "selectEmployee": "Изабери радника",
+        "enterAssetValue": "Унеси цијену основног средства ($)",
+        "scanOrEnterBarcode": "Скенирај или унеси баркод",
+        "selectImage": "Изабери слику",
+        "addAsset": "Додај основно средство",
+        "noCodeFound": "Код није пронађен",
+        "scannedCode": "Скенирани код",
+        "selectItem": "Изабери предмет",
+        "assignedEmployee": "Додијељени радник",
+        "assignedLocation": "Додијељена локација",
+        "mandatoryFieldsError": "Сва поља осим слике су обавезна",
+        "valueMustBeNumberError": "Цијена мора бити бројачана вриједност"
+    },
+    "employees":{
+        "addNewEmployee": "Add New Employee",
+        "addEmployee": "Add Employee",
+        "showLargerView": "Show Larger View",
+        "employeeId": "Employee ID",
+        "editEmployee": "Edit Employee"
+    },
+    "locations": {
+        "areaSize": "Area size",
+        "sizeOfAreaPlain": "Size of Area",
+        "sizeOfArea": "Size of Area (in square Meters)",
+        "enterLocationName": "Enter Location Name",
+        "enterLocationSize": "Enter Location Size (m2)",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "showOnMap": "Show on Map",
+        "assetsAt": "Assets at"
+    },
+    "listOfAssets": {
+        "enterListName": "Enter List Name",
+        "enterName": "Enter name"
+    },
+    "settings":{
+        "chooseLanguage": "Choose Language:"
+    },
+    "camera":{
+        "permissionTitle": "Camera Permission to use for App",
+        "permissionMessage": "My Asset Manager needs access to your camera for this feature to work."
+    },
+    "alertMessages":{
+        "fixedAssetAdded": "New Fixed Asset Added",
+        "fixedAssetAddedMessage": "New Fixed Asset has been successfully added!",
+        "employeeUpdated": "Employee Updated",
+        "employeeUpdatedMessage": "The Employee information has been successfully updated.",
+        "employeeDeleted": "Employee Deleted",
+        "employeeDeletedMessage": "Employee has been successfully deleted!",
+        "locationAdded": "Added new location",
+        "locationAddedMessage": "New location has been saved.",
+        "locationUpdated": "Location Updated",
+        "locationUpdatedMessage": "The location coordinates have been successfully updated.",
+        "locationUpdateError": "An error occurred while updating the location.",
+        "transferListAddedMessage": "New Transfer Item has been successfully added to the list.",
+        "transferListDeletedMessage" : "Transfer List has been successfully deleted!",
+        "success": "Success",
+        "error": "Error",
+        "accessDenied": "Access Denied",
+        "permissionNotGiven": "Permission Not Given",
+        "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
+        "locationDeleteMessage": "Location has been successfully deleted",
+        "confirmDeletion": "Confirm Deletion",
+        "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
+        "deleteEmployeeQuestion": "Delete this Employee?",
+        "deleteLocationQuestion": "Delete this Location?",
+        "loadingData": "Loading data"
+    },
+    "errorMessages":{
+        "loadingFixedAssets": "",
+        "enterValidName":"Please enter a valid name",
+        "enterValidEmail":"Please enter a valid email address",
+        "incomeValidNumber":"Income must be a valid number",
+        "listNameCanNotBeEmpty": "List name cannot be empty.",
+        "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",
+        "errorAddingNewList": "Error adding new list"
+    },
+    "filter":{
+        "searchByAssetName": "Search by asset name",
+        "searchByEmployeeName": "Search by name of employee",
+        "searchByLocationName": "Search by location name",
+        "searchByTransferListName": "Search by name of Transfer List",
+        "valueAssetRange": "Value of Asset (Range)",
+        "scanCode": "Scan Code",
+        "applyFilter": "Apply Filter",
+        "incomeRange": "Income Range"
+    },
+    "labels":{
+        "name": "Name",
+        "location": "Location",
+        "value": "Value",
+        "price": "Price",
+        "email": "E-Mail",
+        "income": "Income",
+        "creationDate": "Creation Date",
+        "employee": "Employee",
+        "description": "Description",
+        "barcode": "Barcode",
+        "scanBarcode": "Scan Barcode",
+        "scanCode": "Scan Code",
+        "photo": "Photo",
+        "photoOptional": "Photo (Optional)",
+        "search": "Search",
+        "cancel": "Cancel",
+        "size": "Size",
+        "ok": "OK",
+        "askMeLater": "Ask Me Later",
+        "save": "Save",
+        "saveChanges": "Save Changes"
+    },
+    "bottomSheet": {
+        "takePhotoWithCamera": "Take Photo with Camera",
+        "openPhotoFromGallery": "Open Photo from Gallery",
+        "close": "Close"
+    },
+    "general": {
+        "year": "year"
     }
+}

@@ -18,11 +18,15 @@ import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForContainsNameAndBetweenRange } from '@/db/db';
 import { Location } from '../data_interfaces/location';
 import AddLocationForm from '@/components/AddLocationForm';
+import { useTranslation } from 'react-i18next';
 
 let db: SQLiteDatabase;
+let t: any;
 export default function Locations() {
 
   db = useSQLiteContext();
+  ({t} = useTranslation());
+
   const [loadedLocations, setLoadedLocations] = useState([]);
 
   const [showAddLocation, setShowAddLocation] = useState<boolean>(false);
@@ -61,7 +65,7 @@ export default function Locations() {
     try{
         var locationsWithoutDeletedLocation = loadedLocations.filter((val: Location) => val.id !== id);
         setLoadedLocations(locationsWithoutDeletedLocation);
-        Alert.alert("Success", "Location has been successfully deleted!");
+        Alert.alert(t('alertMessages.success'), t("alertMessages.locationDeleteMessage")+'!');
     } catch (error) {
         console.error('Error Removing Location: ', error);
     }
@@ -79,11 +83,11 @@ export default function Locations() {
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText type="title">Location</ThemedText>
+            <ThemedText type="title">{t('tabs.locations')}</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
 
-          <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
+          <Suspense fallback={<LoadingAnimation text={t('alertMessages.loadingData') + "..."} />}>
               <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {/* Replace the content below with your actual list components */}
                 {
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
     
   
   
-  const renderThumb = useCallback(() => <Thumb name={"Area size"}/>, []);
+  const renderThumb = useCallback(() => <Thumb name={t('locations.areaSize')}/>, []);
   const renderRail = useCallback(() => <Rail/>, []);
   const renderRailSelected = useCallback(() => <RailSelected/>, []);
   const renderLabel = useCallback((value: any) => <Label text={value}/>, []);
@@ -270,12 +274,12 @@ const styles = StyleSheet.create({
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by location name..."
+          placeholder={t('filter.searchByLocationName') + "..."}
           value={cityName}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
         />
-        <ThemedText style={[styles.advancedFilterLabel]}>Size of Area (in square meters):</ThemedText>
+        <ThemedText style={[styles.advancedFilterLabel]}>{t('locations.sizeOfArea')}:</ThemedText>
         <ThemedView style={styles.advancedFilterSliderContainer}>
           <ThemedText>{minSize?.toString()}</ThemedText>
               <RnRangeSlider
@@ -298,7 +302,7 @@ const styles = StyleSheet.create({
         </ThemedView>
         <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
           <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-          <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+          <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
         </Pressable>
       </ThemedView>
   

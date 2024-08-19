@@ -141,6 +141,8 @@ const styles = StyleSheet.create({
   modalContainer: {
     justifyContent: 'flex-start',
     padding: 8,
+    minHeight:"100%",
+    maxHeight:"100%",
     backgroundColor: 'rgba(0, 0, 0, 0.8)', // semi-transparent background
   },
   modalHeader: {

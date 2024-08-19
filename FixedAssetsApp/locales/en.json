@@ -28,7 +28,19 @@
     "employees":{
         "addNewEmployee": "Add New Employee",
         "addEmployee": "Add Employee",
-        "showLargerView": "Show Larger View"
+        "showLargerView": "Show Larger View",
+        "employeeId": "Employee ID",
+        "editEmployee": "Edit Employee"
+    },
+    "locations": {
+        "areaSize": "Area size",
+        "sizeOfAreaPlain": "Size of Area",
+        "sizeOfArea": "Size of Area (in square Meters)",
+        "enterLocationName": "Enter Location Name",
+        "enterLocationSize": "Enter Location Size (m2)",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "showOnMap": "Show on Map"
     },
     "settings":{
         "chooseLanguage": "Choose Language:"
@@ -44,21 +56,30 @@
         "employeeUpdatedMessage": "The Employee information has been successfully updated.",
         "employeeDeleted": "Employee Deleted",
         "employeeDeletedMessage": "Employee has been successfully deleted!",
+        "locationAdded": "Added new location",
+        "locationAddedMessage": "New location has been saved.",
         "success": "Success",
         "error": "Error",
         "accessDenied": "Access Denied",
         "permissionNotGiven": "Permission Not Given",
         "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
+        "locationDeleteMessage": "Location has been successfully deleted",
         "confirmDeletion": "Confirm Deletion",
         "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
+        "deleteEmployeeQuestion": "Delete this Employee?",
         "loadingData": "Loading data"
     },
     "errorMessages":{
-        "loadingFixedAssets": ""
+        "loadingFixedAssets": "",
+        "enterValidName":"Please enter a valid name",
+        "enterValidEmail":"Please enter a valid email address",
+        "incomeValidNumber":"Income must be a valid number",
+        "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map."
     },
     "filter":{
         "searchByAssetName": "Search by asset name",
         "searchByEmployeeName": "Search by name of employee",
+        "searchByLocationName": "Search by location name",
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
         "applyFilter": "Apply Filter",
@@ -82,7 +103,9 @@
         "search": "Search",
         "cancel": "Cancel",
         "ok": "OK",
-        "askMeLater": "Ask Me Later"
+        "askMeLater": "Ask Me Later",
+        "save": "Save",
+        "saveChanges": "Save Changes"
     },
     "bottomSheet": {
         "takePhotoWithCamera": "Take Photo with Camera",

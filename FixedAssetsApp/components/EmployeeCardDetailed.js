@@ -7,6 +7,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { deleteEmployeeById, updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -18,6 +19,8 @@ const EmployeeCardDetailed = (
 ) => {
     
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
+
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [editMode, setEditMode] = useState(false);
@@ -35,18 +38,18 @@ const EmployeeCardDetailed = (
     const handlePressChanges = async () => {
         if(editMode){
             if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
-                setErrorMessage('Please enter a valid name.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(inputEmail)) {
-                setErrorMessage('Please enter a valid email address.');
+                setErrorMessage(t('errorMessages.enterValidEmail') + '.');
                 return;
             }
 
             if (isNaN(inputIncome) || inputIncome.toString() === '') {
-                setErrorMessage('Income must be a valid number.');
+                setErrorMessage(t('errorMessages.incomeValidNumber')+'.');
                 return;
             }
 
@@ -79,7 +82,7 @@ const EmployeeCardDetailed = (
             
 
             setEditMode(false);
-            Alert.alert("Employee Updated", "The Employee data has been successfully updated.");
+            Alert.alert(t('alertMessages.employeeUpdated'), t('alertMessages.employeeUpdatedMessage'));
         }
         else{
             setEditMode(true);
@@ -132,11 +135,11 @@ const EmployeeCardDetailed = (
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission to use for App",
-                  message:"My Asset Manager needs access to your camera for this feature to work. ",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message: t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
               );
               let result;
@@ -190,13 +193,13 @@ const EmployeeCardDetailed = (
 
     const confirmDeleteEmployeeAlert = (id) =>
         {
-            Alert.alert('Confirm Deletion', 'Delete this Employee?', [
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteEmployeeQuestion'), [
                 {
-                  text: 'Cancel',
+                  text: t('labels.cancel'),
                   onPress: () => {},
                   style: 'cancel'
                 },
-                {text: 'OK', onPress: () => handleDeleteItem(id)},
+                {text: t('labels.OK'), onPress: () => handleDeleteItem(id)},
               ]);
         }
 
@@ -234,16 +237,16 @@ const EmployeeCardDetailed = (
                                     onPressAvatar();
                                 }
                                 }}>
-                                <Avatar.Accessory 
-                                size={26}
-                                style={{borderRadius: 100}}
-                                onPress={() => {
+                                    <Avatar.Accessory 
+                                    size={26}
+                                    style={{borderRadius: 100}}
+                                    onPress={() => {
 
-                                    if(editMode){
-                                        onPressAvatar();
-                                    }
-                                }} 
-                                color={(editMode) ? 'lime' : 'grey'} />
+                                        if(editMode){
+                                            onPressAvatar();
+                                        }
+                                    }} 
+                                    color={(editMode) ? 'lime' : 'grey'} />
                             </Avatar>
                             :
                             <Avatar
@@ -280,7 +283,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
                 
                 <ThemedView style={styles.employeeIdContainer}>
-                    <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
+                    <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>{t('employees.employeeId')}: </ThemedText>
                     <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{employeeState.id}</ThemedText>
                 </ThemedView>
             </ThemedView>
@@ -292,7 +295,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={styles.cardContentElement}>
-                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Name:</ThemedText>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>{t('labels.name')}:</ThemedText>
                     <TextInput  value={inputName} 
                                 onChangeText={setInputName}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -300,7 +303,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={styles.cardContentElement}>
-                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Email:</ThemedText>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>{t('labels.email')}:</ThemedText>
                     <TextInput  value={inputEmail}
                                 onChangeText={setInputEmail}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -308,7 +311,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={[styles.cardContentElement, {marginBottom: 20}]}>
-                    <ThemedText>Income:</ThemedText>
+                    <ThemedText>{t('labels.income')}:</ThemedText>
                     <TextInput  value={inputIncome.toString()} 
                                 onChangeText={handleChangeIncome}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -316,7 +319,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
             <Pressable onPress={handlePressChanges} style={{marginBottom: 20}}>
-                        <ThemedText style={styles.editUserPressable}>{(editMode) ? "Save Changes" : "Edit User"}</ThemedText>
+                        <ThemedText style={styles.editUserPressable}>{(editMode) ? t('labels.saveChanges') : t("employees.editEmployee")}</ThemedText>
             </Pressable>
 
             </ThemedView>
@@ -325,7 +328,7 @@ const EmployeeCardDetailed = (
             <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
                 
                     <Button
-                        title="Take Photo with Camera"
+                        title={t('bottomSheet.takePhotoWithCamera')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
@@ -333,7 +336,7 @@ const EmployeeCardDetailed = (
                         />
 
                     <Button
-                        title="Open Photo from Gallery"
+                        title={t('bottomSheet.openPhotoFromGallery')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
@@ -341,7 +344,7 @@ const EmployeeCardDetailed = (
                     />
 
                     <Button
-                        title="Close"
+                        title={t('bottomSheet.close')}
                         buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}

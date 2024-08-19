@@ -8,12 +8,17 @@ import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
 import { Location } from '@/app/data_interfaces/location';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addLocation } from '@/db/db';
+import { useTranslation } from 'react-i18next';
 
 let db: SQLiteDatabase;
 const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
   const [locationName, setLocationName] = useState('');
   const [locationSize, setLocationSize] = useState('');
   const [markerCoords, setMarkerCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  const textColor = useThemeColor({}, 'text');
+
+  const {t} = useTranslation();
 
   db = useSQLiteContext();
 
@@ -25,7 +30,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
   const handleSaveLocation = async () => {
     // Validate the inputs
     if (!locationName || !locationSize || !markerCoords) {
-      Alert.alert('Error', 'Please fill in all fields and place the marker on the map.');
+      Alert.alert(t('alertMessages.error'), t('errorMessages.fillFieldsAndPlaceMapMarker')+'.');
       return;
     }
 
@@ -47,20 +52,20 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
     setMarkerCoords(null);
     onAddNewLocation(); //Trigger this method
 
-    Alert.alert("Added new location", "New location has been saved.");
+    Alert.alert(t('alertMessages.locationAdded'), t('alertMessages.locationAddedMessage'));
   };
 
   return (
     <ThemedView style={styles.container}>
       <TextInput
-        style={styles.input}
-        placeholder="Enter Location Name"
+        style={[styles.input, {color: textColor}]}
+        placeholder={t('locations.enterLocationName')}
         value={locationName}
         onChangeText={setLocationName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Enter Location Size (m2)"
+        placeholder={t('locations.enterLocationSize')}
         value={locationSize}
         keyboardType="numeric"
         onChangeText={setLocationSize}
@@ -78,7 +83,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
       </ThemedView>
       <ThemedView style={styles.buttonContainer}>
         <Pressable style={styles.saveButton} onPress={handleSaveLocation}>
-          <ThemedText style={styles.buttonText}>Save</ThemedText>
+          <ThemedText style={styles.buttonText}>{t('labels.save')}</ThemedText>
         </Pressable>
         <Pressable
           style={styles.cancelButton}
@@ -89,7 +94,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
             setMarkerCoords(null);
           }}
         >
-          <ThemedText style={styles.buttonText}>Cancel</ThemedText>
+          <ThemedText style={styles.buttonText}>{t('labels.cancel')}</ThemedText>
         </Pressable>
       </ThemedView>
     </ThemedView>
@@ -102,6 +107,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    minHeight: '100%',
   },
   input: {
     height: 40,

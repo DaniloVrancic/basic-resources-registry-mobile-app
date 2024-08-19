@@ -144,11 +144,11 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
     const validateForm = () => {
         if (!name || !employee || !location || !price || !barcode) {
-            Alert.alert("Error", "All fields except image are mandatory.");
+            Alert.alert(t('alertMessages.error'), t('fixedAssets.mandatoryFieldsError'));
             return false;
         }
         if (isNaN(parseInt(price))) {
-            Alert.alert("Error", "Value must be a number.");
+            Alert.alert(t('alertMessages.error'), t('fixedAssets.valueMustBeNumberError'));
             return false;
         }
         return true;
@@ -170,11 +170,11 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission to use for App",
-                  message:"My Asset Manager needs access to your camera for this feature to work. ",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message: t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
               );
 
@@ -188,6 +188,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                 }
                 else{
                     console.log("Permission not given.");
+                    Alert.alert(t('alertMessages.accessDenied'), t('alertMessages.permissionNotGiven'))
                 }
                
 

@@ -19,12 +19,15 @@ import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Employee } from '../data_interfaces/employee';
 import { getAllEmployees, getAllEmployeesWithNameAndBetweenRange, getEmployeesForContainsName } from '@/db/db';
 import AddEmployeeForm from '@/components/AddEmployeeForm';
+import { useTranslation } from 'react-i18next';
 
 let db: SQLiteDatabase;
+let t: any;
 export default function Employees() {
   
 
   db = useSQLiteContext();
+  ({t} = useTranslation());
   const [loadedEmployees, setLoadedEmployees] = useState([]);
 
   const [showAddEmployee, setShowAddEmployee] = useState<boolean>(false);
@@ -58,7 +61,7 @@ export default function Employees() {
 
   const handleEmployeeAdded = async () => {
     setLoadedEmployees(await getAllEmployees(db));
-    Alert.alert("Employee Updated", "The Employee information has been successfully updated.");
+    Alert.alert(t('alertMessages.employeeUpdated'), t('alertMessages.employeeUpdatedMessage'));
     closeShowAdd();
   }
 
@@ -67,7 +70,7 @@ export default function Employees() {
       try{
           var allEmployeesFiltered = loadedEmployees.filter((employee: Employee) => employee.id !== id);
           setLoadedEmployees(allEmployeesFiltered);
-          Alert.alert("Success", "Employee has been successfully deleted!");
+          Alert.alert(t('alertMessages.employeeDeleted'), t("alertMessages.employeeDeletedMessage"));
       }
       catch(error){
           console.error('Error Removing Employee: ', error);
@@ -87,10 +90,10 @@ export default function Employees() {
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText type="title" style={{paddingHorizontal: 12}}>Employees</ThemedText>
+            <ThemedText type="title" style={{paddingHorizontal: 12}}>{t('tabs.employees')}</ThemedText>
           </ThemedView>
           <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
-            <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
+            <Suspense fallback={<LoadingAnimation text={t('alertMessages.loadingData') + "..."} />}>
               
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 
@@ -150,7 +153,7 @@ function employeeAdvancedFiltering(employees: any, setEmployees: any) {
   
 
 
-const renderThumb = useCallback(() => <Thumb name={"Income range"}/>, []);
+const renderThumb = useCallback(() => <Thumb name={t('filter.incomeRange')}/>, []);
 const renderRail = useCallback(() => <Rail/>, []);
 const renderRailSelected = useCallback(() => <RailSelected/>, []);
 const renderLabel = useCallback((value: any) => <Label text={value}/>, []);
@@ -175,15 +178,15 @@ const advancedFilter = async () => {
 
   return (
     <ThemedView style={[styles.advancedFilterContainer]}>
-      <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
+      <ThemedText style={[styles.advancedFilterLabel]}>{t('labels.name')}:</ThemedText>
       <TextInput
         style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-        placeholder="Search by name of employee..."
+        placeholder={t('filter.searchByEmployeeName') + "..."}
         value={employeeName}
         onChangeText={handleNameChange}
         placeholderTextColor={'rgba(160, 160, 160, 1)'}
       />
-      <ThemedText style={[styles.advancedFilterLabel]}>Income Range:</ThemedText>
+      <ThemedText style={[styles.advancedFilterLabel]}>{t('filter.incomeRange')}:</ThemedText>
       
       <ThemedView style={styles.advancedFilterSliderContainer}>
         <ThemedText>{minIncome?.toString()}</ThemedText>
@@ -207,7 +210,7 @@ const advancedFilter = async () => {
       </ThemedView>
       <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
           <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-          <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+          <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
       </Pressable>
     </ThemedView>
 

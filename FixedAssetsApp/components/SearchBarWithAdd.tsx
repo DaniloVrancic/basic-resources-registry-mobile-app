@@ -6,6 +6,7 @@ import { StyleSheet, Modal, Pressable } from "react-native";
 import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { SQLiteDatabase } from "expo-sqlite";
+import { useTranslation } from "react-i18next";
 
 interface SearchBarWithAddProps {
   /*
@@ -54,6 +55,8 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
+  const {t} = useTranslation();
+
   const handleFilterPress = () => {
     openModal();
   };
@@ -69,7 +72,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
       />
       <TextInput
         style={[styles.searchInput, { color: textColor }]}
-        placeholder="Search..."
+        placeholder={t('labels.search') + "..."}
         value={searchText}
         onChangeText={setSearchText}
         onSubmitEditing={(event) => {searchHandler(event.nativeEvent.text)}}

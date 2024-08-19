@@ -21,33 +21,56 @@
         "scannedCode": "Scanned Code",
         "selectItem": "Select Item",
         "assignedEmployee": "Assigned Employee",
-        "assignedLocation": "Assigned Location"
+        "assignedLocation": "Assigned Location",
+        "mandatoryFieldsError": "All fields except image are mandatory.",
+        "valueMustBeNumberError": "Value must be a number."
+    },
+    "employees":{
+        "addNewEmployee": "Add New Employee",
+        "addEmployee": "Add Employee",
+        "showLargerView": "Show Larger View"
     },
     "settings":{
         "chooseLanguage": "Choose Language:"
     },
+    "camera":{
+        "permissionTitle": "Camera Permission to use for App",
+        "permissionMessage": "My Asset Manager needs access to your camera for this feature to work."
+    },
     "alertMessages":{
         "fixedAssetAdded": "New Fixed Asset Added",
         "fixedAssetAddedMessage": "New Fixed Asset has been successfully added!",
+        "employeeUpdated": "Employee Updated",
+        "employeeUpdatedMessage": "The Employee information has been successfully updated.",
+        "employeeDeleted": "Employee Deleted",
+        "employeeDeletedMessage": "Employee has been successfully deleted!",
         "success": "Success",
+        "error": "Error",
+        "accessDenied": "Access Denied",
+        "permissionNotGiven": "Permission Not Given",
         "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
         "confirmDeletion": "Confirm Deletion",
-        "deleteFixedAssetQuestion": "Delete this Fixed Asset?"
+        "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
+        "loadingData": "Loading data"
     },
     "errorMessages":{
         "loadingFixedAssets": ""
     },
     "filter":{
         "searchByAssetName": "Search by asset name",
+        "searchByEmployeeName": "Search by name of employee",
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
-        "applyFilter": "Apply Filter"
+        "applyFilter": "Apply Filter",
+        "incomeRange": "Income Range"
     },
     "labels":{
         "name": "Name",
         "location": "Location",
         "value": "Value",
         "price": "Price",
+        "email": "E-Mail",
+        "income": "Income",
         "creationDate": "Creation Date",
         "employee": "Employee",
         "description": "Description",
@@ -58,11 +81,15 @@
         "photoOptional": "Photo (Optional)",
         "search": "Search",
         "cancel": "Cancel",
-        "ok": "OK"
+        "ok": "OK",
+        "askMeLater": "Ask Me Later"
     },
     "bottomSheet": {
         "takePhotoWithCamera": "Take Photo with Camera",
         "openPhotoFromGallery": "Open Photo from Gallery",
         "close": "Close"
+    },
+    "general": {
+        "year": "year"
     }
 }

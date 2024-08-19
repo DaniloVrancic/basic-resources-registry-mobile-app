@@ -107,7 +107,7 @@ export default function HomeScreen() {
             </ScrollView>
           </ThemedView>
 
-          <Modal visible={showAddFixedAsset} animationType="slide">
+          <Modal visible={showAddFixedAsset} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
             <ScrollView>
                 <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
                   <ThemedView style={modalStyles.modalHeader}>
@@ -382,7 +382,7 @@ const handleNewScan = () => {
       </Pressable>
 
 
-      <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}> 
+      <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}  onRequestClose={closeModalScanner}> 
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                     <ThemedView style={modalStyles.modalHeader}>

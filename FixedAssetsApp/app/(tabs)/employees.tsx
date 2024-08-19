@@ -106,7 +106,7 @@ export default function Employees() {
           </ThemedView>
 
 
-          <Modal visible={showAddEmployee} animationType="slide">
+          <Modal visible={showAddEmployee} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
           <ScrollView>
             <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
               <ThemedView style={modalStyles.modalHeader}>

@@ -9,7 +9,7 @@ import * as SQLite from 'expo-sqlite';
 
   export const createTables = async (db) => {
 
-    console.log("CREATING TABLES!");
+    //console.log("CREATING TABLES!");
     const dropViewQuery = `DROP VIEW IF EXISTS "transfer_list_view";`;
 
     const dropTablesQuery = `

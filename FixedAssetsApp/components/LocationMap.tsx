@@ -167,7 +167,7 @@ const LocationMap: React.FC<any> = ( {
                   
                    
 
-                    <Modal visible={showAssetList} animationType="slide">
+                    <Modal visible={showAssetList} animationType="slide" onRequestClose={() => {setShowAssetList(false);}}>
                         <ThemedView style={modalStyles.modalContainer}>
                             <ThemedView style={modalStyles.modalHeader}>
                                     <Pressable style={modalStyles.modalCloseButton} onPress={() => {setShowAssetList(false)}}>

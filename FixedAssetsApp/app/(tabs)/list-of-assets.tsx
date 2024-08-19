@@ -210,7 +210,7 @@ useEffect(() => {
           </ThemedView>
 
 
-        <Modal visible={showAddFixedAsset} animationType="slide" >
+        <Modal visible={showAddFixedAsset} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
           <ScrollView>
             <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
               <ThemedView style={modalStyles.modalHeader}>
@@ -227,7 +227,7 @@ useEffect(() => {
             </ScrollView>
         </Modal>
 
-        <Modal visible={showAddPrompt} animationType="fade" transparent={true}>
+        <Modal visible={showAddPrompt} animationType="fade" transparent={true}  onRequestClose={() => {setShowAddPrompt(false);}}>
           <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
           <ThemedView style={modalStyles2.modalContainer}>
           <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText>

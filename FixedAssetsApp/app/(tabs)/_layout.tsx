@@ -12,10 +12,15 @@ import * as FileSystem from 'expo-file-system';
 import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
 import { SQLiteProvider } from 'expo-sqlite';
 
+import { useTranslation } from 'react-i18next';
+import i18next from '@/services/i18next';
+
 
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const {t} = useTranslation(); //Method for internationalization
 
   const loadData = useCallback(async () => {
     try {
@@ -32,14 +37,23 @@ export default function TabLayout() {
     }
   }, []);
 
-  const findSystemPathMethod = async () => {
-    console.log(FileSystem.documentDirectory)   
-}
+
+let listOfAssetsName
 
   useEffect(() => {
-    loadData(),
-    findSystemPathMethod();
+ 
+    loadData();
+
+    if (i18next.isInitialized) {
+      
+    } else {
+      i18next.on('initialized', () => {
+        
+      });
+    }
+    
   }, [loadData])
+
 
   return (
     <SQLiteProvider databaseName={MY_DATABASE_NAME}>
@@ -51,7 +65,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Fixed Assets',
+            title: t('tabs.fixedAssets'),
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'cube' : 'cube-outline'} color={color} />
             ),
@@ -60,7 +74,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="employees"
           options={{
-            title: 'Employees',
+            title: t('tabs.employees'),
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'people' : 'people-outline'} color={color} />
             ),
@@ -69,7 +83,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="locations"
           options={{
-            title: 'Locations',
+            title: t('tabs.locations'),
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'location' : 'location-outline'} color={color} />
             ),
@@ -78,7 +92,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="list-of-assets"
           options={{
-            title: 'List of Assets',
+            title: t('tabs.listOfAssets'),
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'list-circle' : 'list-circle-outline'} color={color} />
             ),
@@ -87,7 +101,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
+            title: t('tabs.settings'),
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
             ),

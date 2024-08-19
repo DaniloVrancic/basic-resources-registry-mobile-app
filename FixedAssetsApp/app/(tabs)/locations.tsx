@@ -97,7 +97,7 @@ export default function Locations() {
           </Suspense>
           </ThemedView>
 
-        <Modal visible={showAddLocation} animationType="slide">
+        <Modal visible={showAddLocation} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
           <ScrollView>
             <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
               <ThemedView style={modalStyles.modalHeader}>

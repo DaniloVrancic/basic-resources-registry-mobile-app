@@ -1,0 +1,13 @@
+{
+    "tabs":{
+        "fixedAssets": "Fixed Assets",
+        "employees": "Employees",
+        "locations": "Locations",
+        "listOfAssets": "List of Assets",
+        "settings": "Settings"
+    },
+    "settings":{
+        "chooseLanguage": "Choose Language:"
+    }
+      
+}

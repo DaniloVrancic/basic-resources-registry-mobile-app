@@ -62,7 +62,7 @@ const LocationCard: React.FC<Location | any> = (
                     </Pressable>
                 </ThemedView>
 
-                <Modal visible={showMapModal} animationType="slide">
+                <Modal visible={showMapModal} animationType="slide" onRequestClose={closeModal}>
                     <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                         <ThemedView style={modalStyles.modalHeader}>

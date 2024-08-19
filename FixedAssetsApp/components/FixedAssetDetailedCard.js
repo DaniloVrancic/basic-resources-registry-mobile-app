@@ -575,7 +575,7 @@ const FixedAssetCardDetailedCard = (
             </BottomSheet>
 
 
-            <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}> 
+            <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true} onRequestClose={closeModalScanner}> 
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                     <ThemedView style={modalStyles.modalHeader}>

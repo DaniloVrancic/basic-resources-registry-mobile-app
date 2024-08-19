@@ -195,7 +195,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 </ThemedView>
             </Suspense>
 
-            <Modal visible={showAddPrompt} animationType="fade" transparent={false}>
+            <Modal visible={showAddPrompt} animationType="fade" transparent={false} onRequestClose={() => {setShowAddPrompt(false);}}>
                 <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
                 <ThemedView style={modalStyles2.modalContainer}>
                 <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText> 
@@ -218,7 +218,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 </ThemedView>
             </Modal>
 
-            <Modal animationType="slide" visible={addModal}>
+            <Modal animationType="slide" visible={addModal} onRequestClose={() => {setAddModal(false);}}>
                 <InventoryItemSelectors
                 possibleEmployees={possibleEmployees}
                 possibleFixedAssets={possibleFixedAssets}

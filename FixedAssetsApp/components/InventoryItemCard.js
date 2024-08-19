@@ -132,7 +132,7 @@ const InventoryItemCard = ( {
                     </ThemedView>
             </ThemedView>
 
-            <Modal animationType="slide" visible={editModal}>
+            <Modal animationType="slide" visible={editModal} onRequestClose={() => {setEditModal(false)}}>
                 <InventoryItemSelectors 
                 fixedAssetId={fixedAssetId}
                 currentEmployeeId={currentEmployeeId}

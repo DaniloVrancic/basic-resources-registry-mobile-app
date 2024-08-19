@@ -84,7 +84,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
           <Ionicons name="filter" size={24} color={textColor} />
         </Pressable>
       )}
-      <Modal visible={showModal} animationType="slide" transparent={true}>
+      <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <ThemedView style={styles.modalContainer}>
           <ThemedView style={styles.modalHeader}>
             <Pressable style={styles.modalCloseButton} onPress={closeModal}>

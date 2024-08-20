@@ -119,7 +119,7 @@ const InventoryItemCard = ( {
                     </ThemedView>
             </ThemedView>
             <ThemedView style={styles.transferContainer}>
-                    <ThemedText style={[styles.transferText, styles.transferHeaderText]}>{t('listOfAssets.listOfAssets')}:</ThemedText>
+                    <ThemedText style={[styles.transferText, styles.transferHeaderText]}>{t('listOfAssets.locationOfAsset')}:</ThemedText>
                     <ThemedView style={styles.transferValues}>
                     {
                         (currentLocationId === newLocationId) ? (

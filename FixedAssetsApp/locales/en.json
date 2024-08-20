@@ -34,6 +34,7 @@
         "editEmployee": "Edit Employee"
     },
     "locations": {
+        "location": "Location",
         "areaSize": "Area size",
         "sizeOfAreaPlain": "Size of Area",
         "sizeOfArea": "Size of Area (in square Meters)",

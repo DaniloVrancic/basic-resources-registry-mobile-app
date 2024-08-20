@@ -123,7 +123,7 @@ const LocationMap: React.FC<any> = ( {
                     <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
                         
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('tabs.locations')}:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('locations.location')}:</ThemedText>
                                 <TextInput  value={inputName} 
                                                         onChangeText={setInputName}
                                                         style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 

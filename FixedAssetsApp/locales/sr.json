@@ -7,7 +7,7 @@
             "settings": "Подешавања"
         },
     "fixedAssets":{
-        "fixedAsset": "Fixed Asset",
+        "fixedAsset": "Основно средство",
         "productId": "Идентификатор продукта",
         "addNewTitle": "Додај ново основно средство",
         "enterAssetName": "Унеси име основног средства",
@@ -34,13 +34,14 @@
         "editEmployee": "Измијени радника"
     },
     "locations": {
+        "location": "Локација",
         "areaSize": "Површина",
         "sizeOfAreaPlain": "Површина",
         "sizeOfArea": "Површина (у метрима квадратним)",
         "enterLocationName": "Унеси име локације",
         "enterLocationSize": "Унеси површину локације (m2)",
-        "latitude": "Географска висина",
-        "longitude": "Географска ширина",
+        "latitude": "Географска ширина",
+        "longitude": "Географска дужина",
         "showOnMap": "Прикажи на мапи",
         "assetsAt": "Средства на"
     },

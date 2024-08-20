@@ -7,6 +7,7 @@
             "settings": "Подешавања"
         },
     "fixedAssets":{
+        "fixedAsset": "Fixed Asset",
         "productId": "Идентификатор продукта",
         "addNewTitle": "Додај ново основно средство",
         "enterAssetName": "Унеси име основног средства",
@@ -47,7 +48,8 @@
         "enterListName": "Унеси име листе",
         "enterName": "Унеси име",
         "personInCharge": "Задужена особа",
-        "locationOfAsset": "Локација средства"
+        "locationOfAsset": "Локација средства",
+        "loadingInventoryItems" : "Loading Inventory Items"
     },
     "settings":{
         "chooseLanguage": "Изабери језик:"
@@ -71,6 +73,9 @@
         "itemUpdateError": "Десила се грешка приликом ажурирања објекта. Молим те покушај поново.",
         "transferListAddedMessage": "Ставка о премјештању је успјешно додата у пописну листу.",
         "transferListDeletedMessage" : "Пописна листа је успјешно обрисана!",
+        "transferListItemDeletedMessage" : "Transfer List item has been successfully deleted!",
+        "transferListItemUpdated" : "Transfer Item Updated",
+        "transferListItemUpdatedMessage" : "The data transfer information has been successfully updated.",
         "success": "Успјех",
         "error": "Грешка",
         "accessDenied": "Одбијен приступ",
@@ -81,17 +86,21 @@
         "deleteFixedAssetQuestion": "Обриши основно средство?",
         "deleteEmployeeQuestion": "Обриши запосленог?",
         "deleteLocationQuestion": "Обриши локацију?",
-        "deleteTransferListQuestion": "Обриши ставку из пописне листе?",
+        "deleteTransferListItemQuestion": "Обриши ставку из пописне листе?",
+        "deleteTransferListQuestion": "Delete this Transfer List?",
+        "addTransferItem": "Add Transfer Item",
         "loadingData": "Учитавање"
     },
     "errorMessages":{
-        "loadingFixedAssets": "",
+        "loadingFixedAssets": "Loading Fixed Assets",
         "enterValidName":"Please enter a valid name",
         "enterValidEmail":"Please enter a valid email address",
         "incomeValidNumber":"Income must be a valid number",
         "listNameCanNotBeEmpty": "List name cannot be empty.",
         "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",
-        "errorAddingNewList": "Error adding new list"
+        "errorAddingNewList": "Error adding new list",
+        "mandatoryOptionNotSet": "One of the necessary options hasn't been set. Please check and try again.",
+        "canNotAddTransferItemToList": "An error occured, couldn't add Transfer Item to list."
     },
     "filter":{
         "filters": "Filters",
@@ -99,6 +108,9 @@
         "searchByEmployeeName": "Search by name of employee",
         "searchByLocationName": "Search by location name",
         "searchByTransferListName": "Search by name of Transfer List",
+        "searchFixedAsset" : "Search Fixed Asset",
+        "searchEmployee" : "Search Employee",
+        "searchLocation" : "Search Location",
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
         "applyFilter": "Apply Filter",
@@ -127,6 +139,7 @@
         "ok": "OK",
         "askMeLater": "Ask Me Later",
         "save": "Save",
+        "confirm": "Confirm",
         "saveChanges": "Save Changes"
     },
     "bottomSheet": {
@@ -135,6 +148,7 @@
         "close": "Close"
     },
     "general": {
-        "year": "year"
+        "year": "year",
+        "selectFixedAsset": "Select Fixed Asset"
     }
 }

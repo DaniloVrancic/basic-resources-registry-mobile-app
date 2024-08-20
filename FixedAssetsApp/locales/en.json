@@ -48,7 +48,9 @@
         "enterListName": "Enter List Name",
         "enterName": "Enter name",
         "personInCharge": "Person in Charge",
-        "locationOfAsset": "Location of Asset"
+        "locationOfAsset": "Location of Asset",
+        "loadingInventoryItems" : "Loading Inventory Items",
+        "employeesTransfer": "Employees Transfer"
     },
     "settings":{
         "chooseLanguage": "Choose Language:"
@@ -72,9 +74,11 @@
         "itemUpdateError": "An error occurred while updating the item. Please try again.",
         "transferListAddedMessage": "New Transfer Item has been successfully added to the list.",
         "transferListDeletedMessage" : "Transfer List has been successfully deleted!",
+        "transferListItemDeletedMessage" : "Transfer List item has been successfully deleted!",
+        "transferListItemUpdated" : "Transfer Item Updated",
+        "transferListItemUpdatedMessage" : "The data transfer information has been successfully updated.",
         "success": "Success",
         "error": "Error",
-        "accessDenied": "Access Denied",
         "permissionNotGiven": "Permission Not Given",
         "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
         "locationDeleteMessage": "Location has been successfully deleted",
@@ -82,17 +86,21 @@
         "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
         "deleteEmployeeQuestion": "Delete this Employee?",
         "deleteLocationQuestion": "Delete this Location?",
-        "deleteTransferListQuestion": "Delete this Transfer List Item?",
+        "deleteTransferListItemQuestion": "Delete this Transfer List Item?",
+        "deleteTransferListQuestion": "Delete this Transfer List?",
+        "addTransferItem": "Add Transfer Item",
         "loadingData": "Loading data"
     },
     "errorMessages":{
-        "loadingFixedAssets": "",
+        "loadingFixedAssets": "Loading Fixed Assets",
         "enterValidName":"Please enter a valid name",
         "enterValidEmail":"Please enter a valid email address",
         "incomeValidNumber":"Income must be a valid number",
         "listNameCanNotBeEmpty": "List name cannot be empty.",
         "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",
-        "errorAddingNewList": "Error adding new list"
+        "errorAddingNewList": "Error adding new list",
+        "mandatoryOptionNotSet": "One of the necessary options hasn't been set. Please check and try again.",
+        "canNotAddTransferItemToList": "An error occured, couldn't add Transfer Item to list."
     },
     "filter":{
         "filters": "Filters",
@@ -100,6 +108,9 @@
         "searchByEmployeeName": "Search by name of employee",
         "searchByLocationName": "Search by location name",
         "searchByTransferListName": "Search by name of Transfer List",
+        "searchFixedAsset" : "Search Fixed Asset",
+        "searchEmployee" : "Search Employee",
+        "searchLocation" : "Search Location",
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
         "applyFilter": "Apply Filter",
@@ -128,6 +139,7 @@
         "ok": "OK",
         "askMeLater": "Ask Me Later",
         "save": "Save",
+        "confirm": "Confirm",
         "saveChanges": "Save Changes"
     },
     "bottomSheet": {
@@ -136,6 +148,7 @@
         "close": "Close"
     },
     "general": {
-        "year": "year"
+        "year": "year",
+        "selectFixedAsset": "Select Fixed Asset"
     }
 }

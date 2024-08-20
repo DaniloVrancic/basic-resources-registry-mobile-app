@@ -12,6 +12,7 @@ import { TransferList } from '@/app/data_interfaces/transfer-list';
 import { Icon } from '@rneui/themed';
 import InventoryItemSelectors from './custom_for_this_project/InventoryItemSelectors';
 import { InventoryItem } from '@/app/data_interfaces/inventory-item';
+import { useTranslation } from 'react-i18next';
 
 let db: SQLiteDatabase;
 
@@ -38,6 +39,8 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     let parametersForList;
 
     db = useSQLiteContext();
+    const {t} = useTranslation();
+
     const [loadedItems, setLoadedItems] = useState<any[]>([]);
     const [showAddPrompt, setShowAddPrompt] = useState(false);
     const [inputEditedName, setInputEditedName] = useState<string>(name);
@@ -70,19 +73,19 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
 
       const confirmDeleteLocationAlert = () =>
         {
-            Alert.alert('Confirm Deletion', 'Delete this Transfer List?', [
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteTransferListQuestion'), [
                 {
-                  text: 'Cancel',
+                  text: t('labels.cancel'),
                   onPress: () => {},
                   style: 'cancel'
                 },
-                {text: 'OK', onPress: () => handleDeleteItem()},
+                {text: t('labels.ok'), onPress: () => handleDeleteItem()},
               ]);
         }
 
         const handleConfirmUpdate = async () => {
             if (inputEditedName.trim() === '') {
-              Alert.alert('Error', 'List name cannot be empty.');
+              Alert.alert(t('alertMessages.error'), t('errorMessages.listNameCanNotBeEmpty'));
               return;
             }
             // Add the new list to the database here
@@ -101,7 +104,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
         
             } catch (error) {
               console.error('Error adding new list: ', error);
-              Alert.alert('Error adding new list');
+              Alert.alert(t('errorMessages.errorAddingNewList'));
             }
           };
 
@@ -113,7 +116,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
         const handleDeletedItem = async (fixedAssetId: number, transferListId: number) => {
             try{
                 setLoadedItems(await getItemsFromViewForListId(db, id));
-                Alert.alert("Success", "Transfer List has been successfully deleted!");
+                Alert.alert(t('alertMessages.success'), t('alertMessages.transferListItemDeletedMessage'));
                 } catch (error) {
                     console.error('Error Removing Location: ', error);
                 }
@@ -122,7 +125,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
         const handleUpdatedItem = async(fixedAssetId: number, transferListId: number) => {
             try{
                 setLoadedItems(await getItemsFromViewForListId(db, id));
-                Alert.alert("Transferred Item Updated", "The data transfer information has been successfully updated.");
+                Alert.alert(t('alertMessages.transferListItemUpdated'), t('alertMessages.transferListItemUpdatedMessage'));
                 } catch (error) {
                     console.error('Error Removing Location: ', error);
                 }
@@ -133,7 +136,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
 
             if([currentEmployeeId, currentLocationId, fixed_asset_id, newLocationId, new_employee_id, transferListId].includes(-1))
             {
-                Alert.alert("Error", "One of the necessary options hasn't been set. Please check and try again.");
+                Alert.alert(t('alertMessages.error'), t('errorMessages.mandatoryOptionNotSet'));
                 return; // Exit the function if any attribute is -1 (Not set)
             }
             else{
@@ -148,7 +151,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 }
                 catch(error){
                     console.error(error);
-                    Alert.alert("Error", "An error occured, couldn't add Transfer Item to list.")
+                    Alert.alert(t('alertMessages.error'), t('errorMessages.canNotAddTransferItemToList'))
                 }
             }
         }
@@ -165,11 +168,10 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 <Icon type="material" name="delete" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
             <Pressable style={styles.addIcon} onPress={() => {setAddModal(true);}}> 
-                {/* FIX ADD CLICKED */}
                 <Icon type="material" name="add" iconStyle={{color: 'ghostwhite'}}/>
             </Pressable>
 
-            <Suspense fallback={<LoadingAnimation text="Loading Inventory Items..." />}>
+            <Suspense fallback={<LoadingAnimation text={t("listOfAssets.loadingInventoryItems") + "..."} />}>
                 <ThemedView style={{borderRadius: 10}}>
                     {
                         loadedItems.map((element: TransferList) => 
@@ -198,20 +200,20 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             <Modal visible={showAddPrompt} animationType="fade" transparent={false} onRequestClose={() => {setShowAddPrompt(false);}}>
                 <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
                 <ThemedView style={modalStyles2.modalContainer}>
-                <ThemedText style={modalStyles2.modalTitle}>Enter List Name</ThemedText> 
+                <ThemedText style={modalStyles2.modalTitle}>{t('listOfAssets.enterListName')}</ThemedText> 
                 <TextInput
                     style={modalStyles2.textInput}
                     value={inputEditedName}
                     onChangeText={setInputEditedName}
-                    placeholder="Enter Name"
+                    placeholder={t('listOfAssets.enterName')}
                     placeholderTextColor="grey"
                 />
                 <ThemedView style={modalStyles2.buttonContainer}>
                 <Pressable style={modalStyles2.button} onPress={handleCancelUpdate}>
-                    <ThemedText style={modalStyles2.buttonText}>Cancel</ThemedText>
+                    <ThemedText style={modalStyles2.buttonText}>{t('labels.cancel')}</ThemedText>
                     </Pressable>
                     <Pressable style={modalStyles2.button} onPress={handleConfirmUpdate}>
-                    <ThemedText style={modalStyles2.buttonText}>Confirm</ThemedText>
+                    <ThemedText style={modalStyles2.buttonText}>{t('labels.confirm')}</ThemedText>
                     </Pressable>
                 </ThemedView>
                 </ThemedView>
@@ -223,7 +225,7 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
                 possibleEmployees={possibleEmployees}
                 possibleFixedAssets={possibleFixedAssets}
                 possibleLocations={possibleLocations}
-                titleToDisplay="Add Transfer Item"
+                titleToDisplay= {t('alertMessages.addTransferItem')}
                 transferListId={id}
                 onPressClose={() => {setAddModal(false)}}
                 onPressSave={ item => {

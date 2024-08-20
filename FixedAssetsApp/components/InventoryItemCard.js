@@ -55,7 +55,7 @@ const InventoryItemCard = ( {
 
     const confirmDelete = () => {
         {
-            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteTransferListQuestion'), [
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteTransferListItemQuestion'), [
                 {
                   text: t('labels.cancel'),
                   onPress: () => {},

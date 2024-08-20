@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
@@ -9,6 +9,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import CameraScanner from "../camera/CameraScanner";
 import { getAllFixedAssetsWithBarcode } from "@/db/db";
 import { useSQLiteContext } from "expo-sqlite";
+import { useTranslation } from "react-i18next";
 
 
 let db;
@@ -30,6 +31,7 @@ const InventoryItemSelectors = ({
 
     const textColor = useThemeColor({}, 'text');
     db = useSQLiteContext();
+    const {t} = useTranslation();
 
     const [isFocusFixedAsset, setIsFocusFixedAsset] = useState(false);
     const [isFocusCurrentEmployee, setIsFocusCurrentEmployee] = useState(false);
@@ -50,21 +52,12 @@ const InventoryItemSelectors = ({
     function isObjectEmpty(obj) { 
       return Object.keys(obj).length === 0; 
     } 
-    
-
-    const resetDefaultStates = () => {
-        setInputAssignedFixedAssetId(fixedAssetId);
-        setInputAssignedCurrentEmployeeId(currentEmployeeId);
-        setInputAssignedNewEmployeeId(new_employee_id);
-        setInputAssignedCurrentLocationId(currentLocationId);
-        setInputAssignedNewLocationId(newLocationId);
-      }
 
     const renderLabelFixedAsset = (myIsFocusFixedAsset) => {
         if (myIsFocusFixedAsset) {
           return (
             <ThemedText style={[dropdownStyles.label, myIsFocusFixedAsset && { color: 'green' }]}>
-              Select Fixed Asset:
+              {t('general.selectFixedAsset.')}:
             </ThemedText>
           );
         }
@@ -75,7 +68,7 @@ const InventoryItemSelectors = ({
         if (myIsFocusEmployee) {
           return (
             <ThemedText style={[dropdownStyles.label, myIsFocusEmployee && { color: 'blue' }]}>
-              Select Employee:
+              {t('fixedAssets.selectEmployee')}:
             </ThemedText>
           );
         }
@@ -86,7 +79,7 @@ const InventoryItemSelectors = ({
         if (myIsFocusLocation) {
           return (
             <ThemedText style={[dropdownStyles.labelBottom, myIsFocusLocation && { color: 'gold' }]}>
-              Select Location:
+              {t('fixedAssets.selectLocation')}:
             </ThemedText>
           );
         }
@@ -173,7 +166,7 @@ const InventoryItemSelectors = ({
                             </ThemedView>
                         <ThemedView style={modalStyles.elementGroup} darkColor="white">
                             <ThemedView style={modalStyles.elementGroupLabel}>
-                                <ThemedText>Fixed Asset</ThemedText>
+                                <ThemedText>{t('fixedAssets.fixedAsset')}</ThemedText>
                             </ThemedView>
                             <ThemedView style={dropdownStyles.container}>
                                             {renderLabelFixedAsset(isFocusFixedAsset)}
@@ -190,8 +183,8 @@ const InventoryItemSelectors = ({
                                             maxHeight={'90%'}
                                             labelField="label"
                                             valueField="value"
-                                            placeholder={!isFocusFixedAsset ? 'Select item' : '...'}
-                                            searchPlaceholder="Search Fixed Asset..."
+                                            placeholder={!isFocusFixedAsset ? t('fixedAssets.selectItem') : '...'}
+                                            searchPlaceholder={t('filter.searchFixedAsset') + "..."}
                                             value={inputAssignedFixedAssetId}
                                             onFocus={() => setIsFocusFixedAsset(true)}
                                             onBlur={() => setIsFocusFixedAsset(false)}
@@ -227,7 +220,7 @@ const InventoryItemSelectors = ({
 
                     <ThemedView style={modalStyles.elementGroup}  darkColor="white">
                         <ThemedView style={modalStyles.elementGroupLabel}>
-                            <ThemedText >Employees Transfer</ThemedText>
+                            <ThemedText >{t('listOfAssets.employeesTransfer')}</ThemedText>
                         </ThemedView>    
                             <ThemedView style={dropdownStyles.container}>
                                         {renderLabelEmployee(isFocusCurrentEmployee)}
@@ -244,8 +237,8 @@ const InventoryItemSelectors = ({
                                         maxHeight={'90%'}
                                         labelField="label"
                                         valueField="value"
-                                        placeholder={!isFocusCurrentEmployee ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Employee..."
+                                        placeholder={!isFocusCurrentEmployee ? t('fixedAssets.selectItem') : '...'}
+                                        searchPlaceholder={t('filter.searchEmployee') + "..."}
                                         value={inputAssignedCurrentEmployeeId}
                                         onFocus={() => setIsFocusCurrentEmployee(true)}
                                         onBlur={() => setIsFocusCurrentEmployee(false)}
@@ -279,8 +272,8 @@ const InventoryItemSelectors = ({
                                         maxHeight={'90%'}
                                         labelField="label"
                                         valueField="value"
-                                        placeholder={!isFocusNewEmployee ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Employee..."
+                                        placeholder={!isFocusNewEmployee ? t('fixedAssets.selectItem') : '...'}
+                                        searchPlaceholder={t('filter.searchEmployee') + "..."}
                                         value={inputAssignedNewEmployeeId}
                                         onFocus={() => setIsFocusNewEmployee(true)}
                                         onBlur={() => setIsFocusNewEmployee(false)}
@@ -322,8 +315,8 @@ const InventoryItemSelectors = ({
                                         maxHeight={'90%'}
                                         labelField="label"
                                         valueField="value"
-                                        placeholder={!isFocusCurrentLocation ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Location..."
+                                        placeholder={!isFocusCurrentLocation ? t('fixedAssets.selectItem') : '...'}
+                                        searchPlaceholder={t('filter.searchLocation') + "..."}
                                         value={inputAssignedCurrentLocationId}
                                         onFocus={() => setIsFocusCurrentLocation(true)}
                                         onBlur={() => setIsFocusCurrentLocation(false)}
@@ -357,8 +350,8 @@ const InventoryItemSelectors = ({
                                         maxHeight={'90%'}
                                         labelField="label"
                                         valueField="value"
-                                        placeholder={!isFocusNewLocation ? 'Select item' : '...'}
-                                        searchPlaceholder="Search Location..."
+                                        placeholder={!isFocusNewLocation ? t('fixedAssets.selectItem') : '...'}
+                                        searchPlaceholder={t('filter.searchLocation') + "..."}
                                         value={inputAssignedNewLocationId}
                                         onFocus={() => setIsFocusNewLocation(true)}
                                         onBlur={() => setIsFocusNewLocation(false)}
@@ -418,21 +411,20 @@ const InventoryItemSelectors = ({
                     </ThemedView>
 
                     <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>{t('filter.scanCode')}:</ThemedText>
                     </ThemedView>
                     <ThemedView>
-                         {/* Fill with Content here */}
                          <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
                     </ThemedView>
                 </ThemedView>
                 {
                     (!cameraScanned) ? 
                     (<ThemedView style={{backgroundColor:'rgba(220,0,0,1.0)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>No Code Found</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>{t('fixedAssets.noCodeFound')}</ThemedText>
                     </ThemedView>)
                     :
                     (<ThemedView style={{backgroundColor:'rgba(0,220,0,1.0)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{t('fixedAssets.scannedCode')}:</ThemedText>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{barcode}</ThemedText>
                     </ThemedView>)
                 }

@@ -26,59 +26,63 @@
         "valueMustBeNumberError": "Цијена мора бити бројачана вриједност"
     },
     "employees":{
-        "addNewEmployee": "Add New Employee",
-        "addEmployee": "Add Employee",
-        "showLargerView": "Show Larger View",
-        "employeeId": "Employee ID",
-        "editEmployee": "Edit Employee"
+        "addNewEmployee": "Додај новог радника",
+        "addEmployee": "Додај радника",
+        "showLargerView": "Прикажи увећани преглед",
+        "employeeId": "Радников идентификатор",
+        "editEmployee": "Измијени радника"
     },
     "locations": {
-        "areaSize": "Area size",
-        "sizeOfAreaPlain": "Size of Area",
-        "sizeOfArea": "Size of Area (in square Meters)",
-        "enterLocationName": "Enter Location Name",
-        "enterLocationSize": "Enter Location Size (m2)",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "showOnMap": "Show on Map",
-        "assetsAt": "Assets at"
+        "areaSize": "Површина",
+        "sizeOfAreaPlain": "Површина",
+        "sizeOfArea": "Површина (у метрима квадратним)",
+        "enterLocationName": "Унеси име локације",
+        "enterLocationSize": "Унеси површину локације (m2)",
+        "latitude": "Географска висина",
+        "longitude": "Географска ширина",
+        "showOnMap": "Прикажи на мапи",
+        "assetsAt": "Средства на"
     },
-    "listOfAssets": {
-        "enterListName": "Enter List Name",
-        "enterName": "Enter name"
+   "listOfAssets": {
+        "enterListName": "Унеси име листе",
+        "enterName": "Унеси име",
+        "personInCharge": "Задужена особа",
+        "locationOfAsset": "Локација средства"
     },
     "settings":{
-        "chooseLanguage": "Choose Language:"
+        "chooseLanguage": "Изабери језик:"
     },
     "camera":{
-        "permissionTitle": "Camera Permission to use for App",
-        "permissionMessage": "My Asset Manager needs access to your camera for this feature to work."
+        "permissionTitle": "Дозвола да апликација користи камеру",
+        "permissionMessage": "Апликација тражи приступ камери."
     },
     "alertMessages":{
-        "fixedAssetAdded": "New Fixed Asset Added",
-        "fixedAssetAddedMessage": "New Fixed Asset has been successfully added!",
-        "employeeUpdated": "Employee Updated",
-        "employeeUpdatedMessage": "The Employee information has been successfully updated.",
-        "employeeDeleted": "Employee Deleted",
-        "employeeDeletedMessage": "Employee has been successfully deleted!",
-        "locationAdded": "Added new location",
-        "locationAddedMessage": "New location has been saved.",
-        "locationUpdated": "Location Updated",
-        "locationUpdatedMessage": "The location coordinates have been successfully updated.",
-        "locationUpdateError": "An error occurred while updating the location.",
-        "transferListAddedMessage": "New Transfer Item has been successfully added to the list.",
-        "transferListDeletedMessage" : "Transfer List has been successfully deleted!",
-        "success": "Success",
-        "error": "Error",
-        "accessDenied": "Access Denied",
-        "permissionNotGiven": "Permission Not Given",
-        "fixedAssetDeleteMessage": "Fixed Asset has been successfully deleted!",
-        "locationDeleteMessage": "Location has been successfully deleted",
-        "confirmDeletion": "Confirm Deletion",
-        "deleteFixedAssetQuestion": "Delete this Fixed Asset?",
-        "deleteEmployeeQuestion": "Delete this Employee?",
-        "deleteLocationQuestion": "Delete this Location?",
-        "loadingData": "Loading data"
+        "fixedAssetAdded": "Ново основно средство додато",
+        "fixedAssetAddedMessage": "Ново основно средство је успјешно додато!",
+        "employeeUpdated": "Радник ажуриран",
+        "employeeUpdatedMessage": "Информације о раднику су успјешно ажуриране.",
+        "employeeDeleted": "Радник обрисан",
+        "employeeDeletedMessage": "Радник је успјешно обрисан!",
+        "locationAdded": "Додата нова локација",
+        "locationAddedMessage": "Нова локација је сачувана.",
+        "locationUpdated": "Локација ажурирана",
+        "locationUpdatedMessage": "Координате локације су ажуриране.",
+        "locationUpdateError": "Десила се грешка приликом ажурирања локације.",
+        "itemUpdateError": "Десила се грешка приликом ажурирања објекта. Молим те покушај поново.",
+        "transferListAddedMessage": "Ставка о премјештању је успјешно додата у пописну листу.",
+        "transferListDeletedMessage" : "Пописна листа је успјешно обрисана!",
+        "success": "Успјех",
+        "error": "Грешка",
+        "accessDenied": "Одбијен приступ",
+        "permissionNotGiven": "Дозвола није дата",
+        "fixedAssetDeleteMessage": "Основно средство је успјешно обрисано!",
+        "locationDeleteMessage": "Локација је успјешно обрисана.",
+        "confirmDeletion": "Потврди брисање",
+        "deleteFixedAssetQuestion": "Обриши основно средство?",
+        "deleteEmployeeQuestion": "Обриши запосленог?",
+        "deleteLocationQuestion": "Обриши локацију?",
+        "deleteTransferListQuestion": "Обриши ставку из пописне листе?",
+        "loadingData": "Учитавање"
     },
     "errorMessages":{
         "loadingFixedAssets": "",
@@ -90,6 +94,7 @@
         "errorAddingNewList": "Error adding new list"
     },
     "filter":{
+        "filters": "Filters",
         "searchByAssetName": "Search by asset name",
         "searchByEmployeeName": "Search by name of employee",
         "searchByLocationName": "Search by location name",
@@ -97,7 +102,9 @@
         "valueAssetRange": "Value of Asset (Range)",
         "scanCode": "Scan Code",
         "applyFilter": "Apply Filter",
-        "incomeRange": "Income Range"
+        "incomeRange": "Income Range",
+        "showChangingEmployees": "Show Changing Employees",
+        "showChangingLocations": "Show Changing Locations"
     },
     "labels":{
         "name": "Name",

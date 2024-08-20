@@ -222,8 +222,8 @@ const styles = StyleSheet.create({
     header: {
         width: '100%',
         padding: 20,
-        minHeight: '40%',
-        maxHeight: '40%',
+        minHeight: '30%',
+        maxHeight: '30%',
         alignItems: 'center',
         borderColor: 'grey',
         borderWidth: 2,

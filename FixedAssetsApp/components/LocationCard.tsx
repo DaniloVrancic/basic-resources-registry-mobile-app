@@ -168,9 +168,9 @@ const modalStyles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        paddingBottom: 40,
+        paddingBottom: "11%",
         marginRight: 20,
-        marginBottom: 20,
+        marginBottom: 30,
         flex: 1
     },
     modalContent: {

@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "usesIcloudStorage": true
+      "usesIcloudStorage": true,
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +33,13 @@
       "expo-router",
       "expo-document-picker",
       "expo-camera",
-      "expo-localization"
+      "expo-localization",
+      [
+      "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

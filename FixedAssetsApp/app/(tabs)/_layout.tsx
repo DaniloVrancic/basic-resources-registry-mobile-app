@@ -8,7 +8,6 @@ import { useColorScheme } from '../../hooks/useColorScheme';
 
 import { connectToDatabase, createTables } from '@/db/db';
 
-import * as FileSystem from 'expo-file-system';
 import { MY_DATABASE_NAME } from '@/constants/DatabaseInformation';
 import { SQLiteProvider } from 'expo-sqlite';
 

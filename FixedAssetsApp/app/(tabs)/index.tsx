@@ -22,13 +22,16 @@ import CameraScanner from '@/components/camera/CameraScanner';
 import FixedAssetCardDetailedCard from '@/components/FixedAssetDetailedCard';
 import AddNewFixedAsset from '@/components/AddFixedAssetForm';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
 
 let db: SQLiteDatabase;
 let t: any;
+let orientation: any;
 export default function HomeScreen() {
   db = useSQLiteContext();
   const textColor = useThemeColor({}, 'text');
   ({t} = useTranslation());
+  (orientation = useOrientation());
 
   const currentSearchCriteria: FixedAssetSearchCriteria = {name: "" as string, price_min: 0, price_max: 10_000, barcode: 111111, employeeId: 1, locationId: 1};
   const [searchCriteria, setSearchCriteria] = useState(currentSearchCriteria);

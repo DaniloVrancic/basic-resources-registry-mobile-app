@@ -34,7 +34,7 @@ export default function Settings() {
         <ThemedText type="title">{i18next.t('tabs.settings')}</ThemedText>
 
         <ThemedView style={styles.languageContainer}>
-          <ThemedText type="subtitle">{i18next.t('settings.chooseLanguage')}</ThemedText>
+          <ThemedText type="subtitle" style={{marginBottom: 15}}>{i18next.t('settings.chooseLanguage')}</ThemedText>
           <Picker
             selectedValue={selectedLanguage}
             onValueChange={(itemValue) => handleLanguageChange(itemValue as LanguageCodes)}
@@ -68,6 +68,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   languageContainer: {
+    justifyContent:'center',
+    alignItems:'center',
     marginTop: 20,
   },
   picker: {

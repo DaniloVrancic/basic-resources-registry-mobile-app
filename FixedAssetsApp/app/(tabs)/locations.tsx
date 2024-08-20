@@ -19,13 +19,17 @@ import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForCont
 import { Location } from '../data_interfaces/location';
 import AddLocationForm from '@/components/AddLocationForm';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 let db: SQLiteDatabase;
 let t: any;
+let orientation: any;
 export default function Locations() {
 
   db = useSQLiteContext();
   ({t} = useTranslation());
+  (orientation = useOrientation());
 
   const [loadedLocations, setLoadedLocations] = useState([]);
 
@@ -73,6 +77,11 @@ export default function Locations() {
 
   return (
       <SafeAreaView style={styles.safeArea}>
+
+        {
+
+        (orientation === ORIENTATION.PORTRAIT) ? 
+        <ThemedView style={{flex: 26, flexDirection: 'column'}}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
               onAddClick={() => { openShowAdd(); }}
@@ -85,6 +94,24 @@ export default function Locations() {
           <ThemedView style={[styles.titleContainer, {flex:8, paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
             <ThemedText type="title">{t('tabs.locations')}</ThemedText>
           </ThemedView>
+          </ThemedView>
+          :
+          <ThemedView style={{flex: 28, flexDirection: 'row', paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2, borderTopWidth: 1, alignItems: 'center'}}>
+          
+          <ThemedView style={[styles.titleContainer, {flex:8, }]}>
+            <ThemedText type="title">{t('tabs.locations')}</ThemedText>
+          </ThemedView>
+          <ThemedView style={{flex: 18}}>
+            <SearchBarWithAdd
+              onAddClick={() => { openShowAdd(); }}
+              filterChildren={locationAdvancedFiltering(loadedLocations, setLoadedLocations)}
+              renderAddButton={true}
+              renderAdvancedFilterButton={true}
+              searchHandler={handleLocationsSearch}
+            />
+          </ThemedView>
+          </ThemedView>
+          }
           <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
 
           <Suspense fallback={<LoadingAnimation text={t('alertMessages.loadingData') + "..."} />}>
@@ -269,6 +296,7 @@ const styles = StyleSheet.create({
   
     return (
   
+      <ScrollView>
       <ThemedView style={[styles.advancedFilterContainer]}>
 
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
@@ -305,6 +333,7 @@ const styles = StyleSheet.create({
           <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
         </Pressable>
       </ThemedView>
+      </ScrollView>
   
     )
   }

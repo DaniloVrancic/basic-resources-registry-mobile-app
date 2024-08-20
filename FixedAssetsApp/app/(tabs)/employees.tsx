@@ -20,14 +20,17 @@ import { Employee } from '../data_interfaces/employee';
 import { getAllEmployees, getAllEmployeesWithNameAndBetweenRange, getEmployeesForContainsName } from '@/db/db';
 import AddEmployeeForm from '@/components/AddEmployeeForm';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 let db: SQLiteDatabase;
 let t: any;
+let orientation: any;
 export default function Employees() {
   
-
   db = useSQLiteContext();
   ({t} = useTranslation());
+  (orientation = useOrientation());
   const [loadedEmployees, setLoadedEmployees] = useState([]);
 
   const [showAddEmployee, setShowAddEmployee] = useState<boolean>(false);
@@ -80,18 +83,40 @@ export default function Employees() {
 
   return (
       <SafeAreaView style={styles.safeArea}>
-          <ThemedView style={{flex: 18}}>
-            <SearchBarWithAdd
-              onAddClick={() => { openShowAdd(); }}
-              filterChildren={employeeAdvancedFiltering(loadedEmployees, setLoadedEmployees)}
-              renderAddButton={true}
-              renderAdvancedFilterButton={true}
-              searchHandler={handleEmployeesSearch}
-            />
-          </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText type="title" style={{paddingHorizontal: 12}}>{t('tabs.employees')}</ThemedText>
-          </ThemedView>
+                  {
+                  (orientation === ORIENTATION.PORTRAIT) ? 
+                  <ThemedView style={{flex: 26, flexDirection: 'column'}}>
+                  <ThemedView style={{flex: 12}}>
+                  <SearchBarWithAdd
+                    onAddClick={() => { openShowAdd(); }}
+                    filterChildren={employeeAdvancedFiltering(loadedEmployees, setLoadedEmployees)}
+                    renderAddButton={true}
+                    renderAdvancedFilterButton={true}
+                    searchHandler={handleEmployeesSearch}
+                  />
+                  </ThemedView>
+                  <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
+                    <ThemedText type="title" style={{paddingHorizontal: 12}}>{t('tabs.employees')}</ThemedText>
+                  </ThemedView>
+                </ThemedView>
+                  :
+                  <ThemedView style={{flex: 30, flexDirection: 'row', borderBottomColor: 'grey', borderBottomWidth: 2, borderTopWidth: 1, alignItems:'center'}}>
+                  <ThemedView style={[styles.titleContainer, {flex:8 }]}>
+                    <ThemedText type="title" style={{paddingHorizontal: 12}}>{t('tabs.employees')}</ThemedText>
+                  </ThemedView>
+                  <ThemedView style={{flex: 20}}>
+                  <SearchBarWithAdd
+                    onAddClick={() => { openShowAdd(); }}
+                    filterChildren={employeeAdvancedFiltering(loadedEmployees, setLoadedEmployees)}
+                    renderAddButton={true}
+                    renderAdvancedFilterButton={true}
+                    searchHandler={handleEmployeesSearch}
+                  />
+                  </ThemedView>
+                </ThemedView>
+                
+                  }
+          
           <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
             <Suspense fallback={<LoadingAnimation text={t('alertMessages.loadingData') + "..."} />}>
               
@@ -107,6 +132,7 @@ export default function Employees() {
                 
             </Suspense>
           </ThemedView>
+
 
 
           <Modal visible={showAddEmployee} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
@@ -177,6 +203,7 @@ const advancedFilter = async () => {
 
 
   return (
+    <ScrollView>
     <ThemedView style={[styles.advancedFilterContainer]}>
       <ThemedText style={[styles.advancedFilterLabel]}>{t('labels.name')}:</ThemedText>
       <TextInput
@@ -213,13 +240,14 @@ const advancedFilter = async () => {
           <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
       </Pressable>
     </ThemedView>
+    </ScrollView>
 
   )
 }
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
+    flex: 2,
     padding: 2,
     flexDirection: 'column'
   },

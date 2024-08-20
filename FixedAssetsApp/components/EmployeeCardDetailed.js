@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid, Alert } from "react-native";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid, Alert, ScrollView } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
@@ -204,7 +204,8 @@ const EmployeeCardDetailed = (
         }
 
 
-    return (
+    return ( 
+        <ScrollView>
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
@@ -353,6 +354,7 @@ const EmployeeCardDetailed = (
                 
             </BottomSheet>                
         </ThemedView>
+        </ScrollView>
     );
 }
 

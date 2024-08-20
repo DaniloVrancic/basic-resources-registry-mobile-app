@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable, Modal, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, TextInput, Pressable, Modal, Alert, FlatList } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -23,6 +23,7 @@ import FixedAssetCardDetailedCard from '@/components/FixedAssetDetailedCard';
 import AddNewFixedAsset from '@/components/AddFixedAssetForm';
 import { useTranslation } from 'react-i18next';
 import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 let db: SQLiteDatabase;
 let t: any;
@@ -87,34 +88,73 @@ export default function HomeScreen() {
   return (
     
     <SafeAreaView style={styles.safeArea}>
+      {
+        (orientation === ORIENTATION.PORTRAIT) ? 
+        <ThemedView style={{flex: 28, flexDirection: 'column'}}>
+        <ThemedView style={styles.searchBarContainer}>
+          <SearchBarWithAdd
+                  onAddClick={() => { openShowAdd(); }}
+                  filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
+                  renderAddButton={true}
+                  renderAdvancedFilterButton={true}
+                  searchHandler={handleFixedAssetSearch}
+                />
+        </ThemedView>
+        <ThemedView style={[styles.fixedAssetHeader]}>
+          <ThemedText type="title">{t('tabs.fixedAssets')}:</ThemedText>
+        </ThemedView>
+        </ThemedView>
+        :
+        <ThemedView style={{flex: 30, flexDirection: 'row', 
+        borderBottomColor: 'grey', borderBottomWidth: 2, borderTopWidth: 1, marginBottom: 10}}>
+        
+        <ThemedView style={[styles.fixedAssetHeaderLandscape]}>
+          <ThemedText type="title">{t('tabs.fixedAssets')}:</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.searchBarContainerLandscape}>
+          <SearchBarWithAdd
+                  onAddClick={() => { openShowAdd(); }}
+                  filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
+                  renderAddButton={true}
+                  renderAdvancedFilterButton={true}
+                  searchHandler={handleFixedAssetSearch}
+                />
+        </ThemedView>
+        </ThemedView>
+        
+      }
       
-      <ThemedView style={styles.searchBarContainer}>
-        <SearchBarWithAdd
-                onAddClick={() => { openShowAdd(); }}
-                filterChildren={fixedAssetAdvancedFiltering(loadedFixedAssets, setLoadedFixedAssets)}
-                renderAddButton={true}
-                renderAdvancedFilterButton={true}
-                searchHandler={handleFixedAssetSearch}
+        
+      
+          <ThemedView style={(orientation === ORIENTATION.PORTRAIT) ? styles.fixedAssetContent : styles.fixedAssetContentLandscape} lightColor='ghostwhite' darkColor='#17153B'>
+          <FlatList
+          data={loadedFixedAssets}
+          
+          contentContainerStyle={
+            (orientation === ORIENTATION.PORTRAIT) ? styles.scrollViewContent : styles.scrollViewContentLandscape
+          }
+          keyExtractor={(fixedAsset: FixedAsset) => fixedAsset.id?.toString() as string}
+          renderItem={({ item: fixedAsset }) => (
+            (orientation === ORIENTATION.PORTRAIT) ? 
+            <ThemedView style={styles.fixedAssetCardContainer}>
+              <FixedAssetCard 
+                onDeletedFixedAsset={() => {handleDeletedFixedItem(fixedAsset.id as number)}} 
+                {...fixedAsset} 
               />
-      </ThemedView>
-
-      <ThemedView style={[styles.fixedAssetHeader]}>
-            <ThemedText type="title">{t('tabs.fixedAssets')}:</ThemedText>
-      </ThemedView>
-
-          <ThemedView style={styles.fixedAssetContent} lightColor='ghostwhite' darkColor='#17153B'>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              {/* Add more employees or your dynamic list here */}
-                {loadedFixedAssets.map((fixedAsset: FixedAsset) =>
-                  <ThemedView key={fixedAsset.id} style={styles.fixedAssetCardContainer}>
-                    <FixedAssetCard key={fixedAsset.id} onDeletedFixedAsset={() => {handleDeletedFixedItem(fixedAsset.id as number)}} {...fixedAsset}/>
-                  </ThemedView> 
+            </ThemedView>
+            :
+            <ThemedView style={styles.fixedAssetCardContainerLandscape}>
+              <FixedAssetCard 
+                onDeletedFixedAsset={() => {handleDeletedFixedItem(fixedAsset.id as number)}} 
+                {...fixedAsset} 
+              />
+            </ThemedView>
                 )}
-            </ScrollView>
+            />
           </ThemedView>
 
           <Modal visible={showAddFixedAsset} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
-            <ScrollView>
+             <ScrollView>
                 <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
                   <ThemedView style={modalStyles.modalHeader}>
                     <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
@@ -138,11 +178,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    paddingTop: '7%',
+    paddingTop: '5%',
+    paddingVertical: 10,
     flexDirection: 'column'
   },
   searchBarContainer:{
     flex: 12,
+    padding: 2,
+  },
+  searchBarContainerLandscape:{
+    flex: 20,
     padding: 2,
   },
   scrollViewContent: {
@@ -150,10 +195,21 @@ const styles = StyleSheet.create({
     padding: 10,
     // Add additional styling as needed
   },
+  scrollViewContentLandscape: {
+    width: "100%",
+    
+  },
+  flexHeaderLandscape: {
+    flex: 20
+  },
   fixedAssetCardContainer: {
     marginVertical: 15,
     paddingHorizontal: 5,
     backgroundColor: 'rgba(0,0,0,0.0)',
+  },
+  fixedAssetCardContainerLandscape: {
+    backgroundColor: 'rgba(0,0,0,0.0)',
+    marginHorizontal: '1%',
   },
   fixedAssetHeader: {
     flex: 12,
@@ -165,8 +221,19 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey', 
     borderBottomWidth: 2
   },
+  fixedAssetHeaderLandscape: {
+    flex: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 6,
+    paddingHorizontal: 16,
+  },
   fixedAssetContent: {
-    flex: 82
+    flex: 84
+  },
+  fixedAssetContentLandscape: {
+    flex: 86,
+    overflow: 'visible'
   },
   advancedFilterContainer: {
     padding: 16,
@@ -348,102 +415,120 @@ const handleNewScan = () => {
 
 
   return (
+ <ScrollView>
+        <ThemedView style={[styles.advancedFilterContainer]}>
+          <ThemedText style={[styles.advancedFilterLabel]}>{t("labels.name")}:</ThemedText>
+          <TextInput
+            style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
+            placeholder= {t("filter.searchByAssetName") + "..."}
+            value={nameToSearch}
+            onChangeText={handleNameChange}
+            placeholderTextColor={'rgba(160, 160, 160, 1)'}
+          />
+          <ThemedText style={[styles.advancedFilterLabel]}>{t("filter.valueAssetRange")}:</ThemedText>
+          <ThemedView style={styles.advancedFilterSliderContainer}>
+            <ThemedText>{minPrice?.toString()}</ThemedText>
+            <RangeSlider
+              style={styles.advancedFilterSlider}
+              min={0}
+              max={10_000}
+              step={20}
+              onValueChanged={handleValueChange}
+              disableRange={rangeDisabled}
+              floatingLabel={floatingLabel}
+              renderThumb={renderThumb}
+              renderRail={renderRail}
+              renderRailSelected={renderRailSelected}
+              renderLabel={renderLabel}
+              renderNotch={renderNotch}
+              low={minPrice}
+              high={maxPrice}
+            />
+            <ThemedText>{maxPrice?.toString()}</ThemedText>
+          </ThemedView>
+          {
 
-    <ThemedView style={[styles.advancedFilterContainer]}>
-      <ThemedText style={[styles.advancedFilterLabel]}>{t("labels.name")}:</ThemedText>
-      <TextInput
-        style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-        placeholder= {t("filter.searchByAssetName") + "..."}
-        value={nameToSearch}
-        onChangeText={handleNameChange}
-        placeholderTextColor={'rgba(160, 160, 160, 1)'}
-      />
-      <ThemedText style={[styles.advancedFilterLabel]}>{t("filter.valueAssetRange")}:</ThemedText>
-      <ThemedView style={styles.advancedFilterSliderContainer}>
-        <ThemedText>{minPrice?.toString()}</ThemedText>
-        <RangeSlider
-          style={styles.advancedFilterSlider}
-          min={0}
-          max={10_000}
-          step={20}
-          onValueChanged={handleValueChange}
-          disableRange={rangeDisabled}
-          floatingLabel={floatingLabel}
-          renderThumb={renderThumb}
-          renderRail={renderRail}
-          renderRailSelected={renderRailSelected}
-          renderLabel={renderLabel}
-          renderNotch={renderNotch}
-          low={minPrice}
-          high={maxPrice}
-        />
-        <ThemedText>{maxPrice?.toString()}</ThemedText>
-      </ThemedView>
-      <Pressable style={styles.advancedBarCodeButton} onPress={openModalScanner}>
-        <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
-        <ThemedText style={styles.advancedFilterButtonText}>{t("filter.scanCode")}</ThemedText>
-      </Pressable>
-      <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
-        <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-        <ThemedText style={styles.advancedFilterButtonText}>{t("filter.applyFilter")}</ThemedText>
-      </Pressable>
+          (orientation === ORIENTATION.PORTRAIT) ? 
+          <ThemedView>
+            <Pressable style={styles.advancedBarCodeButton} onPress={openModalScanner}>
+              <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
+              <ThemedText style={styles.advancedFilterButtonText}>{t("filter.scanCode")}</ThemedText>
+            </Pressable>
+            <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
+              <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
+              <ThemedText style={styles.advancedFilterButtonText}>{t("filter.applyFilter")}</ThemedText>
+            </Pressable>
+          </ThemedView>
+          :
+          <ThemedView style={{flexDirection: 'row', justifyContent:'space-evenly'}}>
+            <Pressable style={styles.advancedBarCodeButton} onPress={openModalScanner}>
+              <Ionicons style={{paddingHorizontal: 6}} name="barcode-sharp" size={24} color={'ghostwhite'} />
+              <ThemedText style={styles.advancedFilterButtonText}>{t("filter.scanCode")}</ThemedText>
+            </Pressable>
+            <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
+              <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
+              <ThemedText style={styles.advancedFilterButtonText}>{t("filter.applyFilter")}</ThemedText>
+            </Pressable>
+          </ThemedView>
+          }
 
 
-      <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}  onRequestClose={closeModalScanner}> 
-                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
+          <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}  onRequestClose={closeModalScanner}> 
+                    <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
-                    <ThemedView style={modalStyles.modalHeader}>
-                            <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
-                                <Icon name="undo" type="material" size={24} color={textColor} />
-                            </Pressable>
-                            <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
-                    </ThemedView>
+                        <ThemedView style={modalStyles.modalHeader}>
+                                <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
+                                    <Icon name="undo" type="material" size={24} color={textColor} />
+                                </Pressable>
+                                <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModalScanner}></Pressable>
+                        </ThemedView>
 
-                    
-                {
-                    (!cameraScanned) ? 
-                    (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                        <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                          <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                        
+                    {
+                        (!cameraScanned) ? 
+                        (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                            <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                              <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                          </ThemedView>
+                          <ThemedView style={{minHeight: '66%'}}>
+                              {/* Fill with Content here */}
+                              <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                          </ThemedView>
+                        </ThemedView>)
+                        :
+                        (
+                          (foundAsset == undefined) ?
+                        (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                          <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
+                            <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                        </ThemedView>
+                        <ThemedView style={{minHeight: '66%'}}>
+                            {/* Fill with Content here */}
+                            <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
+                        </ThemedView>
+                        <ThemedView style={{minWidth: '100%',backgroundColor:'rgba(200,0,0,0.8', alignItems:'center'}}>
+                          <ThemedText type='defaultSemiBold' style={{backgroundColor:'rgba(0,0,0,0)'}}>Item with barcode: {scannedBarCode}</ThemedText>
+                          <ThemedText lightColor='red' darkColor='red' style={{backgroundColor:'rgba(0,0,0,0)'}}>Not found.</ThemedText>
+                        </ThemedView>
                       </ThemedView>
-                      <ThemedView style={{minHeight: '66%'}}>
-                          {/* Fill with Content here */}
-                          <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
-                      </ThemedView>
-                    </ThemedView>)
-                    :
-                    (
-                      (foundAsset == undefined) ?
-                    (<ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                      <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                      )
+                        :
+                        (
+                        <ThemedView style={{paddingVertical:'20%', backgroundColor:'rgba(0,0,0,0)' }}>
+                          {
+                            <FixedAssetCardDetailedCard setFixedAssetState={setFoundAsset} fixedAssetState={foundAsset}/>
+                          }
+                      </ThemedView>) 
+                          
+                          
+                        )
+                    }
                     </ThemedView>
-                    <ThemedView style={{minHeight: '66%'}}>
-                        {/* Fill with Content here */}
-                        <CameraScanner onCodeScanned={handleScannedValue} onNewScanButtonTapped={handleNewScan}/>
-                    </ThemedView>
-                    <ThemedView style={{minWidth: '100%',backgroundColor:'rgba(200,0,0,0.8', alignItems:'center'}}>
-                      <ThemedText type='defaultSemiBold' style={{backgroundColor:'rgba(0,0,0,0)'}}>Item with barcode: {scannedBarCode}</ThemedText>
-                      <ThemedText lightColor='red' darkColor='red' style={{backgroundColor:'rgba(0,0,0,0)'}}>Not found.</ThemedText>
-                    </ThemedView>
-                  </ThemedView>
-                  )
-                    :
-                    (
-                    <ThemedView style={{paddingVertical:'20%', backgroundColor:'rgba(0,0,0,0)' }}>
-                      {
-                        <FixedAssetCardDetailedCard setFixedAssetState={setFoundAsset} fixedAssetState={foundAsset}/>
-                      }
-                  </ThemedView>) 
-                      
-                      
-                    )
-                }
-                </ThemedView>
-            </Modal>
+                </Modal>
 
 
-    </ThemedView>
+        </ThemedView>
+    </ScrollView>
 
   )
 }

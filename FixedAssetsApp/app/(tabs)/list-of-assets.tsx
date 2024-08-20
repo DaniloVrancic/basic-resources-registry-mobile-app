@@ -5,11 +5,6 @@ import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
-import Thumb from '@/components/slider_components/Thumb';
-import Rail from '@/components/slider_components/Rail';
-import RailSelected from '@/components/slider_components/RailSelected';
-import Label from '@/components/slider_components/Label';
-import Notch from '@/components/slider_components/Notch';
 import { InventoryListSearchCriteria } from '../search_criteria_interfaces/inventory-list-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { CheckBox } from '@rneui/themed/dist/CheckBox';
@@ -18,14 +13,18 @@ import { addTransferList, getAllEmployees, getAllFixedAssets, getAllInventoryLis
 import InventoryItemList from '@/components/InventoryItemList';
 import { InventoryList } from '../data_interfaces/inventory-list';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 
 let db: SQLiteDatabase;
 let t : any;
+let orientation: any;
 export default function ListOfAssets() {
 
   db = useSQLiteContext();
   ({t} = useTranslation());
+  (orientation = useOrientation());
   const textColor = useThemeColor({}, 'text');
 
   const [loadedLists, setLoadedLists] = useState([]);
@@ -176,19 +175,40 @@ useEffect(() => {
 
   return (
       <SafeAreaView style={styles.safeArea}>
-          <ThemedView style={{flex: 18}}>
-            <SearchBarWithAdd
-              onAddClick={() => {handleAddClick()} }
-              filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
-              renderAddButton={true}
-              renderAdvancedFilterButton={true}
-              searchHandler={handleSearchListOfAssets}
-              />
+        {(orientation === ORIENTATION.PORTRAIT) ?
+          <ThemedView style={{flex: 26, flexDirection: 'column'}}>
+            <ThemedView style={{flex: 18}}>
+              <SearchBarWithAdd
+                onAddClick={() => {handleAddClick()} }
+                filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
+                renderAddButton={true}
+                renderAdvancedFilterButton={true}
+                searchHandler={handleSearchListOfAssets}
+                />
 
+            </ThemedView>
+            <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
+              <ThemedText style={{paddingHorizontal: 20}} type="title">{t('tabs.listOfAssets')}</ThemedText>
+            </ThemedView>
           </ThemedView>
-          <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText style={{paddingHorizontal: 20}} type="title">{t('tabs.listOfAssets')}</ThemedText>
+          :
+          <ThemedView style={{flex: 30, flexDirection: 'row', borderBottomWidth: 2, borderTopWidth: 1, paddingVertical: 2}}>
+            
+            <ThemedView style={[styles.titleContainer, {flex:8, borderBottomColor: 'grey'}]}>
+              <ThemedText style={{paddingHorizontal: 20}} type="title">{t('tabs.listOfAssets')}</ThemedText>
+            </ThemedView>
+            <ThemedView style={{flex: 18}}>
+              <SearchBarWithAdd
+                onAddClick={() => {handleAddClick()} }
+                filterChildren={listOfAssetsAdvancedFiltering(searchChangingEmployee, setSearchChangingEmployee, searchChangingLocation, setSearchChangingLocation, currentSearchCriteria, loadedLists, setLoadedLists)}
+                renderAddButton={true}
+                renderAdvancedFilterButton={true}
+                searchHandler={handleSearchListOfAssets}
+                />
+
+            </ThemedView>
           </ThemedView>
+          }
           <ThemedView lightColor='ghostwhite' darkColor='black' style={{ flex: 84}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
              {
@@ -474,7 +494,7 @@ const modalStyles2 = StyleSheet.create({
   
   
     return (
-  
+      <ScrollView>
       <ThemedView style={[styles.advancedFilterContainer]}>
         <ThemedText style={[styles.advancedFilterLabel]}>{t('labels.name')}:</ThemedText>
         <TextInput
@@ -540,5 +560,6 @@ const modalStyles2 = StyleSheet.create({
           <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
         </Pressable>
       </ThemedView>
+      </ScrollView>
     )
   }

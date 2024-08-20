@@ -87,7 +87,7 @@ export default function HomeScreen() {
   return (
     
     <SafeAreaView style={styles.safeArea}>
-
+      
       <ThemedView style={styles.searchBarContainer}>
         <SearchBarWithAdd
                 onAddClick={() => { openShowAdd(); }}

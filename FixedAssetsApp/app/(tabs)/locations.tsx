@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
       flexDirection: 'row',
-      gap: 12,
+      gap: 8,
       padding: 6,
       textAlign: 'center',
     },

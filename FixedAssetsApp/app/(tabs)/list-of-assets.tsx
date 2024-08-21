@@ -251,26 +251,54 @@ useEffect(() => {
         </Modal>
 
         <Modal visible={showAddPrompt} animationType="fade" transparent={true}  onRequestClose={() => {setShowAddPrompt(false);}}>
+          {
+          (orientation === ORIENTATION.PORTRAIT) ?
           <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
-          <ThemedView style={modalStyles2.modalContainer}>
-          <ThemedText style={modalStyles2.modalTitle}>{t('listOfAssets.enterListName')}</ThemedText>
-          <TextInput
-            style={modalStyles2.textInput}
-            value={newListName}
-            onChangeText={setNewListName}
-            placeholder={t('listOfAssets.enterName')}
-            placeholderTextColor="grey"
-          />
-          <ThemedView style={modalStyles2.buttonContainer}>
-          <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
-              <ThemedText style={modalStyles2.buttonText}>{t('labels.cancel')}</ThemedText>
-            </Pressable>
-            <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
-              <ThemedText style={modalStyles2.buttonText}>{t('labels.confirm')}</ThemedText>
-            </Pressable>
+            <ThemedView style={modalStyles2.modalContainer}>
+             <ThemedText style={modalStyles2.modalTitle}>{t('listOfAssets.enterListName')}</ThemedText>
+              <TextInput
+                style={modalStyles2.textInput}
+                value={newListName}
+                onChangeText={setNewListName}
+                placeholder={t('listOfAssets.enterName')}
+                placeholderTextColor="grey"
+              />
+              <ThemedView style={modalStyles2.buttonContainer}>
+              <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+                  <ThemedText style={modalStyles2.buttonText}>{t('labels.cancel')}</ThemedText>
+                </Pressable>
+                <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
+                  <ThemedText style={modalStyles2.buttonText}>{t('labels.confirm')}</ThemedText>
+                </Pressable>
+            </ThemedView>
           </ThemedView>
         </ThemedView>
+        :
+        <ThemedView style={{backgroundColor:'rgba(255,255,255,0.8)', minHeight: '90%', height: '100%'}}>
+            <ThemedView style={{
+              padding: 15, maxWidth: "80%", minWidth: "60%", minHeight: '70%', maxHeight: '90%',
+              borderColor: 'black', borderRadius: 15, borderWidth: 2,
+              alignItems: 'center', alignSelf: 'center', justifyContent: 'center'
+            }}>
+             <ThemedText style={modalStyles2.modalTitle}>{t('listOfAssets.enterListName')}</ThemedText>
+              <TextInput
+                style={modalStyles2.textInput}
+                value={newListName}
+                onChangeText={setNewListName}
+                placeholder={t('listOfAssets.enterName')}
+                placeholderTextColor="grey"
+              />
+              <ThemedView style={modalStyles2.buttonContainer}>
+              <Pressable style={modalStyles2.button} onPress={handleCancelAdd}>
+                  <ThemedText style={modalStyles2.buttonText}>{t('labels.cancel')}</ThemedText>
+                </Pressable>
+                <Pressable style={modalStyles2.button} onPress={handleConfirmAdd}>
+                  <ThemedText style={modalStyles2.buttonText}>{t('labels.confirm')}</ThemedText>
+                </Pressable>
+            </ThemedView>
+          </ThemedView>
         </ThemedView>
+        }
       </Modal>
 
       </SafeAreaView>
@@ -506,6 +534,7 @@ const modalStyles2 = StyleSheet.create({
         />
         <ThemedText style={[styles.advancedFilterLabel]}>{t('filter.filters')}:</ThemedText>
         
+        <ThemedView style={(orientation === ORIENTATION.PORTRAIT) ? {flexDirection: 'column'} : {flexDirection: 'row', width: '60%', alignItems: 'center'}}>
         <ThemedView style={styles.checkboxContainer}>
         <CheckBox
             checked={searchChangingEmployee as boolean}
@@ -555,9 +584,10 @@ const modalStyles2 = StyleSheet.create({
             uncheckedColor="#F00"
           />
       </ThemedView>
+      </ThemedView>
         <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
           <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-          <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+          <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
         </Pressable>
       </ThemedView>
       </ScrollView>

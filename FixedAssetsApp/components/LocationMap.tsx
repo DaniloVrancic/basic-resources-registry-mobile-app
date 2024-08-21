@@ -14,9 +14,12 @@ import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Button, Icon } from '@rneui/themed';
 import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 
 let db: SQLiteDatabase;
+let orientation: string;
 const LocationMap: React.FC<any> = ( {
     locationState, 
     setLocationState,
@@ -25,6 +28,7 @@ const LocationMap: React.FC<any> = ( {
 } ) => {
 
             db = useSQLiteContext();
+            orientation = useOrientation();
             const {t} = useTranslation();
             const textColor = useThemeColor({}, 'text');
             const oppositeTextColor = useOppositeThemeColor({}, 'text');
@@ -119,18 +123,20 @@ const LocationMap: React.FC<any> = ( {
 
             return (
                 <GestureHandlerRootView>
-                <ThemedView style={styles.container}>
-                    <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
+                <ThemedView style={(orientation === ORIENTATION.PORTRAIT) ? styles.container : styles.containerLandscape}>
+                    
+                    { (orientation=== ORIENTATION.PORTRAIT) ?
+                        <ThemedView style={styles.header} lightColor='#17153B' darkColor='#17153B'>
                         
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('locations.location')}:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('locations.location')}:</ThemedText>
                                 <TextInput  value={inputName} 
                                                         onChangeText={setInputName}
                                                         style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
                                                         readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>{t('labels.size')}:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('labels.size')}:</ThemedText>
                                 <ThemedView style={[styles.transparentBackground, {flexDirection:'row'}]}>
                                 <TextInput  value={inputSize.toString()} 
                                                         onChangeText={handleChangeSize}
@@ -147,6 +153,49 @@ const LocationMap: React.FC<any> = ( {
                             <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
                         </ThemedView>
                     </ThemedView>
+                    :
+                    <ThemedView style={styles.headerLandscape} lightColor='#17153B' darkColor='#17153B'>
+                        
+                        <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('locations.location')}:</ThemedText>
+                                <TextInput  value={inputName} 
+                                                        onChangeText={setInputName}
+                                                        style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
+                                                        readOnly={!editMode}/>
+                        </ThemedView>
+                        <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('labels.size')}:</ThemedText>
+                                <ThemedView style={[styles.transparentBackground, {flexDirection:'row'}]}>
+                                <TextInput  value={inputSize.toString()} 
+                                                        onChangeText={handleChangeSize}
+                                                        style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
+                                                        readOnly={!editMode}/><ThemedText style={[styles.transparentBackground, {color:'ghostwhite', fontSize:18, alignSelf:'center'}]}>m2</ThemedText>
+                                </ThemedView>
+                        </ThemedView>
+                        
+
+                        {
+                            (orientation === ORIENTATION.PORTRAIT) ?
+                            <ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, top: 20}]}>
+                                    <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                                </ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, bottom: 20}]}>
+                                    <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                                </ThemedView>
+                             </ThemedView>
+                             :
+                             <ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)', bottom: 10, left: '25%'}]}>
+                                    <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                                </ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)', bottom: 10, right: '25%'}]}>
+                                    <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                                </ThemedView>
+                             </ThemedView>
+                        }
+                    </ThemedView>
+                    }
                     
               
                     <MapView
@@ -219,6 +268,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.0)',
         marginBottom: 20,
     },
+    containerLandscape: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.0)',
+        marginBottom: 50
+    },
     header: {
         width: '100%',
         padding: 20,
@@ -230,6 +285,15 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         flex: 2,
+    },
+    headerLandscape: {
+        width: '100%',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        alignItems: 'center',
+        borderColor: 'grey',
+        borderWidth: 2,
+
     },
     title: {
         fontSize: 20,

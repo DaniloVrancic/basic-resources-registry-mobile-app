@@ -57,7 +57,7 @@ const InventoryItemSelectors = ({
         if (myIsFocusFixedAsset) {
           return (
             <ThemedText style={[dropdownStyles.label, myIsFocusFixedAsset && { color: 'green' }]}>
-              {t('general.selectFixedAsset.')}:
+              {t('general.selectFixedAsset')}:
             </ThemedText>
           );
         }

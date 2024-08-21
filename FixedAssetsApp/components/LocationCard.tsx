@@ -10,6 +10,8 @@ import { Location } from "@/app/data_interfaces/location";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import LocationMap from "./LocationMap";
 import { useTranslation } from "react-i18next";
+import useOrientation from "@/hooks/useOrientation";
+import { ORIENTATION } from "@/constants/orientation";
 
 
 const LocationCard: React.FC<Location | any> = (
@@ -22,6 +24,7 @@ const LocationCard: React.FC<Location | any> = (
 ) => {
 
     const {t} = useTranslation();
+    const orientation = useOrientation();
     const [thisLocation, setThisLocation] = useState<Location>({id, name, size, latitude, longitude})
     const textColor = useThemeColor({}, 'text');
     const [showMapModal, setShowMapModal] = useState(false);
@@ -67,9 +70,9 @@ const LocationCard: React.FC<Location | any> = (
                 <Modal visible={showMapModal} animationType="slide" onRequestClose={closeModal}>
                     <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
-                        <ThemedView style={modalStyles.modalHeader}>
+                        <ThemedView style={(orientation == ORIENTATION.PORTRAIT) ? modalStyles.modalHeader : {height: '20%', flexDirection: 'row', marginBottom: 25}}>
                                 <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
-                                    <Ionicons name="close" size={24} color={textColor} />
+                                    <Ionicons name="close" size={(orientation == ORIENTATION.PORTRAIT) ? 24 : 18} color={textColor} />
                                 </Pressable>
                                 <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
                         </ThemedView>
@@ -174,7 +177,7 @@ const modalStyles = StyleSheet.create({
         flex: 1
     },
     modalContent: {
-        flex: 11
+        flex: 14
     },
     modalCloseButton: {
         justifyContent: 'flex-end',

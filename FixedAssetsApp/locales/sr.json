@@ -1,11 +1,11 @@
 {
-        "tabs":{
-            "fixedAssets": "Основна средства",
-            "employees": "Запослени",
-            "locations": "Локације",
-            "listOfAssets": "Пописне листе",
-            "settings": "Подешавања"
-        },
+    "tabs":{
+     "fixedAssets": "Основна средства",
+     "employees": "Запослени",
+     "locations": "Локације",
+     "listOfAssets": "Пописне листе",
+     "settings": "Подешавања"
+    },
     "fixedAssets":{
         "fixedAsset": "Основно средство",
         "productId": "Идентификатор продукта",
@@ -50,7 +50,7 @@
         "enterName": "Унеси име",
         "personInCharge": "Задужена особа",
         "locationOfAsset": "Локација средства",
-        "loadingInventoryItems" : "Loading Inventory Items"
+        "loadingInventoryItems" : "Учитавање ставки пописне листе"
     },
     "settings":{
         "chooseLanguage": "Изабери језик:"
@@ -74,9 +74,9 @@
         "itemUpdateError": "Десила се грешка приликом ажурирања објекта. Молим те покушај поново.",
         "transferListAddedMessage": "Ставка о премјештању је успјешно додата у пописну листу.",
         "transferListDeletedMessage" : "Пописна листа је успјешно обрисана!",
-        "transferListItemDeletedMessage" : "Transfer List item has been successfully deleted!",
-        "transferListItemUpdated" : "Transfer Item Updated",
-        "transferListItemUpdatedMessage" : "The data transfer information has been successfully updated.",
+        "transferListItemDeletedMessage" : "Ставка пописне листе је успјешно обрисана!",
+        "transferListItemUpdated" : "Ставка пописне листе ажурирана",
+        "transferListItemUpdatedMessage" : "Ставка у пописној листи је успјешно ажурирана.",
         "success": "Успјех",
         "error": "Грешка",
         "accessDenied": "Одбијен приступ",
@@ -88,68 +88,68 @@
         "deleteEmployeeQuestion": "Обриши запосленог?",
         "deleteLocationQuestion": "Обриши локацију?",
         "deleteTransferListItemQuestion": "Обриши ставку из пописне листе?",
-        "deleteTransferListQuestion": "Delete this Transfer List?",
-        "addTransferItem": "Add Transfer Item",
+        "deleteTransferListQuestion": "Обриши ову пописну листу?",
+        "addTransferItem": "Додај ставку пописне листе",
         "loadingData": "Учитавање"
     },
     "errorMessages":{
-        "loadingFixedAssets": "Loading Fixed Assets",
-        "enterValidName":"Please enter a valid name",
-        "enterValidEmail":"Please enter a valid email address",
-        "incomeValidNumber":"Income must be a valid number",
-        "listNameCanNotBeEmpty": "List name cannot be empty.",
-        "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",
-        "errorAddingNewList": "Error adding new list",
-        "mandatoryOptionNotSet": "One of the necessary options hasn't been set. Please check and try again.",
-        "canNotAddTransferItemToList": "An error occured, couldn't add Transfer Item to list."
+        "loadingFixedAssets": "Учитавање основних средстава",
+        "enterValidName":"Молим те унеси исправно име.",
+        "enterValidEmail":"Молим те унеси исправну адресу е-поште",
+        "incomeValidNumber":"Приход мора бити исправан број",
+        "listNameCanNotBeEmpty": "Име листе не смије бити празно.",
+        "fillFieldsAndPlaceMapMarker": "Молим те попуни сва поља и постви маркер на мапи.",
+        "errorAddingNewList": "Грешка при додавању нове листе",
+        "mandatoryOptionNotSet": "Једна од неопходних ставки није постављена. Провјери и покушај поново.",
+        "canNotAddTransferItemToList": "Догодила се грешка, Није се могла додати ставка у пописну листу."
     },
     "filter":{
-        "filters": "Filters",
-        "searchByAssetName": "Search by asset name",
-        "searchByEmployeeName": "Search by name of employee",
-        "searchByLocationName": "Search by location name",
-        "searchByTransferListName": "Search by name of Transfer List",
-        "searchFixedAsset" : "Search Fixed Asset",
-        "searchEmployee" : "Search Employee",
-        "searchLocation" : "Search Location",
-        "valueAssetRange": "Value of Asset (Range)",
-        "scanCode": "Scan Code",
-        "applyFilter": "Apply Filter",
-        "incomeRange": "Income Range",
-        "showChangingEmployees": "Show Changing Employees",
-        "showChangingLocations": "Show Changing Locations"
+        "filters": "Филтери",
+        "searchByAssetName": "Претражи по имену основног средства",
+        "searchByEmployeeName": "Претражи по имену запосленог",
+        "searchByLocationName": "Претражи по имену локације",
+        "searchByTransferListName": "Претражи по имену пописне листе",
+        "searchFixedAsset" : "Прикажи основно средство",
+        "searchEmployee" : "Претражи запосленог",
+        "searchLocation" : "Претражи локацију",
+        "valueAssetRange": "Вриједност средства (опсег)",
+        "scanCode": "Скенирај код",
+        "applyFilter": "Примијени филтер",
+        "incomeRange": "Опсег прихода",
+        "showChangingEmployees": "Прикажи запослене који се мијењају",
+        "showChangingLocations": "Прикажи локације које се мијењају"
     },
     "labels":{
-        "name": "Name",
-        "location": "Location",
-        "value": "Value",
-        "price": "Price",
-        "email": "E-Mail",
-        "income": "Income",
-        "creationDate": "Creation Date",
-        "employee": "Employee",
-        "description": "Description",
-        "barcode": "Barcode",
-        "scanBarcode": "Scan Barcode",
-        "scanCode": "Scan Code",
-        "photo": "Photo",
-        "photoOptional": "Photo (Optional)",
-        "search": "Search",
-        "cancel": "Cancel",
-        "size": "Size",
-        "ok": "OK",
-        "askMeLater": "Ask Me Later",
-        "save": "Save",
-        "confirm": "Confirm",
-        "saveChanges": "Save Changes"
+        "name": "Име",
+        "location": "Локација",
+        "value": "Вриједност",
+        "price": "Цијена",
+        "email": "E-Пошта",
+        "income": "Приход",
+        "creationDate": "Датум креирања",
+        "employee": "Запослени",
+        "description": "Опис",
+        "barcode": "Баркод",
+        "scanBarcode": "Скенирај баркод",
+        "scanCode": "Скенирај код",
+        "photo": "Фотографија",
+        "photoOptional": "Фотографија (по избору)",
+        "search": "Претражи",
+        "cancel": "Поништи",
+        "size": "Величина",
+        "ok": "У реду",
+        "askMeLater": "Питај ме послије",
+        "save": "Сачувај",
+        "confirm": "Потврди",
+        "saveChanges": "Сачувај измјене"
     },
     "bottomSheet": {
-        "takePhotoWithCamera": "Take Photo with Camera",
-        "openPhotoFromGallery": "Open Photo from Gallery",
-        "close": "Close"
+        "takePhotoWithCamera": "Усликај помоћу Камере",
+        "openPhotoFromGallery": "Отвори слику из Галерије",
+        "close": "Затвори"
     },
     "general": {
-        "year": "year",
-        "selectFixedAsset": "Select Fixed Asset"
+        "year": "година",
+        "selectFixedAsset": "Изабери основно средство"
     }
 }

@@ -68,7 +68,7 @@ export default function HomeScreen() {
   const handleFixedAssetAdded = async () => {
     try {
         setLoadedFixedAssets(await getAllFixedAssets(db));
-        Alert.alert(t('fixedAssetAdded'), t("fixedAssetAddedMessage"));
+        Alert.alert(t('alertMessages.fixedAssetAdded'), t("alertMessages.fixedAssetAddedMessage"));
     } catch (error) {
         console.error('Error loading Fixed Assets: ', error);
     }
@@ -78,7 +78,7 @@ export default function HomeScreen() {
     try{
         var fixedAssetsWithoutDeletedAsset = loadedFixedAssets.filter((val: FixedAsset) => val.id != id);
         setLoadedFixedAssets(fixedAssetsWithoutDeletedAsset);
-        Alert.alert(t('success'), t('fixedAssetDeleteMessage'));
+        Alert.alert(t('alertMessages.success'), t('alertMessages.fixedAssetDeleteMessage'));
     } catch (error) {
         console.error('Error Removing Fixed Asset: ', error);
     }

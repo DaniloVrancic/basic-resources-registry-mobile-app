@@ -273,6 +273,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedText style={[styles.label, , {color: textColor}]}>{t("labels.name")}</ThemedText>
             <TextInput
                 style={[styles.textInput, {color: textColor}]}
+                placeholderTextColor={textColor}
                 value={name}
                 onChangeText={setName}
                 placeholder={t("fixedAssets.enterAssetName")}
@@ -281,6 +282,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedText style={styles.label}>Description</ThemedText>
             <TextInput
                 style={[styles.textInput, styles.descriptionInput, {color: textColor}]}
+                placeholderTextColor={textColor}
                 value={description}
                 onChangeText={setDescription}
                 placeholder={t("fixedAssets.enterAssetDescription")}
@@ -343,6 +345,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedText style={styles.label}>{t("labels.value")}</ThemedText>
             <TextInput
                 style={[styles.textInput, {color: textColor}]}
+                placeholderTextColor={textColor}
                 value={price}
                 onChangeText={handleChangePrice}
                 placeholder={t("fixedAssets.enterAssetValue")}
@@ -353,6 +356,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedView style={styles.barcodeInputContainer}>
                 <TextInput
                     style={[styles.textInput, styles.barcodeInput, {color: textColor}]}
+                    placeholderTextColor={textColor}
                     value={barcode}
                     onChangeText={setBarcode}
                     placeholder={t("fixedAssets.scanOrEnterBarcode")}

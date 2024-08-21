@@ -229,12 +229,14 @@ const LocationMap: React.FC<any> = ( {
 
                                 <ThemedText style={styles.assetListTitle}>{t('locations.assetsAt')} {locationState.name}</ThemedText>
                             <ThemedView style={modalStyles.modalContent}>
-                                <ScrollView>
+                                <ScrollView style={{minHeight:'100%'}}>
                                     {loadedAssets.map((asset: FixedAsset) => 
-                                        <ThemedView key={asset.id} style={{paddingVertical: 20}}>
+                                        <ThemedView key={asset.id} style={{marginVertical: 15}}>
                                             <FixedAssetCard key={asset.id} {...asset}></FixedAssetCard>
                                         </ThemedView>
                                     )}
+                                    
+                                    <ThemedView style={{padding: 100}}></ThemedView>
                                 </ScrollView>
                                 
                             </ThemedView>

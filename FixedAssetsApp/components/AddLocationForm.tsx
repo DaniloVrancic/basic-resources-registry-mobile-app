@@ -96,7 +96,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
             setLocationSize('');
             setMarkerCoords(null);
           }}
-        >
+          >
           <ThemedText style={styles.buttonText}>{t('labels.cancel')}</ThemedText>
         </Pressable>
       </ThemedView>

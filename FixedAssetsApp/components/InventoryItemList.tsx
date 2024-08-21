@@ -32,6 +32,9 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
     possibleEmployees,
     possibleLocations,
     possibleFixedAssets,
+    setPossibleEmployees = () => {},
+    setPossibleLocations = () => {},
+    setPossibleFixedAssets = () => {},
     onDeleteList = () => {},
     onAddedToList = (listId: number) => {}
     }) => {
@@ -156,6 +159,12 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
             }
         }
 
+        useEffect(() => {
+            if(addModal == true){
+                
+            }
+        }, [addModal])
+
 
     return (
         <ThemedView lightColor='#17153B' darkColor='ghostwhite' style={styles.listContainer}>
@@ -222,9 +231,6 @@ const InventoryItemList: React.FC<InventoryItemListWithShowFilters | any> = ({
 
             <Modal animationType="slide" visible={addModal} onRequestClose={() => {setAddModal(false);}}>
                 <InventoryItemSelectors
-                possibleEmployees={possibleEmployees}
-                possibleFixedAssets={possibleFixedAssets}
-                possibleLocations={possibleLocations}
                 titleToDisplay= {t('alertMessages.addTransferItem')}
                 transferListId={id}
                 onPressClose={() => {setAddModal(false)}}

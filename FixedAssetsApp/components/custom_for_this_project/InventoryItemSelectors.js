@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
@@ -7,8 +7,8 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Button, Icon } from "@rneui/themed";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import CameraScanner from "../camera/CameraScanner";
-import { getAllFixedAssetsWithBarcode } from "@/db/db";
-import { useSQLiteContext } from "expo-sqlite";
+import { getAllEmployees, getAllFixedAssets, getAllFixedAssetsWithBarcode, getAllLocations } from "@/db/db";
+import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 import { useTranslation } from "react-i18next";
 
 
@@ -20,9 +20,6 @@ const InventoryItemSelectors = ({
     new_employee_id = -1,
     newLocationId = -1,
     transferListId = -1,
-    possibleFixedAssets,
-    possibleEmployees,
-    possibleLocations,
     titleToDisplay = "Default Text",
     onPressClose = () => {},
     onPressSave = item => {},
@@ -49,9 +46,75 @@ const InventoryItemSelectors = ({
     const [isScanning, setIsScanning] = useState(false);
     const [cameraScanned, setCameraScanned] = useState(false);
 
+
+
+    const [possibleEmployees, setPossibleEmployees] = useState([]);
+    const [possibleLocations, setPossibleLocations] = useState([]);
+    const [possibleFixedAssets, setPossibleFixedAssets] = useState([]);
+
     function isObjectEmpty(obj) { 
       return Object.keys(obj).length === 0; 
     } 
+
+    useEffect( () => {
+      settingFunction();
+    }, [])
+
+    const settingFunction = async () => {
+      await loadFixedAssetsFromDatabase(db)
+      await loadEmployeesFromDatabase(db)
+      await loadLocationsFromDatabase(db)
+    }
+
+    const loadFixedAssetsFromDatabase = async (db) => {
+      try {
+          var fetchedEmployees = (await getAllFixedAssets(db));
+          var valuesToReturn = [];
+  
+          fetchedEmployees.forEach((element) => {
+              var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+              valuesToReturn.push(mappedElement);
+          });
+          setPossibleFixedAssets(valuesToReturn);
+      } catch (error) {
+        console.error('Error loading employees:', error);
+      }
+    };
+  
+  const loadEmployeesFromDatabase = async (db) => {
+      try {
+          var fetchedEmployees = (await getAllEmployees(db));
+          var valuesToReturn = [];
+  
+          fetchedEmployees.forEach((element) => {
+              var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+              valuesToReturn.push(mappedElement);
+          });
+          setPossibleEmployees(valuesToReturn);
+      } catch (error) {
+        console.error('Error loading employees:', error);
+      }
+    };
+  
+  
+    /*
+     * The code below will fetch all the Location data from the database and correctly filter only the data that we will use.
+     * This data is then bound to the State which will be used to display all the possible locations to select in a drop down menu.
+     */
+  const loadLocationsFromDatabase = async (db) => {
+      try {
+          var fetchedLocations = (await getAllLocations(db));
+          var valuesToReturn = [];
+  
+          fetchedLocations.forEach((element) => {
+              var mappedElement = { label: element.name + " (ID: " + element.id + ")", value: element.id};
+              valuesToReturn.push(mappedElement);
+          });
+          setPossibleLocations(valuesToReturn);
+      } catch (error) {
+        console.error('Error loading employees:', error);
+      }
+    };
 
     const renderLabelFixedAsset = (myIsFocusFixedAsset) => {
         if (myIsFocusFixedAsset) {

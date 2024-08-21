@@ -37,10 +37,6 @@ const InventoryItemCard = ( {
     const {t} = useTranslation();
 
     const [editModal, setEditModal] = useState(false);
-
-
-
-    
     
 
     const handleDeleteItem = async () => {

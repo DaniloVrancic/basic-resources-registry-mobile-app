@@ -12,14 +12,18 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import { AntDesign } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 
 
 let db: SQLiteDatabase;
+let orientation: string;
 const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
     const textColor = useThemeColor({}, 'text');
     const {t} = useTranslation();
+    (orientation = useOrientation());
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -54,7 +58,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
         if (value || isFocusEmployee) {
           return (
             <ThemedText style={[dropdownStyles.label, isFocusEmployee && { color: 'blue' }]}>
-              Select Employee:
+              {t('fixedAssets.selectEmployee')}:
             </ThemedText>
           );
         }
@@ -65,7 +69,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
         if (value || isFocusLocation) {
           return (
             <ThemedText style={[dropdownStyles.label, isFocusLocation && { color: 'blue' }]}>
-              Select Location:
+              {t('fixedAssets.selectLocation')}:
             </ThemedText>
           );
         }
@@ -372,10 +376,9 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <Button title={t("fixedAssets.addAsset")} onPress={handleAddAsset} />
 
             {isScanning && (
-                <Modal animationType="fade" transparent={true} onRequestClose={closeModalScanner}> 
-                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
-
-                    <ThemedView style={modalStyles.modalHeader}>
+                <Modal animationType="fade" transparent={false} onRequestClose={closeModalScanner}> 
+                <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={[modalStyles.modalContainer]}>
+                    <ThemedView style={[modalStyles.modalHeader]}>
                             <Pressable style={modalStyles.modalCloseButton} onPress={closeModalScanner}>
                                 <Icon name="undo" type="material" size={24} color={textColor} />
                             </Pressable>
@@ -541,17 +544,17 @@ const dropdownStyles = StyleSheet.create({
 const modalStyles = StyleSheet.create({
     modalContainer: {
         flex: 1,
-        justifyContent: 'flex-start',
         padding: 8,
     },
     modalHeader: {
         display: 'flex',
+        paddingTop: 30,
         backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        paddingBottom: 40,
+        paddingBottom: 60,
         marginRight: 20
     },
     modalCloseButton: {

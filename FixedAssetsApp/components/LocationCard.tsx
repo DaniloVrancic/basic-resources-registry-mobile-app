@@ -77,7 +77,7 @@ const LocationCard: React.FC<Location | any> = (
                                 <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
                         </ThemedView>
 
-                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContent}>
+                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,0)" style={modalStyles.modalContent}>
                             <LocationMap locationState={thisLocation} setLocationState={setThisLocation} onDeleteLocation={() => {onDeletedLocation && onDeletedLocation();}}/>
                         </ThemedView>
                     </ThemedView>
@@ -166,7 +166,6 @@ const modalStyles = StyleSheet.create({
     },
     modalHeader: {
         display: 'flex',
-        backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
@@ -174,7 +173,7 @@ const modalStyles = StyleSheet.create({
         paddingBottom: "11%",
         marginRight: 20,
         marginBottom: 30,
-        flex: 1
+        flex: 1,
     },
     modalContent: {
         flex: 14

@@ -9,6 +9,7 @@ import { Location } from '@/app/data_interfaces/location';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addLocation } from '@/db/db';
 import { useTranslation } from 'react-i18next';
+import { color } from '@rneui/themed/dist/config';
 
 let db: SQLiteDatabase;
 const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
@@ -60,12 +61,14 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
       <TextInput
         style={[styles.input, {color: textColor}]}
         placeholder={t('locations.enterLocationName')}
+        placeholderTextColor={textColor}
         value={locationName}
         onChangeText={setLocationName}
       />
       <TextInput
         style={styles.input}
         placeholder={t('locations.enterLocationSize')}
+        placeholderTextColor={textColor}
         value={locationSize}
         keyboardType="numeric"
         onChangeText={setLocationSize}
@@ -81,7 +84,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
             )}
           </MapView>
       </ThemedView>
-      <ThemedView style={styles.buttonContainer}>
+      <ThemedView style={[styles.buttonContainer]}>
         <Pressable style={styles.saveButton} onPress={handleSaveLocation}>
           <ThemedText style={styles.buttonText}>{t('labels.save')}</ThemedText>
         </Pressable>
@@ -108,6 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     minHeight: '100%',
+    height: '100%'
   },
   input: {
     height: 40,

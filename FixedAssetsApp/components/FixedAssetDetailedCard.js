@@ -725,12 +725,13 @@ const modalStyles = StyleSheet.create({
     },
     modalHeader: {
         display: 'flex',
+        paddingTop: 30,
         backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        paddingBottom: 40,
+        paddingBottom: 60,
         marginRight: 20
     },
     modalCloseButton: {

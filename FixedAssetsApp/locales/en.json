@@ -63,6 +63,8 @@
     "alertMessages":{
         "fixedAssetAdded": "New Fixed Asset Added",
         "fixedAssetAddedMessage": "New Fixed Asset has been successfully added!",
+        "fixedAssetUpdated": "New Fixed Asset Updated",
+        "fixedAssetUpdatedMessage": "The fixed asset data has been successfully updated.",
         "employeeUpdated": "Employee Updated",
         "employeeUpdatedMessage": "The Employee information has been successfully updated.",
         "employeeDeleted": "Employee Deleted",
@@ -96,6 +98,8 @@
         "loadingFixedAssets": "Loading Fixed Assets",
         "enterValidName":"Please enter a valid name",
         "enterValidEmail":"Please enter a valid email address",
+        "enterValidBarcode":"Please enter a valid barcode",
+        "enterValidPrice":"Please enter a valid price",
         "incomeValidNumber":"Income must be a valid number",
         "listNameCanNotBeEmpty": "List name cannot be empty.",
         "fillFieldsAndPlaceMapMarker": "Please fill in all fields and place the marker on the map.",

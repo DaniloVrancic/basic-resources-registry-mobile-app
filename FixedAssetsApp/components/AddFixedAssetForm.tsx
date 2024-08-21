@@ -353,7 +353,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             />
 
             <ThemedText style={styles.label}>{t("labels.barcode")}</ThemedText>
-            <ThemedView style={styles.barcodeInputContainer}>
+            <ThemedView style={[styles.barcodeInputContainer, {flexDirection: 'column'}]}>
                 <TextInput
                     style={[styles.textInput, styles.barcodeInput, {color: textColor}]}
                     placeholderTextColor={textColor}
@@ -361,7 +361,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                     onChangeText={setBarcode}
                     placeholder={t("fixedAssets.scanOrEnterBarcode")}
                 />
-                <ThemedView>
+                <ThemedView style={{marginTop: 10}}>
                     <Button title={t("labels.scanBarcode")} onPress={() => setIsScanning(true)} color='#F4A300' />
                 </ThemedView>
             </ThemedView>

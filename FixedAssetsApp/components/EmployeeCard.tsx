@@ -184,6 +184,8 @@ const styles = StyleSheet.create({ //Stylesheet for this card
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center'
+
     },
     informationContainer: {
         padding: 10,

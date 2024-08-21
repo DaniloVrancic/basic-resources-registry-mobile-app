@@ -199,7 +199,7 @@ const EmployeeCardDetailed = (
                   onPress: () => {},
                   style: 'cancel'
                 },
-                {text: t('labels.OK'), onPress: () => handleDeleteItem(id)},
+                {text: t('labels.ok'), onPress: () => handleDeleteItem(id)},
               ]);
         }
 

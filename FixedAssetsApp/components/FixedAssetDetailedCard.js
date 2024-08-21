@@ -126,11 +126,11 @@ const FixedAssetCardDetailedCard = (
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission to use for App",
-                  message:"My Asset Manager needs access to your camera for this feature to work. ",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message:t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
               );
               let result;
@@ -179,19 +179,19 @@ const FixedAssetCardDetailedCard = (
 
         if(editMode){
             if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
-                setErrorMessage('Please enter a valid name.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const barcodeRegex = /^[A-Z0-9\-_]+$/;
             if (!barcodeRegex.test(inputBarcode)) {
-                setErrorMessage('Please enter a valid barcode.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
             if (!dateRegex.test(inputCreationDate)) {
-                setErrorMessage('Please enter a valid creation date.');
+                setErrorMessage(t('errorMessages.enterValidBarcode')+'.');
                 return;
             }
 
@@ -208,7 +208,7 @@ const FixedAssetCardDetailedCard = (
             }
 
             if (isNaN(processedPrice)) {
-                setErrorMessage('Please enter a valid price.');
+                setErrorMessage(t('errorMessages.enterValidPrice')+'.');
                 return;
             }
 
@@ -225,7 +225,7 @@ const FixedAssetCardDetailedCard = (
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
                 setEditMode(false);
-                Alert.alert("Fixed Asset Updated", "The fixed asset data has been successfully updated.");
+                Alert.alert(t('alertMessages.fixedAssetUpdated'), t('alertMessages.fixedAssetUpdatedMessage'));
             }
             catch(myError){
                 console.error(myError);
@@ -600,7 +600,7 @@ const FixedAssetCardDetailedCard = (
                 {
                     (!cameraScanned) ? 
                     (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>{t('fixedAssets.noCodeFound')}</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>{t('fixedAssets.noCodeFound')}</ThemedText>
                     </ThemedView>)
                     :
                     (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>

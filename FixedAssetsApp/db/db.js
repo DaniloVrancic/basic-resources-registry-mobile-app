@@ -175,7 +175,7 @@ import * as SQLite from 'expo-sqlite';
       
 
     try{
-      await insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
+      // insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
 
     }
     catch(error){

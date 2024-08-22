@@ -185,7 +185,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
               let result: any;
                 
                 if(granted === PermissionsAndroid.RESULTS.GRANTED){
-                    console.log(granted);
+                   // console.log(granted);
                     
                     result = await ImagePicker.launchCameraAsync(options);
                       

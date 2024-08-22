@@ -453,8 +453,8 @@ const modalStyles2 = StyleSheet.create({
   
   const advancedFilter = async () => {
     
-    console.log('Show changing employees: ' + searchChangingEmployee);
-    console.log("Show chaning locations: " + searchChangingLocation);
+   // console.log('Show changing employees: ' + searchChangingEmployee);
+  //  console.log("Show chaning locations: " + searchChangingLocation);
 
     try {
       setLoadedLists(await getAllInventoryListsForContainsName(db, keywordToSearch));

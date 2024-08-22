@@ -8,6 +8,7 @@ const useOrientation = () => {
     useEffect(() => {
      const onOrientationChange = (currentOrientation) => {
         const orientationValue = currentOrientation.orientationInfo.orientation;
+        console.log(orientationValue)
         setScreenOrientation(orientationValue);
      }
 

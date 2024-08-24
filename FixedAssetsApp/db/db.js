@@ -128,7 +128,7 @@ import * as SQLite from 'expo-sqlite';
       });
       */
 
-      /*
+      
       await db.withTransactionSync( () => {
         try{
           
@@ -143,7 +143,7 @@ import * as SQLite from 'expo-sqlite';
           console.error(error);
         }
       });
-      */
+      
       
 
       //await db.execAsync(dropViewQuery + dropTablesQuery);

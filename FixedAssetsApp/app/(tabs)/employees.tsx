@@ -54,7 +54,10 @@ export default function Employees() {
 
   const handleEmployeesSearch = async (name: string) => {
     try {
-      setLoadedEmployees(await getEmployeesForContainsName(db, name));
+      
+      var foundEmployees = await getEmployeesForContainsName(db, name)
+      console.log(foundEmployees)
+      setLoadedEmployees(foundEmployees);
     } catch (error) {
       console.error('Error loading Fixed Assets: ', error);
     }

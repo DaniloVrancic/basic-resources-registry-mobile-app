@@ -129,8 +129,9 @@ export default function Locations() {
           </ThemedView>
 
         <Modal visible={showAddLocation} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
-          <ScrollView>
-            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+          <ScrollView style={{flexDirection: 'column'}}>
+          <ThemedView style={{paddingBottom: '100%', overflow: 'hidden'}}>
+            <ThemedView style={[modalStyles.modalContainer]}>
               <ThemedView style={modalStyles.modalHeader}>
                 <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
                   <Ionicons name="close" size={24} color={textColor} />
@@ -140,7 +141,10 @@ export default function Locations() {
                 {
                   //Rest of the container here
                 }
-                <AddLocationForm onAddNewLocation={() => handleLocationAdded()}/>
+                  <AddLocationForm onAddNewLocation={() => handleLocationAdded()}/>
+
+            </ThemedView>
+            
             </ThemedView>
             </ScrollView>
         </Modal>
@@ -222,14 +226,12 @@ const styles = StyleSheet.create({
 
   const modalStyles = StyleSheet.create({
     modalContainer: {
-        flex: 1,
         justifyContent: 'flex-start',
         padding: 8,
-        overflow:'scroll'
+        overflow:'scroll',
     },
     modalHeader: {
         display: 'flex',
-        backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',

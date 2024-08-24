@@ -7,6 +7,7 @@ import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { SQLiteDatabase } from "expo-sqlite";
 import { useTranslation } from "react-i18next";
+import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 
 interface SearchBarWithAddProps {
   /*
@@ -50,6 +51,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   const [showModal, setShowModal] = useState(false);
 
   const textColor = useThemeColor({}, 'text');
+  const oppositeTextColor = useOppositeThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
 
   const openModal = () => setShowModal(true);
@@ -71,8 +73,9 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         style={searchText ? styles.hiddenIcon : styles.searchIcon}
       />
       <TextInput
-        style={[styles.searchInput, { color: textColor }]}
+        style={[styles.searchInput]}
         placeholder={t('labels.search') + "..."}
+        placeholderTextColor={'rgba(160, 160, 160, 1)'}
         value={searchText}
         onChangeText={setSearchText}
         onSubmitEditing={(event) => {searchHandler(event.nativeEvent.text)}}

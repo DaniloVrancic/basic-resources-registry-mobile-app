@@ -66,7 +66,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
         onChangeText={setLocationName}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, {color: textColor}]}
         placeholder={t('locations.enterLocationSize')}
         placeholderTextColor={textColor}
         value={locationSize}

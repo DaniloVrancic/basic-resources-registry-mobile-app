@@ -431,7 +431,7 @@ const FixedAssetCardDetailedCard = (
                                             onChangeText={setInputDescription}
                                             multiline={true}
                                             
-                                            style={[{color: 'black', fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: 'black', fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={{width:'100%', justifyContent: 'center'}}>
@@ -445,7 +445,7 @@ const FixedAssetCardDetailedCard = (
                                 <ThemedText style={{textAlign: 'center'}}>{t("labels.barcode")}: </ThemedText>
                                 <TextInput  value={inputBarcode} 
                                             onChangeText={setInputBarcode}
-                                            style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                                 <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'} onPress={openModalScanner} disabled={!editMode}>
                                     <Icon name="barcode-sharp" type="ionicon" color="white" style={{paddingHorizontal: 5}} />
@@ -456,7 +456,7 @@ const FixedAssetCardDetailedCard = (
                                 <ThemedText style={{textAlign: 'center'}}>{t("labels.creationDate")}: </ThemedText>
                                 <TextInput  value={inputCreationDate.toString()} 
                                             onChangeText={setInputCreationDate}
-                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
 

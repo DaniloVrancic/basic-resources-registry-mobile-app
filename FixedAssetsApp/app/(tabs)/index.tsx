@@ -51,7 +51,10 @@ export default function HomeScreen() {
 
   const loadFixedAssetsFromDatabase = async (db: SQLiteDatabase) => {
     try {
-      setLoadedFixedAssets(await getAllFixedAssets(db));
+      var foundAssets = await getAllFixedAssets(db)
+      console.log(foundAssets)
+      setLoadedFixedAssets(foundAssets);
+
     } catch (error) {
       console.error('Error loading Fixed Assets: ', error);
     }
@@ -164,7 +167,9 @@ export default function HomeScreen() {
                   </ThemedView>
                     {
                       //Rest of the container here
-                      <AddNewFixedAsset onAssetAdded={() => handleFixedAssetAdded()}/>
+                      <ThemedView style={{backgroundColor:'rgba(0,0,0,0)', height: '100%', paddingBottom: 200}}>
+                        <AddNewFixedAsset onAssetAdded={() => handleFixedAssetAdded()}/>
+                      </ThemedView>
                     }
                 
                 </ThemedView>

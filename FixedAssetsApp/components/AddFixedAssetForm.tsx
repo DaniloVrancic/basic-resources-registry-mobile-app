@@ -270,7 +270,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
             <ThemedView>
                 <ThemedText type='title' style={{textAlign: 'center'}}>{t("fixedAssets.addNewTitle")}</ThemedText>
             </ThemedView>
-            <ThemedText style={[styles.label, , {color: textColor}]}>{t("labels.name")}</ThemedText>
+                <ThemedText style={[styles.label, , {color: textColor}]}>{t("labels.name")}</ThemedText>
             <TextInput
                 style={[styles.textInput, {color: textColor}]}
                 placeholderTextColor={textColor}
@@ -446,7 +446,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
 
 const styles = StyleSheet.create({
     formContainer: {
-        padding: 16,
+        padding: 20,
     },
     label: {
         fontSize: 16,

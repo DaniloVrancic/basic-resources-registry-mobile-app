@@ -21,7 +21,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.android"
+      "package": "com.android",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +38,7 @@
       "expo-camera",
       "expo-localization",
       [
-      "expo-screen-orientation",
+        "expo-screen-orientation",
         {
           "initialOrientation": "DEFAULT"
         }
@@ -42,6 +46,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3bfef1da-99a9-490b-b638-37397ea920d6"
+      }
     }
   }
 }

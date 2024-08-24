@@ -363,7 +363,7 @@ const InventoryItemSelectors = ({
                         <ThemedView style={modalStyles.elementGroupLabel}>
                             <ThemedText >Location Transfer</ThemedText>
                         </ThemedView>    
-                            <ThemedView style={dropdownStyles.container}>
+                            <ThemedView style={[dropdownStyles.container, {marginVertical: 10}]}>
                                         {renderLabelLocation(isFocusCurrentLocation)}
                                         <Dropdown
                                         dropdownPosition="top"
@@ -398,7 +398,7 @@ const InventoryItemSelectors = ({
                                         />
                             </ThemedView>
                             <Icon name="arrow-downward" type="material"/>
-                            <ThemedView style={dropdownStyles.container}>
+                            <ThemedView style={[dropdownStyles.container, {marginVertical: 10}]}>
                                         {renderLabelLocation(isFocusNewLocation)}
                                         <Dropdown
                                         dropdownPosition="top"

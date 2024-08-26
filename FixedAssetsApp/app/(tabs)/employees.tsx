@@ -56,7 +56,7 @@ export default function Employees() {
     try {
       
       var foundEmployees = await getEmployeesForContainsName(db, name)
-      console.log(foundEmployees)
+      //console.log(foundEmployees)
       setLoadedEmployees(foundEmployees);
     } catch (error) {
       console.error('Error loading Fixed Assets: ', error);

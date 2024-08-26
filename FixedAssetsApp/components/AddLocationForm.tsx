@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, Alert, Pressable } from 'react-native';
+import { StyleSheet, TextInput, Alert, Pressable } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker,  PROVIDER_GOOGLE } from 'react-native-maps';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
-import { Location } from '@/app/data_interfaces/location';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { addLocation } from '@/db/db';
 import { useTranslation } from 'react-i18next';
-import { color } from '@rneui/themed/dist/config';
+
 
 let db: SQLiteDatabase;
 const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {

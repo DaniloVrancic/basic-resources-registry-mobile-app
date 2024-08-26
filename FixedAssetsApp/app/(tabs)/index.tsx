@@ -52,7 +52,7 @@ export default function HomeScreen() {
   const loadFixedAssetsFromDatabase = async (db: SQLiteDatabase) => {
     try {
       var foundAssets = await getAllFixedAssets(db)
-      console.log(foundAssets)
+      //console.log(foundAssets)
       setLoadedFixedAssets(foundAssets);
 
     } catch (error) {

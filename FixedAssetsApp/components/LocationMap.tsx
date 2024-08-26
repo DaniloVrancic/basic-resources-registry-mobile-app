@@ -3,7 +3,7 @@ import { StyleSheet, Platform, Modal, Pressable, Alert, TextInput } from 'react-
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from './ThemedView';
 import { Location } from '@/app/data_interfaces/location';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GestureHandlerRootView, LongPressGestureHandler, ScrollView, State } from 'react-native-gesture-handler';
 import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import FixedAssetCard from './FixedAssetCard';
@@ -200,6 +200,7 @@ const LocationMap: React.FC<any> = ( {
               
                     <MapView
                         style={styles.map}
+                        provider={PROVIDER_GOOGLE}
                         initialRegion={{
                             latitude: locationState.latitude,
                             longitude: locationState.longitude,

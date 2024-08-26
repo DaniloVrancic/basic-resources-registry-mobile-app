@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput, Button, Alert, Pressable } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
 import { Location } from '@/app/data_interfaces/location';
@@ -74,7 +74,7 @@ const AddLocationForm: React.FC<any> = ({onAddNewLocation}) => {
         onChangeText={setLocationSize}
       />
       <ThemedView style={styles.mapContainer}>
-          <MapView style={styles.map} onPress={handleMapPress}>
+          <MapView style={styles.map} onPress={handleMapPress} provider={PROVIDER_GOOGLE}>
             {markerCoords && (
               <Marker
                 coordinate={markerCoords}

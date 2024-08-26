@@ -191,7 +191,7 @@ const AddNewFixedAsset = ({ onAssetAdded }: any) => {
                       
                 }
                 else{
-                    console.log("Permission not given.");
+                    // console.log("Permission not given.");
                     Alert.alert(t('alertMessages.accessDenied'), t('alertMessages.permissionNotGiven'))
                 }
                

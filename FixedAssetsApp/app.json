@@ -3,11 +3,11 @@
     "name": "My Assets Manager",
     "slug": "FixedAssetsApp",
     "version": "1.0.0",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon_asset_manager.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/icon.png",
+      "image": "./assets/images/icon_asset_manager.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,6 +20,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
       },
       "package": "com.android",
       "permissions": [

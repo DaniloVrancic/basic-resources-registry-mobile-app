@@ -149,22 +149,22 @@ const EmployeeCardDetailed = (
                     result = await launchCameraAsync(options, (res) => {
                   
                         if (res.didCancel) {
-                          console.log('User cancelled image picker');
+                          //console.log('User cancelled image picker');
                         } else if (res.error) {
-                          console.log('ImagePicker Error: ', res.error);
+                         // console.log('ImagePicker Error: ', res.error);
                         } else if (res.customButton) {
-                          console.log('User tapped custom button: ', res.customButton);
+                         // console.log('User tapped custom button: ', res.customButton);
                           alert(res.customButton);
                         } else {
                          // let source = res;
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
-                          console.log('response', JSON.stringify(res));
+                         // console.log('response', JSON.stringify(res));
                         }
                       }).catch((warn) => {console.warn(warn)});
                 }
                 else{
-                    console.log("Permission not given.");
+                  //  console.log("Permission not given.");
                 }
                 const resultPhotoUri = (result.assets[0].uri);
                 setInputPhotoUrl(resultPhotoUri);

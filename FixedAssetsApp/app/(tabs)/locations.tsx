@@ -1,4 +1,4 @@
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { ThemedText } from "../../components/ThemedText"
 import { ThemedView } from "../..//components/ThemedView"
 import { Ionicons } from "@expo/vector-icons"
@@ -18,11 +18,19 @@ import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { getAllLocations, getAllLocationsForContainsName, getAllLocationsForContainsNameAndBetweenRange } from '@/db/db';
 import { Location } from '../data_interfaces/location';
 import AddLocationForm from '@/components/AddLocationForm';
+import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 let db: SQLiteDatabase;
+let t: any;
+let orientation: any;
 export default function Locations() {
 
   db = useSQLiteContext();
+  ({t} = useTranslation());
+  (orientation = useOrientation());
+
   const [loadedLocations, setLoadedLocations] = useState([]);
 
   const [showAddLocation, setShowAddLocation] = useState<boolean>(false);
@@ -52,15 +60,31 @@ export default function Locations() {
     }
   }
 
-  const handleLocationAdded = () => {
+  const handleLocationAdded = async () => {
+    setLoadedLocations(await getAllLocations(db));
+    closeShowAdd();
+  }
 
+  const handleDeletedLocation = (id: number) => {
+    try{
+        var locationsWithoutDeletedLocation = loadedLocations.filter((val: Location) => val.id !== id);
+        setLoadedLocations(locationsWithoutDeletedLocation);
+        Alert.alert(t('alertMessages.success'), t("alertMessages.locationDeleteMessage")+'!');
+    } catch (error) {
+        console.error('Error Removing Location: ', error);
+    }
   }
 
   return (
       <SafeAreaView style={styles.safeArea}>
+
+        {
+
+        (orientation === ORIENTATION.PORTRAIT) ? 
+        <ThemedView style={{flex: 26, flexDirection: 'column'}}>
           <ThemedView style={{flex: 18}}>
             <SearchBarWithAdd
-              onAddClick={() => { console.log("Location default click") }}
+              onAddClick={() => { openShowAdd(); }}
               filterChildren={locationAdvancedFiltering(loadedLocations, setLoadedLocations)}
               renderAddButton={true}
               renderAdvancedFilterButton={true}
@@ -68,17 +92,35 @@ export default function Locations() {
             />
           </ThemedView>
           <ThemedView style={[styles.titleContainer, {flex:8, paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2}]}>
-            <ThemedText type="title">Location</ThemedText>
+            <ThemedText type="title">{t('tabs.locations')}</ThemedText>
           </ThemedView>
+          </ThemedView>
+          :
+          <ThemedView style={{flex: 28, flexDirection: 'row', paddingHorizontal: 20, borderBottomColor: 'grey', borderBottomWidth: 2, borderTopWidth: 1, alignItems: 'center'}}>
+          
+          <ThemedView style={[styles.titleContainer, {flex:8, }]}>
+            <ThemedText type="title">{t('tabs.locations')}</ThemedText>
+          </ThemedView>
+          <ThemedView style={{flex: 18}}>
+            <SearchBarWithAdd
+              onAddClick={() => { openShowAdd(); }}
+              filterChildren={locationAdvancedFiltering(loadedLocations, setLoadedLocations)}
+              renderAddButton={true}
+              renderAdvancedFilterButton={true}
+              searchHandler={handleLocationsSearch}
+            />
+          </ThemedView>
+          </ThemedView>
+          }
           <ThemedView style={{backgroundColor: 'ghostwhite', flex: 84}}>
 
-          <Suspense fallback={<LoadingAnimation text="Loading data..." />}>
+          <Suspense fallback={<LoadingAnimation text={t('alertMessages.loadingData') + "..."} />}>
               <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {/* Replace the content below with your actual list components */}
                 {
                  loadedLocations.map((location: Location) =>
                   <ThemedView key={location.id} style={{paddingVertical: 20, backgroundColor: 'rgba(0,0,0,0.0)'}}>
-                    <LocationCard key={location.id} {...location}/>
+                    <LocationCard key={location.id} onDeletedLocation={() => {handleDeletedLocation(location.id);}} {...location}/>
                   </ThemedView>
                 )}
                 {/* Add more employees or your dynamic list here */}
@@ -86,9 +128,10 @@ export default function Locations() {
           </Suspense>
           </ThemedView>
 
-          <Modal visible={showAddLocation} animationType="slide">
-          <ScrollView>
-            <ThemedView style={[modalStyles.modalContainer, {padding: 20}]}>
+        <Modal visible={showAddLocation} animationType="slide" onRequestClose={() => {closeShowAdd();}}>
+          <ScrollView style={{flexDirection: 'column'}}>
+          <ThemedView style={{paddingBottom: '100%', overflow: 'hidden'}}>
+            <ThemedView style={[modalStyles.modalContainer]}>
               <ThemedView style={modalStyles.modalHeader}>
                 <Pressable style={modalStyles.modalCloseButton} onPress={() => {closeShowAdd()}}>
                   <Ionicons name="close" size={24} color={textColor} />
@@ -98,7 +141,10 @@ export default function Locations() {
                 {
                   //Rest of the container here
                 }
-                <AddLocationForm onAddNewLocation={() => handleLocationAdded()}/>
+                  <AddLocationForm onAddNewLocation={() => handleLocationAdded()}/>
+
+            </ThemedView>
+            
             </ThemedView>
             </ScrollView>
         </Modal>
@@ -120,7 +166,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
       flexDirection: 'row',
-      gap: 12,
+      gap: 8,
       padding: 6,
       textAlign: 'center',
     },
@@ -180,14 +226,12 @@ const styles = StyleSheet.create({
 
   const modalStyles = StyleSheet.create({
     modalContainer: {
-        flex: 1,
         justifyContent: 'flex-start',
         padding: 8,
-        overflow:'scroll'
+        overflow:'scroll',
     },
     modalHeader: {
         display: 'flex',
-        backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
@@ -229,7 +273,7 @@ const styles = StyleSheet.create({
     
   
   
-  const renderThumb = useCallback(() => <Thumb name={"Area size"}/>, []);
+  const renderThumb = useCallback(() => <Thumb name={t('locations.areaSize')}/>, []);
   const renderRail = useCallback(() => <Rail/>, []);
   const renderRailSelected = useCallback(() => <RailSelected/>, []);
   const renderLabel = useCallback((value: any) => <Label text={value}/>, []);
@@ -254,17 +298,18 @@ const styles = StyleSheet.create({
   
     return (
   
+      <ScrollView>
       <ThemedView style={[styles.advancedFilterContainer]}>
 
         <ThemedText style={[styles.advancedFilterLabel]}>Name:</ThemedText>
         <TextInput
           style={[styles.advancedFilterInput, {paddingHorizontal: 5}]}
-          placeholder="Search by location name..."
+          placeholder={t('filter.searchByLocationName') + "..."}
           value={cityName}
           onChangeText={handleNameChange}
           placeholderTextColor={'rgba(160, 160, 160, 1)'}
         />
-        <ThemedText style={[styles.advancedFilterLabel]}>Size of Area (in square meters):</ThemedText>
+        <ThemedText style={[styles.advancedFilterLabel]}>{t('locations.sizeOfArea')}:</ThemedText>
         <ThemedView style={styles.advancedFilterSliderContainer}>
           <ThemedText>{minSize?.toString()}</ThemedText>
               <RnRangeSlider
@@ -287,9 +332,10 @@ const styles = StyleSheet.create({
         </ThemedView>
         <Pressable style={styles.advancedFilterButton} onPress={advancedFilter}>
           <Ionicons style={{paddingHorizontal: 6}} name="filter" size={24} color={'ghostwhite'} />
-          <ThemedText style={styles.advancedFilterButtonText}>Apply Filter</ThemedText>
+          <ThemedText style={styles.advancedFilterButtonText}>{t('filter.applyFilter')}</ThemedText>
         </Pressable>
       </ThemedView>
+      </ScrollView>
   
     )
   }

@@ -6,6 +6,8 @@ import { StyleSheet, Modal, Pressable } from "react-native";
 import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { SQLiteDatabase } from "expo-sqlite";
+import { useTranslation } from "react-i18next";
+import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 
 interface SearchBarWithAddProps {
   /*
@@ -49,10 +51,13 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
   const [showModal, setShowModal] = useState(false);
 
   const textColor = useThemeColor({}, 'text');
+  const oppositeTextColor = useOppositeThemeColor({}, 'text');
   const backgroundColor = useThemeColor({}, 'background');
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+
+  const {t} = useTranslation();
 
   const handleFilterPress = () => {
     openModal();
@@ -68,8 +73,9 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
         style={searchText ? styles.hiddenIcon : styles.searchIcon}
       />
       <TextInput
-        style={[styles.searchInput, { color: textColor }]}
-        placeholder="Search..."
+        style={[styles.searchInput]}
+        placeholder={t('labels.search') + "..."}
+        placeholderTextColor={'rgba(160, 160, 160, 1)'}
         value={searchText}
         onChangeText={setSearchText}
         onSubmitEditing={(event) => {searchHandler(event.nativeEvent.text)}}
@@ -84,7 +90,7 @@ const SearchBarWithAdd: React.FC<SearchBarWithAddProps> = ({
           <Ionicons name="filter" size={24} color={textColor} />
         </Pressable>
       )}
-      <Modal visible={showModal} animationType="slide" transparent={true}>
+      <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={closeModal}>
         <ThemedView style={styles.modalContainer}>
           <ThemedView style={styles.modalHeader}>
             <Pressable style={styles.modalCloseButton} onPress={closeModal}>
@@ -136,9 +142,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   modalContainer: {
-    flex: 1,
     justifyContent: 'flex-start',
     padding: 8,
+    minHeight:"100%",
+    maxHeight:"100%",
     backgroundColor: 'rgba(0, 0, 0, 0.8)', // semi-transparent background
   },
   modalHeader: {

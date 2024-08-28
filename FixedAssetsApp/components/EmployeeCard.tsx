@@ -7,17 +7,21 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Employee } from "@/app/data_interfaces/employee";
 import EmployeeCardDetailed from "./EmployeeCardDetailed";
 import { Avatar, Icon } from "@rneui/themed";
+import { useTranslation } from "react-i18next";
 
 
 
-const EmployeeCard: React.FC<Employee> = ({
+const EmployeeCard: React.FC<Employee | any> = ({
     id,
     name,
     email,
     income,
-    photoUrl
+    photoUrl,
+    onDeletedEmployee = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
+
     const defaultImage: any = require('@/assets/images/defaultUserPhoto.png');
     const thisEmployee: Employee = {id: id, name: name, email: email, income: income, photoUrl: photoUrl};
     const [thisEmployeeState, setEmployeeState] = useState(thisEmployee);
@@ -77,16 +81,16 @@ const EmployeeCard: React.FC<Employee> = ({
                     <ThemedView style={styles.emailContainer}>
                         <ThemedView style={{flexDirection: 'row'}}>
                             <Ionicons name="mail" size={16} color={'purple'} style={{fontSize: 20, paddingRight: 5, paddingTop: 2}}/>
-                            <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">E-mail:</ThemedText>
+                            <ThemedText style={{overflow: 'hidden', color: 'purple'}} type="defaultSemiBold">{t('labels.email')}:</ThemedText>
                         </ThemedView>
                         <ThemedView style={{paddingHorizontal: 10, flexWrap:'wrap'}}>
                             <ThemedText style={{overflow: 'hidden'}} type="defaultSemiBold">{thisEmployeeState.email}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
-                    <ThemedView style={{flexDirection: 'row', minWidth: '135%', marginVertical: 5,}}>
-                        <ThemedText style={{fontSize: 12, justifyContent: "flex-start", flex: 50}}>Income:</ThemedText>
-                        <ThemedText style={{fontSize: 16, fontWeight: 600, justifyContent: "flex-end", flex: 50}}>${thisEmployeeState.income}/year</ThemedText>
+                    <ThemedView style={{flexDirection: 'row', minWidth: '100%', marginVertical: 5, }}>
+                        <ThemedText style={{fontSize: 14, justifyContent: "flex-start"}}>{t('labels.income')}:</ThemedText>
+                        <ThemedText style={{fontSize: 16, fontWeight: 600, flex: 5, flexWrap:'wrap', textAlign:'right'}}>${thisEmployeeState.income}/{t('general.year')}</ThemedText>
                     </ThemedView>
 
                     <ThemedView style={styles.buttonContainer}>
@@ -95,13 +99,13 @@ const EmployeeCard: React.FC<Employee> = ({
                             onPress={openModal}>
                             <View style={styles.showLargerViewLayout}>
                                 <Icon type="material" name="person" color="white"/>
-                                <ThemedText style={styles.showOnEmployeeButtonText}>Show Larger View</ThemedText>
+                                <ThemedText style={styles.showOnEmployeeButtonText}>{t('employees.showLargerView')}</ThemedText>
                             </View>
                         </Pressable>
                     </ThemedView>
                 </ThemedView>
 
-                <Modal visible={showModal} animationType="slide" transparent={true}>
+                <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={closeModal}>
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                     <ThemedView style={modalStyles.modalHeader}>
@@ -112,7 +116,7 @@ const EmployeeCard: React.FC<Employee> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} />
+                         <EmployeeCardDetailed setEmployeeState={setEmployeeState} employeeState={thisEmployeeState} onDeleteEmployee={() => {onDeletedEmployee && onDeletedEmployee();}} />
                     </ThemedView>
                 </ThemedView>
             </Modal>
@@ -180,6 +184,8 @@ const styles = StyleSheet.create({ //Stylesheet for this card
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center'
+
     },
     informationContainer: {
         padding: 10,

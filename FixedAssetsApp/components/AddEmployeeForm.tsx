@@ -7,9 +7,12 @@ import { useSQLiteContext } from "expo-sqlite";
 import { addEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Input } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
+import { useTranslation } from "react-i18next";
 
 const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
+
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [inputName, setInputName] = useState('');
@@ -71,11 +74,11 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission",
-                  message: "My Asset Manager needs access to your camera for this feature to work.",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message: t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
             );
 
@@ -113,28 +116,28 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
 
     return (
         <ThemedView style={styles.formContainer}>
-            <ThemedText style={styles.formTitle}>Add New Employee</ThemedText>
+            <ThemedText style={styles.formTitle}>{t('employees.addNewEmployee')}</ThemedText>
             
                 <ThemedView style={styles.formContent}>
                     <ThemedText style={{ color: 'red', fontSize: 18, fontWeight: 600 }}>{errorMessage && "ERROR: " + errorMessage}</ThemedText>
 
                     <ThemedView style={styles.formElement}>
-                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Name:</ThemedText>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>{t('labels.name')}:</ThemedText>
                         <Input value={inputName} onChangeText={setInputName} style={[{ color: textColor }, styles.textInput]} />
                     </ThemedView>
 
                     <ThemedView style={styles.formElement}>
-                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Email:</ThemedText>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>{t('labels.email')}:</ThemedText>
                         <Input value={inputEmail} onChangeText={setInputEmail} style={[{ color: textColor }, styles.textInput]} />
                     </ThemedView>
 
                     <ThemedView style={styles.formElement}>
-                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Income:</ThemedText>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>{t('labels.income')}:</ThemedText>
                         <Input value={(inputIncome)} onChangeText={handleChangeIncome} style={[{ color: textColor }, styles.textInput]} keyboardType="numeric" />
                     </ThemedView>
 
                     <ThemedView style={styles.formElement}>
-                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>Photo:</ThemedText>
+                        <ThemedText style={[styles.labelStyle, { color: textColor }]}>{t('labels.photo')}:</ThemedText>
                         <Avatar
                             size={100}
                             rounded
@@ -149,15 +152,15 @@ const AddEmployeeForm : React.FC<any> = ({ onEmployeeAdded }) => {
                     </ThemedView>
 
                     <Pressable onPress={handleAddEmployee} style={styles.addButton}>
-                        <ThemedText style={styles.addButtonText}>Add Employee</ThemedText>
+                        <ThemedText style={styles.addButtonText}>{t('employees.addEmployee')}</ThemedText>
                     </Pressable>
                 </ThemedView>
             
 
             <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{ backgroundColor: 'rgba(0,0,0,0.7)' }}>
-                <Button title="Take Photo with Camera" buttonStyle={styles.bottomSheetButton} onPress={openCamera} />
-                <Button title="Open Photo from Gallery" buttonStyle={styles.bottomSheetButton} onPress={openGallery} />
-                <Button title="Cancel" buttonStyle={[styles.bottomSheetButton, styles.cancelButton]} onPress={() => setPhotoBottomSheetVisible(false)} />
+                <Button title={t('bottomSheet.takePhotoWithCamera')} buttonStyle={styles.bottomSheetButton} onPress={openCamera} />
+                <Button title={t('bottomSheet.openPhotoFromGallery')} buttonStyle={styles.bottomSheetButton} onPress={openGallery} />
+                <Button title={t('bottomSheet.close')} buttonStyle={[styles.bottomSheetButton, styles.cancelButton]} onPress={() => setPhotoBottomSheetVisible(false)} />
             </BottomSheet>
         </ThemedView>
     );

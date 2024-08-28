@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal } from "react-native";
+import { Pressable, StyleSheet, TextInput, PermissionsAndroid, Modal, Alert } from "react-native";
 import { ThemedView } from "./ThemedView"
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "./ThemedText";
@@ -6,20 +6,25 @@ import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { updateFixedAsset, getAllEmployees, getAllLocations } from "@/db/db";
+import { updateFixedAsset, getAllEmployees, getAllLocations, deleteFixedAssetById } from "@/db/db";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Dropdown } from "react-native-element-dropdown";
 import CameraScanner from "./camera/CameraScanner";
+import { useTranslation } from "react-i18next";
 
 let db;
 const FixedAssetCardDetailedCard = (
     {fixedAssetState,
-    setFixedAssetState
+    setFixedAssetState,
+    onDeleteFixedAsset = () => {}
     }
 ) => {
 
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
+
+
     const oppositeTextColor = useOppositeThemeColor({}, 'text');
     const [isPhotoBottomSheetVisible, setPhotoBottomSheetVisible] = useState(false);
     const [isCameraScannerVisible, setIsCameraScannerVisible] = useState(false);
@@ -50,6 +55,19 @@ const FixedAssetCardDetailedCard = (
         loadLocationsFromDatabase(db);
     }, 
     [])
+
+    const confirmDeleteAssetAlert = (id) =>
+    {
+        Alert.alert( t('alertMessages.confirmDeletion'), t('alertMessages.deleteFixedAssetQuestion'), [
+            {
+              text: t("labels.cancel"),
+              onPress: () => {},
+              style: 'cancel'
+            },
+            {text: t("labels.ok"), onPress: () => handleDeleteRequest(id)},
+          ]);
+    }
+        
     
 
       /*
@@ -108,11 +126,11 @@ const FixedAssetCardDetailedCard = (
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission to use for App",
-                  message:"My Asset Manager needs access to your camera for this feature to work. ",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message:t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
               );
               let result;
@@ -161,19 +179,19 @@ const FixedAssetCardDetailedCard = (
 
         if(editMode){
             if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
-                setErrorMessage('Please enter a valid name.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const barcodeRegex = /^[A-Z0-9\-_]+$/;
             if (!barcodeRegex.test(inputBarcode)) {
-                setErrorMessage('Please enter a valid barcode.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
             if (!dateRegex.test(inputCreationDate)) {
-                setErrorMessage('Please enter a valid creation date.');
+                setErrorMessage(t('errorMessages.enterValidBarcode')+'.');
                 return;
             }
 
@@ -190,7 +208,7 @@ const FixedAssetCardDetailedCard = (
             }
 
             if (isNaN(processedPrice)) {
-                setErrorMessage('Please enter a valid price.');
+                setErrorMessage(t('errorMessages.enterValidPrice')+'.');
                 return;
             }
 
@@ -207,7 +225,7 @@ const FixedAssetCardDetailedCard = (
                 setErrorMessage('');
                 setFixedAssetState(tempAssetState); //If the data has changed, set the original fixed asset state to this new state.
                 setEditMode(false);
-                Alert.alert("Fixed Asset Updated", "The fixed asset data has been successfully updated.");
+                Alert.alert(t('alertMessages.fixedAssetUpdated'), t('alertMessages.fixedAssetUpdatedMessage'));
             }
             catch(myError){
                 console.error(myError);
@@ -242,7 +260,7 @@ const FixedAssetCardDetailedCard = (
         if (value || isFocusEmployee) {
           return (
             <ThemedText style={[dropdownStyles.label, isFocusEmployee && { color: 'blue' }]}>
-              Select Employee:
+              {t("fixedAssets.selectEmployee")}:
             </ThemedText>
           );
         }
@@ -253,7 +271,7 @@ const FixedAssetCardDetailedCard = (
         if (value || isFocusLocation) {
           return (
             <ThemedText style={[dropdownStyles.label, isFocusLocation && { color: 'blue' }]}>
-              Select Location:
+              {t("fixedAssets.selectLocation")}:
             </ThemedText>
           );
         }
@@ -303,6 +321,16 @@ const FixedAssetCardDetailedCard = (
     const handleNewScan = () => {
         setInputBarcode(fixedAssetState.barcode);
         setCameraScanned(false);
+    }
+
+    const handleDeleteRequest = async (id) => {
+        try{
+            let result = await deleteFixedAssetById(db, id);
+            onDeleteFixedAsset && onDeleteFixedAsset();
+        }
+        catch(error){
+            console.error(error);
+        }
     }
 
     return (
@@ -366,9 +394,9 @@ const FixedAssetCardDetailedCard = (
                     <ThemedView style={styles.headerTextContainer}>
                     
                         <ThemedView style={{flexDirection: 'column', alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.0)'}}>
-                            <ThemedText lightColor="ghostwhite">Product ID: {fixedAssetState.id}</ThemedText>
+                            <ThemedText lightColor="ghostwhite">{t("fixedAssets.productId")}: {fixedAssetState.id}</ThemedText>
                                 <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}, styles.cardContentElement]}>
-                                    <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>Name: </ThemedText>
+                                    <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>{t("labels.name")}: </ThemedText>
                                     <TextInput  value={inputName} 
                                                 onChangeText={setInputName}
                                                 style={[{color: oppositeTextColor, fontSize: 15}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
@@ -376,7 +404,7 @@ const FixedAssetCardDetailedCard = (
                                 </ThemedView>
                             
                             <ThemedView style={[{backgroundColor: 'rgba(0,0,0,0.0)', alignItems: 'center'}, styles.cardContentElement]}>
-                            <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>Price: </ThemedText>
+                            <ThemedText lightColor="ghostwhite" style={{textAlign: 'center', fontSize: 16}}>{t("labels.price")}: </ThemedText>
                                     <TextInput  value={inputPrice.toString()} 
                                                 onChangeText={handleChangePrice}
                                                 style={[{color: oppositeTextColor, fontSize: 15}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
@@ -385,19 +413,25 @@ const FixedAssetCardDetailedCard = (
                         </ThemedView>
                     </ThemedView>
 
-                    <Pressable style={styles.editModeContainer} onPress={() => {setEditMode(!editMode)}}>
-                        <Icon name="edit" type="material" iconStyle={(editMode) ? {color: 'lime'} : {color: 'black'}}/>
-                    </Pressable>
+                    <ThemedView style={[styles.iconsContainer, {flexDirection: 'column', backgroundColor: 'rgba(0,0,0,0.0)'}]}>
+                        <Pressable style={[styles.editModeContainer]} onPress={() => {setEditMode(!editMode)}}>
+                            <Icon name="edit" type="material" iconStyle={(editMode) ? {color: 'lime'} : {color: 'black'}}/>
+                        </Pressable>
+                        <Pressable style={[styles.deleteModeContainer]} onPress={() => {confirmDeleteAssetAlert(fixedAssetState.id)}}>
+                            <Icon name="delete" type="material"/>
+                        </Pressable>
+                    </ThemedView>
+                    
 
                 </ThemedView>
 
                         <ThemedView darkColor="white" style={styles.descriptionContainer}>
-                            <ThemedText lightColor="black" darkColor="black" style={styles.descriptionTitle}>Description:</ThemedText> 
+                            <ThemedText lightColor="black" darkColor="black" style={styles.descriptionTitle}>{t("labels.description")}:</ThemedText> 
                             <TextInput  value={inputDescription} 
                                             onChangeText={setInputDescription}
                                             multiline={true}
                                             
-                                            style={[{color: 'black', fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: 'black', fontSize: 15}, styles.textInput, styles.descriptionContent, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={{width:'100%', justifyContent: 'center'}}>
@@ -408,21 +442,21 @@ const FixedAssetCardDetailedCard = (
 
                         <ThemedView style={styles.itemsInColumn}>
                         <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20, alignItems:'center'}]}>
-                                <ThemedText style={{textAlign: 'center'}}>Barcode: </ThemedText>
+                                <ThemedText style={{textAlign: 'center'}}>{t("labels.barcode")}: </ThemedText>
                                 <TextInput  value={inputBarcode} 
                                             onChangeText={setInputBarcode}
-                                            style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor}, styles.textInput, {marginHorizontal: '10%'}, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                                 <Button radius={"sm"} type="solid" color={'rgba(200,170,0,0.9)'} onPress={openModalScanner} disabled={!editMode}>
                                     <Icon name="barcode-sharp" type="ionicon" color="white" style={{paddingHorizontal: 5}} />
-                                    Scan Code 
+                                    {t("labels.scanCode")}
                                 </Button>
                         </ThemedView>
                         <ThemedView style={[styles.cardContentElement, styles.barcodeInputElement, {marginBottom: 20}]}>
-                                <ThemedText style={{textAlign: 'center'}}>Creation Date: </ThemedText>
+                                <ThemedText style={{textAlign: 'center'}}>{t("labels.creationDate")}: </ThemedText>
                                 <TextInput  value={inputCreationDate.toString()} 
                                             onChangeText={setInputCreationDate}
-                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderWidth: 1} : {borderWidth: 0}]} 
+                                            style={[{color: textColor}, styles.textInput, (editMode) ? {borderColor: 'lime', borderBottomWidth: 1} : {borderWidth: 0}]} 
                                             readOnly={!editMode}/>
                         </ThemedView>
 
@@ -444,8 +478,8 @@ const FixedAssetCardDetailedCard = (
                                         maxHeight={'90%'}
                                         labelField="label"
                                         valueField="value"
-                                        placeholder={!isFocusEmployee ? 'Select item' : '...'}
-                                        searchPlaceholder="Search..."
+                                        placeholder={!isFocusEmployee ? t('fixedAssets.selectEmployee') : '...'}
+                                        searchPlaceholder={t('labels.search') + "..."}
                                         value={inputAssignedEmployeeId}
                                         onFocus={() => setIsFocusEmployee(true)}
                                         onBlur={() => setIsFocusEmployee(false)}
@@ -464,7 +498,7 @@ const FixedAssetCardDetailedCard = (
                                         />
                                 </ThemedView>) 
                                 : 
-                                (<ThemedText>Assigned Employee (ID): {fixedAssetState.employee_id}</ThemedText>)
+                                (<ThemedText>{t('fixedAssets.assignedEmployee')} (ID): {fixedAssetState.employee_id}</ThemedText>)
                             }
                             {
                                 (editMode) ? 
@@ -483,8 +517,8 @@ const FixedAssetCardDetailedCard = (
                                     maxHeight={'90%'}
                                     labelField="label"
                                     valueField="value"
-                                    placeholder={!isFocusLocation ? 'Select item' : '...'}
-                                    searchPlaceholder="Search..."
+                                    placeholder={!isFocusLocation ? t('fixedAssets.selectLocation') : '...'}
+                                    searchPlaceholder={t('labels.search') + "..."}
                                     value={inputAssignedLocationId}
                                     onFocus={() => setIsFocusLocation(true)}
                                     onBlur={() => setIsFocusLocation(false)}
@@ -503,7 +537,7 @@ const FixedAssetCardDetailedCard = (
                                     />
                             </ThemedView>)
                                 :
-                                (<ThemedText>Assigned Location (ID): {fixedAssetState.location_id}</ThemedText>) 
+                                (<ThemedText>{t('fixedAssets.assignedLocation')} (ID): {fixedAssetState.location_id}</ThemedText>) 
                             }
                             
                         </ThemedView>
@@ -516,10 +550,10 @@ const FixedAssetCardDetailedCard = (
                             </Pressable>}
                         </ThemedView>
 
-                        <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
+                <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
                 
                     <Button
-                        title="Take Photo with Camera"
+                        title={t('bottomSheet.takePhotoWithCamera')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
@@ -527,7 +561,7 @@ const FixedAssetCardDetailedCard = (
                     />
 
                     <Button
-                        title="Open Photo from Gallery"
+                        title={t('bottomSheet.openPhotoFromGallery')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
@@ -535,7 +569,7 @@ const FixedAssetCardDetailedCard = (
                     />
 
                     <Button
-                        title="Close"
+                        title={t('bottomSheet.close')}
                         buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
@@ -545,7 +579,7 @@ const FixedAssetCardDetailedCard = (
             </BottomSheet>
 
 
-            <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true}> 
+            <Modal visible={isCameraScannerVisible} animationType="fade" transparent={true} onRequestClose={closeModalScanner}> 
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                     <ThemedView style={modalStyles.modalHeader}>
@@ -556,7 +590,7 @@ const FixedAssetCardDetailedCard = (
                     </ThemedView>
 
                     <ThemedView style={{backgroundColor:'rgba(0,0,0,0)'}}>
-                        <ThemedText type="subtitle" style={{textAlign:'center'}}>Scan Code:</ThemedText>
+                        <ThemedText type="subtitle" style={{textAlign:'center'}}>{t('filter.scanCode')}:</ThemedText>
                     </ThemedView>
                     <ThemedView>
                          {/* Fill with Content here */}
@@ -566,11 +600,11 @@ const FixedAssetCardDetailedCard = (
                 {
                     (!cameraScanned) ? 
                     (<ThemedView style={{backgroundColor:'rgba(255,0,0,0.5)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,255,0.5)'}}>No Code Found</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center', color:'rgba(0,0,200,1.0)'}}>{t('fixedAssets.noCodeFound')}</ThemedText>
                     </ThemedView>)
                     :
                     (<ThemedView style={{backgroundColor:'rgba(0,255,0,0.5)'}}>
-                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>Scanned Code:</ThemedText>
+                        <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{t('fixedAssets.scannedCode')}:</ThemedText>
                         <ThemedText type="defaultSemiBold" style={{textAlign:'center'}}>{inputBarcode}</ThemedText>
                     </ThemedView>)
                 }
@@ -653,6 +687,13 @@ const styles = StyleSheet.create({
      justifyContent: 'center'
        
     },
+    deleteModeContainer: {
+        backgroundColor: 'rgba(255,255,255,1.0)',
+        height: 40,
+        width: 40,
+        borderRadius: 100,
+        justifyContent: 'center'
+    },
     itemsInColumn: {
         alignItems: 'center',
         marginVertical: 5
@@ -667,6 +708,10 @@ const styles = StyleSheet.create({
     },
     textInput: {
         paddingHorizontal: 5,
+    },
+    iconsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     }
     
 
@@ -680,12 +725,13 @@ const modalStyles = StyleSheet.create({
     },
     modalHeader: {
         display: 'flex',
+        paddingTop: 30,
         backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        paddingBottom: 40,
+        paddingBottom: 60,
         marginRight: 20
     },
     modalCloseButton: {

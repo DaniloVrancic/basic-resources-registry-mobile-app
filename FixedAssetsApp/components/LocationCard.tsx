@@ -9,12 +9,22 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { Location } from "@/app/data_interfaces/location";
 import { useOppositeThemeColor } from "@/hooks/useOppositeThemeColor";
 import LocationMap from "./LocationMap";
+import { useTranslation } from "react-i18next";
+import useOrientation from "@/hooks/useOrientation";
+import { ORIENTATION } from "@/constants/orientation";
 
 
-const LocationCard: React.FC<Location> = (
-    {id, name, size, latitude, longitude}
+const LocationCard: React.FC<Location | any> = (
+    {id, 
+    name, 
+    size, 
+    latitude, 
+    longitude,
+    onDeletedLocation = () => {}}
 ) => {
 
+    const {t} = useTranslation();
+    const orientation = useOrientation();
     const [thisLocation, setThisLocation] = useState<Location>({id, name, size, latitude, longitude})
     const textColor = useThemeColor({}, 'text');
     const [showMapModal, setShowMapModal] = useState(false);
@@ -37,15 +47,15 @@ const LocationCard: React.FC<Location> = (
         <ThemedView style={[styles.cardContainer, {cursor: 'pointer'}]}>
             <ThemedView style={[styles.cardHeader]}>
                 <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type='title'>{thisLocation.name}</ThemedText>
-                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type="defaultSemiBold">Size of area: {thisLocation.size} m2</ThemedText>
+                <ThemedText style={[styles.centerTextContainer, styles.cardHeaderText]} type="defaultSemiBold">{t('locations.sizeOfAreaPlain')}: {thisLocation.size} m2</ThemedText>
             </ThemedView>
 
             <ThemedView style={styles.cardContent}>
                 <ThemedView style={styles.fullCoordinatesSection}>
                     <Ionicons name="earth" size={32} color={useThemeColor({}, 'text')} style={{textAlign: 'center'}}/>
                         <ThemedView style={styles.coordinatesContainer}>
-                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Latitude:</ThemedText> {thisLocation.latitude.toPrecision(6)}</ThemedText>
-                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>Longitude:</ThemedText> {thisLocation.longitude.toPrecision(6)}</ThemedText>
+                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>{t('locations.latitude')}:</ThemedText> {thisLocation.latitude.toPrecision(6)}</ThemedText>
+                            <ThemedText style={styles.coordinateText}><ThemedText style={{fontWeight: "700"}}>{t('locations.longitude')}:</ThemedText> {thisLocation.longitude.toPrecision(6)}</ThemedText>
                         </ThemedView>
                     </ThemedView>
 
@@ -53,22 +63,22 @@ const LocationCard: React.FC<Location> = (
                         style={styles.showOnMapButton}
                         onPress={handleShowOnMap}>
                         <Ionicons name="pin-outline" size={32} color={useOppositeThemeColor({}, 'text')} style={styles.coordinateText}/>
-                        <ThemedText style={styles.showOnMapButtonText}>Show on Map</ThemedText>
+                        <ThemedText style={styles.showOnMapButtonText}>{t('locations.showOnMap')}</ThemedText>
                     </Pressable>
                 </ThemedView>
 
-                <Modal visible={showMapModal} animationType="slide">
+                <Modal visible={showMapModal} animationType="slide" onRequestClose={closeModal}>
                     <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
-                        <ThemedView style={modalStyles.modalHeader}>
+                        <ThemedView style={(orientation == ORIENTATION.PORTRAIT) ? modalStyles.modalHeader : {height: '20%', flexDirection: 'row', marginBottom: 25}}>
                                 <Pressable style={modalStyles.modalCloseButton} onPress={closeModal}>
-                                    <Ionicons name="close" size={24} color={textColor} />
+                                    <Ionicons name="close" size={(orientation == ORIENTATION.PORTRAIT) ? 24 : 18} color={textColor} />
                                 </Pressable>
                                 <Pressable style={[modalStyles.modalSpaceFill]} onPress={closeModal}></Pressable>
                         </ThemedView>
 
-                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContent}>
-                            <LocationMap locationState={thisLocation} setLocationState={setThisLocation}/>
+                        <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,0)" style={modalStyles.modalContent}>
+                            <LocationMap locationState={thisLocation} setLocationState={setThisLocation} onDeleteLocation={() => {onDeletedLocation && onDeletedLocation();}}/>
                         </ThemedView>
                     </ThemedView>
                 </Modal>
@@ -156,18 +166,17 @@ const modalStyles = StyleSheet.create({
     },
     modalHeader: {
         display: 'flex',
-        backgroundColor: 'rgba(0, 0, 0, 0.0)',
         flexDirection: 'row-reverse',
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'center',
-        paddingBottom: 40,
+        paddingBottom: "11%",
         marginRight: 20,
-        marginBottom: 20,
-        flex: 1
+        marginBottom: 30,
+        flex: 1,
     },
     modalContent: {
-        flex: 11
+        flex: 14
     },
     modalCloseButton: {
         justifyContent: 'flex-end',

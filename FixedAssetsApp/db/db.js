@@ -8,6 +8,19 @@ import * as SQLite from 'expo-sqlite';
   }
 
   export const createTables = async (db) => {
+
+    //console.log("CREATING TABLES!");
+    const dropViewQuery = `DROP VIEW IF EXISTS "transfer_list_view";`;
+
+    const dropTablesQuery = `
+      DROP TABLE IF EXISTS 'inventory_item';
+      DROP TABLE IF EXISTS 'fixed_asset';
+      DROP TABLE IF EXISTS 'transfer_list';
+      DROP TABLE IF EXISTS 'location';
+      DROP TABLE IF EXISTS 'employee';
+    `;
+
+
     const employeeTableQuery = `
       CREATE TABLE IF NOT EXISTS 'employee' (
         'id' INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,11 +48,11 @@ import * as SQLite from 'expo-sqlite';
      'barcode' TEXT NOT NULL,
      'price' REAL NOT NULL,
      'creationDate' TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-     'location_id' INTEGER NOT NULL,
-     'employee_id' INTEGER NOT NULL,
+     'location_id' INTEGER,
+     'employee_id' INTEGER,
      'photoUrl' TEXT,
-      FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-      FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION);
+      FOREIGN KEY ('location_id') REFERENCES 'location' ('id') ON DELETE SET NULL ON UPDATE NO ACTION,
+      FOREIGN KEY ('employee_id') REFERENCES 'employee' ('id') ON DELETE SET NULL ON UPDATE NO ACTION);
     `
 
     const transferListQuery = `
@@ -58,12 +71,12 @@ import * as SQLite from 'expo-sqlite';
     'currentLocationId' INTEGER NOT NULL,
     'newLocationId' INTEGER NOT NULL,
     PRIMARY KEY ('fixed_asset_id', 'transfer_list_id'),
-    FOREIGN KEY ('fixed_asset_id') REFERENCES 'fixed_asset' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('transfer_list_id') REFERENCES 'transfer_list' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('currentEmployeeId') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('new_employee_id') REFERENCES 'employee' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('currentLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY ('newLocationId') REFERENCES 'location' ('id') ON DELETE NO ACTION ON UPDATE NO ACTION
+    FOREIGN KEY ('fixed_asset_id') REFERENCES 'fixed_asset' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('transfer_list_id') REFERENCES 'transfer_list' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentEmployeeId') REFERENCES 'employee' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('new_employee_id') REFERENCES 'employee' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('currentLocationId') REFERENCES 'location' ('id') ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY ('newLocationId') REFERENCES 'location' ('id') ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
     CREATE INDEX IF NOT EXISTS 'fk_inventory_item_transfer_list1_idx' ON 'inventory_item' ('transfer_list_id');
@@ -100,18 +113,50 @@ import * as SQLite from 'expo-sqlite';
     `
 
     try {
-      await db.execAsync('PRAGMA journal_mode = WAL');
-      await db.execAsync('PRAGMA foreign_keys = ON');
 
-      await db.runAsync(locationTableQuery);
+
+      /* //THIS IS GOING TO DROP AND RESET THE TABLES IF NECESSARY (Supposed to be easy to access for devs to quickly reset their (OLD) versions of the database for a quick reset)
+      await db.withTransactionSync( () => {
+        try{
+          
+          db.runSync(dropViewQuery);
+          db.runSync(dropTablesQuery);
+        }
+        catch(error){
+          console.error(error);
+        }
+      });
+      */
+
+      
+      await db.withTransactionSync( () => {
+        try{
+          
+          db.runSync(locationTableQuery);
+          db.runSync(employeeTableQuery);
+          db.runSync(fixedAssetTableQuery);
+          db.runSync(transferListQuery);
+          db.runSync(inventoryItemQuery);
+          db.runSync(createViewForTransferLists);
+        }
+        catch(error){
+          console.error(error);
+        }
+      });
+      
+      
+
+      //await db.execAsync(dropViewQuery + dropTablesQuery);
+      //await db.execAsync('PRAGMA journal_mode = WAL;')
+      //await db.runAsync(locationTableQuery);
       // console.log("after Location table");
-      await db.runAsync(employeeTableQuery);
+      //await db.runAsync(employeeTableQuery);
       // console.log("after Employee table");
-      await db.runAsync(fixedAssetTableQuery);
+      //await db.runAsync(fixedAssetTableQuery);
       // console.log("after Fixed Asset table");
-      await db.runAsync(transferListQuery);
+      //await db.runAsync(transferListQuery);
       // console.log("after Transfer List table");
-      await db.runAsync(inventoryItemQuery);
+      //await db.runAsync(inventoryItemQuery);
       // console.log("after Inventory Item table");
       
 
@@ -120,15 +165,17 @@ import * as SQLite from 'expo-sqlite';
       throw Error(`Failed to create tables`);
     }
 
+    
     try{
-      await db.runAsync(createViewForTransferLists)
+      //await db.runAsync(createViewForTransferLists)
     } catch(error) {
       console.error(error);
       throw Error('Failed to create Views');
     }
+      
 
     try{
-      await insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
+      // insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
 
     }
     catch(error){
@@ -338,6 +385,22 @@ import * as SQLite from 'expo-sqlite';
     });
 }
 
+const deleteEmployeeByIdQuery = "DELETE FROM employee WHERE id = $id;";
+export const deleteEmployeeById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteEmployeeByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
   //GETTING ALL LOCATIONS FROM DATABASE ////////////////////////////////////////////////////////////////////
 
   const getAllLocationsQuery = "SELECT * FROM 'location';";
@@ -437,6 +500,22 @@ export const addLocation = async (db, location) => {
                                                                    $latitude: location.latitude,
                                                                    $longitude: location.longitude, 
                                                                   });
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
+const deleteLocationByIdQuery = "DELETE FROM location WHERE id = $id;";
+export const deleteLocationById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteLocationByIdQuery, {$id: id});
+        
         resolve(rowsChanged);
       }
       catch(error){
@@ -571,6 +650,22 @@ export const addLocation = async (db, location) => {
     });
 }
 
+const deleteFixedAssetByIdQuery = "DELETE FROM fixed_asset WHERE id = $id;";
+export const deleteFixedAssetById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteFixedAssetByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
 const addFixedAssetQuery = `INSERT INTO fixed_asset (name, description, barcode, price, location_id, employee_id, photoUrl) VALUES ($name, $description, $barcode, $price, $location_id, $employee_id, $photoUrl);`;
 
 export const addFixedAsset = async (db, asset) => {
@@ -621,7 +716,7 @@ export const addFixedAsset = async (db, asset) => {
       db.withTransactionSync( async () => {
         try{
           let rowsChanged = await db.runAsync(addInventoryItemForListQuery, {  $fixed_asset_id: item.fixed_asset_id, 
-                                                                     $transfer_list_id: item.transfer_list_id, 
+                                                                     $transfer_list_id: item.transferListId, 
                                                                      $currentEmployeeId: item.currentEmployeeId,
                                                                      $new_employee_id: item.new_employee_id,
                                                                      $currentLocationId: item.currentLocationId,
@@ -659,6 +754,30 @@ export const addFixedAsset = async (db, asset) => {
       });
     });
   }
+
+  const deleteInventoryItemByIdQuery = "DELETE FROM inventory_item WHERE fixed_asset_id = $fixed_asset_id AND transfer_list_id = $transfer_list_id;";
+/**
+ * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.
+ * @param {number} fixed_asset_id The id the the Fixed asset Item that is being transfered
+ * @param {number} transfer_list_id The id the the List that is refering this item.
+ * @returns The resolve of the function from execution on the database.
+ */
+export const deleteInventoryItemById = async (db, fixed_asset_id, transfer_list_id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteInventoryItemByIdQuery, {$fixed_asset_id: fixed_asset_id,
+                                                                           $transfer_list_id: transfer_list_id
+        });
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
   //GETTING ALL THE INVENTORY TRANSFER LISTS ////////////////////////////////////////////////////////////////////
 
   const getInventoryListsQuery = "SELECT * FROM 'transfer_list'";
@@ -669,7 +788,7 @@ export const addFixedAsset = async (db, asset) => {
 
     return new Promise((resolve, reject) => {
       
-      db.withTransactionAsync( async () => {
+      db.withTransactionSync( async () => {
         try{
           let rows = await db.getAllAsync(getInventoryListsQuery, []);
           
@@ -682,6 +801,12 @@ export const addFixedAsset = async (db, asset) => {
     });
   };
 
+  /**
+   * 
+   * @param {SQLite.SQLiteDatabase} db 
+   * @param {string} name 
+   * @returns All the rows that contain the parameter name as a substring. (Case insensetive)
+   */
   export const getAllInventoryListsForContainsName = async (db, name) => {
     return new Promise((resolve, reject) => {
       
@@ -785,7 +910,7 @@ export const addFixedAsset = async (db, asset) => {
     return new Promise((resolve, reject) => {
       db.withTransactionSync( async () => {
         try{
-          let rowsChanged = await db.runAsync(addFiaddTransferListQueryxedAssetQuery, {  $name: name, 
+          let rowsChanged = await db.runAsync(addTransferListQuery, {  $name: name, 
                                                                     });
           resolve(rowsChanged);
         }
@@ -795,6 +920,45 @@ export const addFixedAsset = async (db, asset) => {
       });
     });
   }
+
+  const updateTransferListQuery = `UPDATE transfer_list SET name = $name WHERE id = $id`;
+
+  export const updateTransferList = async (db, name, id) => {
+    return new Promise((resolve, reject) => {
+      db.withTransactionSync( async () => {
+        try{
+          let rowsChanged = await db.runAsync(updateTransferListQuery, {  $name: name, $id: id });
+          resolve(rowsChanged);
+        }
+        catch(error){
+          reject(error);
+        }
+      });
+    });
+  }
+
+const deleteTransferListByIdQuery = "DELETE FROM transfer_list WHERE id = $id;";
+/**
+ * @param {SQLite.SQLiteDatabase} db Reference to the SQLite database.
+ * @param {number} id The id the the Transfer List to be deleted
+ * @returns The resolve of the function from execution on the database.
+ */
+export const deleteTransferListById = async (db, id) => {
+  return new Promise((resolve, reject) => {
+    db.withTransactionSync( async () => {
+      try{
+        let rowsChanged = await db.runAsync(deleteTransferListByIdQuery, {$id: id});
+        
+        resolve(rowsChanged);
+      }
+      catch(error){
+        reject(error);
+      }
+    });
+  });
+}
+
+  
 
   
   

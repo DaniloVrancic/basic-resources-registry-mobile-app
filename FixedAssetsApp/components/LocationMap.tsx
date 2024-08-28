@@ -3,22 +3,33 @@ import { StyleSheet, Platform, Modal, Pressable, Alert, TextInput } from 'react-
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from './ThemedView';
 import { Location } from '@/app/data_interfaces/location';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GestureHandlerRootView, LongPressGestureHandler, ScrollView, State } from 'react-native-gesture-handler';
 import { FixedAsset } from '@/app/data_interfaces/fixed-asset';
 import FixedAssetCard from './FixedAssetCard';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { getFixedItemsForLocationId, updateLocation } from '@/db/db';
+import { deleteLocationById, getFixedItemsForLocationId, updateLocation } from '@/db/db';
 import { SQLiteDatabase, useSQLiteContext } from 'expo-sqlite';
 import { Button, Icon } from '@rneui/themed';
 import { useOppositeThemeColor } from '@/hooks/useOppositeThemeColor';
+import { useTranslation } from 'react-i18next';
+import useOrientation from '@/hooks/useOrientation';
+import { ORIENTATION } from '@/constants/orientation';
 
 
 let db: SQLiteDatabase;
-const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
+let orientation: string;
+const LocationMap: React.FC<any> = ( {
+    locationState, 
+    setLocationState,
+    onDeleteLocation = () => {}
+
+} ) => {
 
             db = useSQLiteContext();
+            orientation = useOrientation();
+            const {t} = useTranslation();
             const textColor = useThemeColor({}, 'text');
             const oppositeTextColor = useOppositeThemeColor({}, 'text');
   
@@ -60,14 +71,14 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
               const handleSave = async () => {
                 try {
                   var locationStateToSave: Location = {id: locationState.id, name: inputName, size: inputSize, latitude: markerPosition.latitude, longitude: markerPosition.longitude}
-                  let changes = await updateLocation(db, locationStateToSave); // Update location in DB
+                  let changes = await updateLocation(db, locationStateToSave); // Updates location in DB
                   setLocationState(locationStateToSave);
-                  Alert.alert("Location Updated", "The location coordinates have been successfully updated.");
+                  Alert.alert(t('alertMessages.locationUpdated'), t('alertMessages.locationUpdatedMessage'));
                   setEditMode(false);
                   
                 } catch (error) {
                   console.error("Failed to update location:", error);
-                  Alert.alert("Error", "An error occurred while updating the location.");
+                  Alert.alert(t('alertMessages.error'), t('alertMessages.locationUpdateError'));
                 }
               };
 
@@ -86,22 +97,46 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                 }
             }
 
+            
+    const confirmDeleteLocationAlert = (id: number) =>
+        {
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteLocationQuestion'), [
+                {
+                  text: t('labels.cancel'),
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: t('labels.ok'), onPress: () => handleDeleteItem(id)},
+              ]);
+        }
+
+        const handleDeleteItem = async (id: number) => {
+            try{
+                let result = await deleteLocationById(db, id);
+                onDeleteLocation && onDeleteLocation();
+            }
+            catch(error){
+                console.error(error);
+            }
+        }
+    
+
             return (
                 <GestureHandlerRootView>
-                <ThemedView style={styles.container}>
-                    <ThemedView style={styles.header} lightColor='#17153B' darkColor='ghostWhite'>
-                        <ThemedView style={[{backgroundColor:'rgba(0,0,0,0)', alignSelf:'flex-end', marginRight: 15}]}>
-                            <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 3, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
-                        </ThemedView>
+                <ThemedView style={(orientation === ORIENTATION.PORTRAIT) ? styles.container : styles.containerLandscape}>
+                    
+                    { (orientation=== ORIENTATION.PORTRAIT) ?
+                        <ThemedView style={styles.header} lightColor='#17153B' darkColor='#17153B'>
+                        
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Location:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('locations.location')}:</ThemedText>
                                 <TextInput  value={inputName} 
                                                         onChangeText={setInputName}
                                                         style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
                                                         readOnly={!editMode}/>
                         </ThemedView>
                         <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
-                                <ThemedText lightColor='ghostwhite' darkColor='#17153B' style={styles.title}>Size:</ThemedText>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('labels.size')}:</ThemedText>
                                 <ThemedView style={[styles.transparentBackground, {flexDirection:'row'}]}>
                                 <TextInput  value={inputSize.toString()} 
                                                         onChangeText={handleChangeSize}
@@ -110,11 +145,62 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                                 </ThemedView>
                         </ThemedView>
                         
+
+                        <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, top: 20}]}>
+                            <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                        </ThemedView>
+                        <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, bottom: 20}]}>
+                            <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                        </ThemedView>
                     </ThemedView>
+                    :
+                    <ThemedView style={styles.headerLandscape} lightColor='#17153B' darkColor='#17153B'>
+                        
+                        <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('locations.location')}:</ThemedText>
+                                <TextInput  value={inputName} 
+                                                        onChangeText={setInputName}
+                                                        style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
+                                                        readOnly={!editMode}/>
+                        </ThemedView>
+                        <ThemedView style={[styles.transparentBackground, styles.alignCenterAll, styles.wrapContainer]}>
+                                <ThemedText lightColor='ghostwhite' darkColor='ghostwhite' style={styles.title}>{t('labels.size')}:</ThemedText>
+                                <ThemedView style={[styles.transparentBackground, {flexDirection:'row'}]}>
+                                <TextInput  value={inputSize.toString()} 
+                                                        onChangeText={handleChangeSize}
+                                                        style={[{color: oppositeTextColor, fontSize: 18, flexWrap: 'wrap'}, styles.textInput, (editMode) ? {color: 'yellow'} : {color: 'ghostwhite'}]} 
+                                                        readOnly={!editMode}/><ThemedText style={[styles.transparentBackground, {color:'ghostwhite', fontSize:18, alignSelf:'center'}]}>m2</ThemedText>
+                                </ThemedView>
+                        </ThemedView>
+                        
+
+                        {
+                            (orientation === ORIENTATION.PORTRAIT) ?
+                            <ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, top: 20}]}>
+                                    <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                                </ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)',right: 20, bottom: 20}]}>
+                                    <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                                </ThemedView>
+                             </ThemedView>
+                             :
+                             <ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)', bottom: 10, left: '25%'}]}>
+                                    <Icon name='edit' type='material' iconStyle={(editMode) ? ({color: 'lime', backgroundColor:'ghostwhite', padding: 7, borderRadius: 100}) : ({color:'black', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={handleEditPress}/>
+                                </ThemedView>
+                                <ThemedView style={[{position:"absolute", backgroundColor:'rgba(0,0,0,0)', bottom: 10, right: '25%'}]}>
+                                    <Icon name='delete' type='material' iconStyle={({color:'ghostwhite', backgroundColor:'purple', padding: 7, borderRadius: 100})} onPress={() => {confirmDeleteLocationAlert(locationState.id)}}/>
+                                </ThemedView>
+                             </ThemedView>
+                        }
+                    </ThemedView>
+                    }
                     
               
                     <MapView
                         style={styles.map}
+                        provider={PROVIDER_GOOGLE}
                         initialRegion={{
                             latitude: locationState.latitude,
                             longitude: locationState.longitude,
@@ -133,7 +219,7 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                   
                    
 
-                    <Modal visible={showAssetList} animationType="slide">
+                    <Modal visible={showAssetList} animationType="slide" onRequestClose={() => {setShowAssetList(false);}}>
                         <ThemedView style={modalStyles.modalContainer}>
                             <ThemedView style={modalStyles.modalHeader}>
                                     <Pressable style={modalStyles.modalCloseButton} onPress={() => {setShowAssetList(false)}}>
@@ -142,14 +228,16 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
                                     <Pressable style={[modalStyles.modalSpaceFill]} onPress={() => setShowAssetList(false)}></Pressable>
                             </ThemedView>
 
-                                <ThemedText style={styles.assetListTitle}>Assets at {locationState.name}</ThemedText>
+                                <ThemedText style={styles.assetListTitle}>{t('locations.assetsAt')} {locationState.name}</ThemedText>
                             <ThemedView style={modalStyles.modalContent}>
-                                <ScrollView>
+                                <ScrollView style={{minHeight:'100%'}}>
                                     {loadedAssets.map((asset: FixedAsset) => 
-                                        <ThemedView key={asset.id} style={{paddingVertical: 20}}>
+                                        <ThemedView key={asset.id} style={{marginVertical: 15}}>
                                             <FixedAssetCard key={asset.id} {...asset}></FixedAssetCard>
                                         </ThemedView>
                                     )}
+                                    
+                                    <ThemedView style={{padding: 100}}></ThemedView>
                                 </ScrollView>
                                 
                             </ThemedView>
@@ -158,8 +246,8 @@ const LocationMap: React.FC<any> = ( {locationState, setLocationState} ) => {
 
                      {editMode ? (
                             <ThemedView style={styles.buttonContainer}>
-                                <Button title="Save" onPress={handleSave} />
-                                <Button title="Cancel" onPress={() => setEditMode(false)} />
+                                <Button title={t('labels.save')} onPress={handleSave} />
+                                <Button title={t('labels.cancel')} onPress={() => setEditMode(false)} />
                             </ThemedView>
                         ) : (
                                 <></>
@@ -183,17 +271,32 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.0)',
         marginBottom: 20,
     },
+    containerLandscape: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.0)',
+        marginBottom: 50
+    },
     header: {
         width: '100%',
         padding: 20,
-        minHeight: '40%',
-        maxHeight: '40%',
+        minHeight: '30%',
+        maxHeight: '30%',
         alignItems: 'center',
         borderColor: 'grey',
         borderWidth: 2,
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         flex: 2,
+    },
+    headerLandscape: {
+        width: '100%',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        alignItems: 'center',
+        borderColor: 'grey',
+        borderWidth: 2,
+
     },
     title: {
         fontSize: 20,

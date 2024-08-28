@@ -1,22 +1,26 @@
 import React, { useState } from "react";
-import { Pressable, TextInput, StyleSheet, PermissionsAndroid } from "react-native";
+import { Pressable, TextInput, StyleSheet, PermissionsAndroid, Alert, ScrollView } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { useSQLiteContext } from "expo-sqlite";
-import { updateEmployee } from "@/db/db";
+import { deleteEmployeeById, updateEmployee } from "@/db/db";
 import { Avatar, BottomSheet, Button, Icon } from "@rneui/themed";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
+import { useTranslation } from "react-i18next";
 
 
 
 let db;
 const EmployeeCardDetailed = (
     {setEmployeeState, 
-    employeeState }
+    employeeState,
+    onDeleteEmployee = () => {} }
 ) => {
     
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
+
     const defaultImage = require('@/assets/images/defaultUserPhoto.png');
 
     const [editMode, setEditMode] = useState(false);
@@ -34,18 +38,18 @@ const EmployeeCardDetailed = (
     const handlePressChanges = async () => {
         if(editMode){
             if (!/^[a-zA-Z\s]{1,64}$/.test(inputName)) {
-                setErrorMessage('Please enter a valid name.');
+                setErrorMessage(t('errorMessages.enterValidName')+'.');
                 return;
             }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(inputEmail)) {
-                setErrorMessage('Please enter a valid email address.');
+                setErrorMessage(t('errorMessages.enterValidEmail') + '.');
                 return;
             }
 
             if (isNaN(inputIncome) || inputIncome.toString() === '') {
-                setErrorMessage('Income must be a valid number.');
+                setErrorMessage(t('errorMessages.incomeValidNumber')+'.');
                 return;
             }
 
@@ -54,10 +58,22 @@ const EmployeeCardDetailed = (
             setErrorMessage('');
 
             //let currentEmployeeChanges = {id: employeeState.id, name: inputName, email: inputEmail, income: inputIncome, photoUrl: inputPhotoUrl};
-            employeeState.name = inputName;
+
+            if(employeeState.name === inputName && 
+                employeeState.email === inputEmail &&
+                employeeState.income === inputIncome &&
+                employeeState.photoUrl === inputPhotoUrl) //Will get triggered if there were no changes made.
+                {
+                    setEditMode(false);
+                    return;
+                }
+
+            employeeState.name = inputName; //If there were changes made and Save Changes clicked -> Change the original as well.
             employeeState.email = inputEmail;
             employeeState.income = inputIncome;
             employeeState.photoUrl = inputPhotoUrl;
+
+            
 
             let rows = await updateEmployee(db, employeeState);
             
@@ -66,7 +82,7 @@ const EmployeeCardDetailed = (
             
 
             setEditMode(false);
-            Alert.alert("Employee Updated", "The Employee data has been successfully updated.");
+            Alert.alert(t('alertMessages.employeeUpdated'), t('alertMessages.employeeUpdatedMessage'));
         }
         else{
             setEditMode(true);
@@ -77,7 +93,7 @@ const EmployeeCardDetailed = (
 
         if(isNaN(parseInt(myNumber)))
         {
-            myNumber.replace("NaN", "");
+            myNumber.replace("NaN", ""); //Replaces the 'NaN' string to an empty string for cleaner output
             setInputIncome(0);
         }
         else{
@@ -119,38 +135,36 @@ const EmployeeCardDetailed = (
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                  title: "Camera Permission to use for App",
-                  message:"My Asset Manager needs access to your camera for this feature to work. ",
-                  buttonNeutral: "Ask Me Later",
-                  buttonNegative: "Cancel",
-                  buttonPositive: "OK"
+                  title: t('camera.permissionTitle'),
+                  message: t('camera.permissionMessage'),
+                  buttonNeutral: t('labels.askMeLater'),
+                  buttonNegative: t('labels.cancel'),
+                  buttonPositive: t('labels.ok')
                 }
               );
               let result;
                 
                 if(granted === PermissionsAndroid.RESULTS.GRANTED){
-                    console.log(granted);
                     
                     result = await launchCameraAsync(options, (res) => {
-                        console.log('Response = ', res);
                   
                         if (res.didCancel) {
-                          console.log('User cancelled image picker');
+                          //console.log('User cancelled image picker');
                         } else if (res.error) {
-                          console.log('ImagePicker Error: ', res.error);
+                         // console.log('ImagePicker Error: ', res.error);
                         } else if (res.customButton) {
-                          console.log('User tapped custom button: ', res.customButton);
+                         // console.log('User tapped custom button: ', res.customButton);
                           alert(res.customButton);
                         } else {
                          // let source = res;
                           // var resourcePath1 = source.assets[0].uri;
                           const source = { uri: res.uri };
-                          console.log('response', JSON.stringify(res));
+                         // console.log('response', JSON.stringify(res));
                         }
                       }).catch((warn) => {console.warn(warn)});
                 }
                 else{
-                    console.log("Permission not given.");
+                  //  console.log("Permission not given.");
                 }
                 const resultPhotoUri = (result.assets[0].uri);
                 setInputPhotoUrl(resultPhotoUri);
@@ -167,12 +181,37 @@ const EmployeeCardDetailed = (
         setInputPhotoUrl(resultUri);
     }
 
+    const handleDeleteItem = async (id) => {
+        try{
+            let result = await deleteEmployeeById(db, id);
+            onDeleteEmployee && onDeleteEmployee();
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
 
-    return (
+    const confirmDeleteEmployeeAlert = (id) =>
+        {
+            Alert.alert(t('alertMessages.confirmDeletion'), t('alertMessages.deleteEmployeeQuestion'), [
+                {
+                  text: t('labels.cancel'),
+                  onPress: () => {},
+                  style: 'cancel'
+                },
+                {text: t('labels.ok'), onPress: () => handleDeleteItem(id)},
+              ]);
+        }
+
+
+    return ( 
+        <ScrollView>
         <ThemedView style={styles.cardContainer}>
             <ThemedView style={styles.cardHeader}>
                 <ThemedView style={styles.imageEditing}>
-                    
+                    <Pressable style={styles.deleteButtonContainer} onPress={() => {confirmDeleteEmployeeAlert(employeeState.id)}}>
+                        <Icon type="material" name="delete" iconStyle={{color:'darkred'}}/>
+                    </Pressable>
                     <ThemedView
                         style={{
                         flexDirection: 'row',
@@ -186,30 +225,29 @@ const EmployeeCardDetailed = (
                             (inputPhotoUrl == null || inputPhotoUrl.length === 0) ? 
                             
                             <Avatar
-                                size={90}
+                                size={100}
                                 rounded
                                 icon={{ name: 'person', type: 'material' }}
-                                iconStyle={{ backgroundColor: 'purple', borderRadius: 100, minWidth: '100%', height: '100%', justifyContent: 'center', alignItems:'center' }}
+                                iconStyle={{ backgroundColor: 'purple', justifyContent: 'center', alignItems:'center', minWidth: '100%', minHeight: '100%' }}
                                 placeholderStyle={{backgroundColor: 'purple'}}
+
                                 
                             onPress={() => {
 
                                 if(editMode){
                                     onPressAvatar();
                                 }
-                                
-                                }}
-                            >
-                                <Avatar.Accessory 
-                                size={26}
-                                style={{borderRadius: 100}}
-                                onPress={() => {
+                                }}>
+                                    <Avatar.Accessory 
+                                    size={26}
+                                    style={{borderRadius: 100}}
+                                    onPress={() => {
 
-                                    if(editMode){
-                                        onPressAvatar();
-                                    }
-                                }} 
-                                color={(editMode) ? 'lime' : 'grey'} />
+                                        if(editMode){
+                                            onPressAvatar();
+                                        }
+                                    }} 
+                                    color={(editMode) ? 'lime' : 'grey'} />
                             </Avatar>
                             :
                             <Avatar
@@ -246,7 +284,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
                 
                 <ThemedView style={styles.employeeIdContainer}>
-                    <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>Employee ID: </ThemedText>
+                    <ThemedText style={{fontSize: 16, color:'ghostwhite'}}>{t('employees.employeeId')}: </ThemedText>
                     <ThemedText style={{fontSize: 20, fontWeight: 700, color: 'ghostwhite'}}>{employeeState.id}</ThemedText>
                 </ThemedView>
             </ThemedView>
@@ -258,7 +296,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={styles.cardContentElement}>
-                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Name:</ThemedText>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>{t('labels.name')}:</ThemedText>
                     <TextInput  value={inputName} 
                                 onChangeText={setInputName}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -266,7 +304,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={styles.cardContentElement}>
-                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>Email:</ThemedText>
+                    <ThemedText style={[{color: textColor, textAlign: "center"}]}>{t('labels.email')}:</ThemedText>
                     <TextInput  value={inputEmail}
                                 onChangeText={setInputEmail}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -274,7 +312,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
                 <ThemedView style={[styles.cardContentElement, {marginBottom: 20}]}>
-                    <ThemedText>Income:</ThemedText>
+                    <ThemedText>{t('labels.income')}:</ThemedText>
                     <TextInput  value={inputIncome.toString()} 
                                 onChangeText={handleChangeIncome}
                                 style={[{color: textColor}, styles.textInput]} 
@@ -282,7 +320,7 @@ const EmployeeCardDetailed = (
                 </ThemedView>
 
             <Pressable onPress={handlePressChanges} style={{marginBottom: 20}}>
-                        <ThemedText style={styles.editUserPressable}>{(editMode) ? "Save Changes" : "Edit User"}</ThemedText>
+                        <ThemedText style={styles.editUserPressable}>{(editMode) ? t('labels.saveChanges') : t("employees.editEmployee")}</ThemedText>
             </Pressable>
 
             </ThemedView>
@@ -291,7 +329,7 @@ const EmployeeCardDetailed = (
             <BottomSheet modalProps={{}} isVisible={isPhotoBottomSheetVisible} backdropStyle={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
                 
                     <Button
-                        title="Take Photo with Camera"
+                        title={t('bottomSheet.takePhotoWithCamera')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'camera', type: 'ionicon', color:"white"}}
@@ -299,7 +337,7 @@ const EmployeeCardDetailed = (
                         />
 
                     <Button
-                        title="Open Photo from Gallery"
+                        title={t('bottomSheet.openPhotoFromGallery')}
                         buttonStyle={{backgroundColor: 'rgb(70, 50, 175)', borderColor: 'black', borderWidth: 1, height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'photo', color:"white"}}
@@ -307,7 +345,7 @@ const EmployeeCardDetailed = (
                     />
 
                     <Button
-                        title="Close"
+                        title={t('bottomSheet.close')}
                         buttonStyle={{borderColor: 'black', borderWidth: 1,backgroundColor: 'red', height: 60}}
                         titleStyle={{fontSize: 20}}
                         icon={{name: 'x', type: 'foundation'}}
@@ -316,6 +354,7 @@ const EmployeeCardDetailed = (
                 
             </BottomSheet>                
         </ThemedView>
+        </ScrollView>
     );
 }
 
@@ -410,7 +449,20 @@ const styles = StyleSheet.create(
             width: "70%",
             maxWidth: "80%",
             minWidth: "60%"
+        },
+        deleteButtonContainer: {
+            position: 'absolute',
+            minHeight: '36%',
+            minWidth: '20%',
+            maxHeight: '36%',
+            maxWidth: '20%',
+            backgroundColor: 'ghostwhite',
+            borderRadius: 100,
+            justifyContent:'center',
+            top: '10%',
+            right: 0
         }
+
     }
 
     

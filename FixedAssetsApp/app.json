@@ -3,25 +3,34 @@
     "name": "My Assets Manager",
     "slug": "FixedAssetsApp",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon_asset_manager.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/icon.png",
+      "image": "./assets/images/icon_asset_manager.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "usesIcloudStorage": true
+      "usesIcloudStorage": true,
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.android"
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      },
+      "package": "com.android",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -31,10 +40,25 @@
     "plugins": [
       "expo-router",
       "expo-document-picker",
-      "expo-camera"
+      "expo-camera",
+      "expo-localization",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3bfef1da-99a9-490b-b638-37397ea920d6"
+      }
     }
   }
 }

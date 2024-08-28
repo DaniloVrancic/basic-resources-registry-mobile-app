@@ -7,8 +7,9 @@ import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import FixedAssetCardDetailedCard from "./FixedAssetDetailedCard";
 import { Avatar } from "@rneui/themed";
+import { useTranslation } from "react-i18next";
 
-const FixedAssetCard: React.FC<FixedAsset> = ({
+const FixedAssetCard: React.FC<FixedAsset | any> = ({
     id,
     name,
     description,
@@ -17,9 +18,11 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
     creationDate,
     employee_id, // Reference to Employee
     location_id, // Reference to Location
-    photoUrl
+    photoUrl,
+    onDeletedFixedAsset = () => {}
 }) => {
     const textColor = useThemeColor({}, 'text');
+    const {t} = useTranslation();
 
     const defaultImageUrl = "@/assets/images/defaultImage.png";
 
@@ -51,7 +54,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                 </ThemedView>
 
                 <ThemedView style={styles.cardImageTextSeperator}>
-                <ThemedView style={{ flex: 2, paddingRight: '3%' }}>
+                <ThemedView style={{ flex: 2, paddingRight: '7.5%' }}>
                         {
                             (fixedAssetDetails.photoUrl == null || fixedAssetDetails.photoUrl.length === 0) ?
                             <Avatar
@@ -74,9 +77,9 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                         }
                 </ThemedView>
                 <ThemedView style={{flex: 3}}>
-                        <ThemedText style={{fontWeight: 600}}>Price: ${fixedAssetDetails.price}</ThemedText>
+                        <ThemedText style={{fontWeight: 600}}>{t('labels.price')}: ${fixedAssetDetails.price}</ThemedText>
                         <ThemedView style={styles.creationDateContainer}>
-                            <ThemedText>Creation Date: </ThemedText>
+                            <ThemedText>{t('labels.creationDate')}: </ThemedText>
                             <ThemedText style={{fontWeight: 600}}>{fixedAssetDetails.creationDate.toString()}</ThemedText>
                         </ThemedView>
                             
@@ -85,7 +88,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
             </Pressable>
 
 
-            <Modal visible={showModal} animationType="slide" transparent={true}>
+            <Modal visible={showModal} animationType="slide" transparent={true} onRequestClose={closeModal}>
                 <ThemedView lightColor="ghostwhite" darkColor="rgba(0,0,0,1)" style={modalStyles.modalContainer}>
 
                     <ThemedView style={modalStyles.modalHeader}>
@@ -96,7 +99,8 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
                     </ThemedView>
 
                     <ThemedView>
-                         <FixedAssetCardDetailedCard setFixedAssetState={setFixedAssetDetails} fixedAssetState={fixedAssetDetails}/>
+                         <FixedAssetCardDetailedCard setFixedAssetState={setFixedAssetDetails} fixedAssetState={fixedAssetDetails}
+                         onDeleteFixedAsset={() => {onDeletedFixedAsset && onDeletedFixedAsset();}}/>
                     </ThemedView>
                 </ThemedView>
             </Modal>
@@ -105,6 +109,7 @@ const FixedAssetCard: React.FC<FixedAsset> = ({
         
     );
 }
+
 
 export default FixedAssetCard;
 
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
         borderRadius: 15, 
         paddingBottom: 10,
         flexDirection: 'column',
-        overflow: 'hidden'
+        overflow: 'visible'
     },
     cardHeader: {
         borderWidth: 2,

@@ -4,7 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
 import FixedAssetCard from '@/components/FixedAssetCard';
-import RangeSlider from 'rn-range-slider';
+import RangeSlider from 'crn-range-slider';
 import { FixedAssetSearchCriteria } from '../search_criteria_interfaces/fixed-asset-search-criteria';
 import { SetStateAction, useCallback, useEffect, useState, useTransition } from 'react';
 import { useThemeColor } from '@/hooks/useThemeColor';

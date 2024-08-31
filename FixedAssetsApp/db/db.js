@@ -175,7 +175,7 @@ import * as SQLite from 'expo-sqlite';
       
 
     try{
-      // insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
+       insertTestDataIfEmpty(db); //will insert and fill the tables with some test data if the tables are empty
 
     }
     catch(error){
@@ -185,7 +185,9 @@ import * as SQLite from 'expo-sqlite';
   };
 
   const insertTestDataIfEmpty = async (db) => {
-    const tables = ['employee', 'location', 'fixed_asset', 'transfer_list', 'inventory_item']; //all the table names
+    const tables = ['employee', 'location', 
+    //  'fixed_asset', 'transfer_list', 'inventory_item'
+    ]; //all the table names
     for (const table of tables) {
       
       const rowCount = await db.getFirstAsync(`SELECT COUNT(*) as 'count' FROM '${table}'`);
@@ -200,28 +202,28 @@ import * as SQLite from 'expo-sqlite';
     switch (table) {
       case 'employee':
         insertQueries = [
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('John Doe', 'john.doe@example.com', 50000, 'https://example.com/photo1.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Jane Smith', 'jane.smith@example.com', 55000, 'https://example.com/photo2.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Emily Johnson', 'emily.johnson@example.com', 60000, 'https://example.com/photo3.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Michael Brown', 'michael.brown@example.com', 45000, NULL)`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Sarah Davis', 'sarah.davis@example.com', 48000, NULL)`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Chris Evans', 'chris.evans@example.com', 52000, 'https://example.com/photo6.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Jessica Wilson', 'jessica.wilson@example.com', 53000, 'https://example.com/photo7.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('David Martinez', 'david.martinez@example.com', 49000, NULL)`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Laura White', 'laura.white@example.com', 47000, 'https://example.com/photo8.jpg')`,
-          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Peter Green', 'peter.green@example.com', 51000, 'https://example.com/photo9.jpg')`
+          `INSERT INTO employee (name, email, income, photoUrl) VALUES ('Test Employee', 'john.doe@example.com', 50000, 'https://example.com/photo1.jpg')`
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Jane Smith', 'jane.smith@example.com', 55000, 'https://example.com/photo2.jpg')`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Emily Johnson', 'emily.johnson@example.com', 60000, 'https://example.com/photo3.jpg')`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Michael Brown', 'michael.brown@example.com', 45000, NULL)`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Sarah Davis', 'sarah.davis@example.com', 48000, NULL)`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Chris Evans', 'chris.evans@example.com', 52000, 'https://example.com/photo6.jpg')`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Jessica Wilson', 'jessica.wilson@example.com', 53000, 'https://example.com/photo7.jpg')`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('David Martinez', 'david.martinez@example.com', 49000, NULL)`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Laura White', 'laura.white@example.com', 47000, 'https://example.com/photo8.jpg')`,
+          //`INSERT INTO employee (name, email, income, photoUrl) VALUES ('Peter Green', 'peter.green@example.com', 51000, 'https://example.com/photo9.jpg')`
         ];
         break;
       case 'location':
         insertQueries = [
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Head Office', 500, 37.7749, -122.4194)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse A', 1500, 34.0522, -118.2437)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Branch Office', 300, 40.7128, -74.0060)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse B', 2000, 51.5074, -0.1278)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Remote Office', 250, 48.8566, 2.3522)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse C', 1800, 35.6895, 139.6917)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Sales Office', 400, 52.5200, 13.4050)`,
-          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Data Center', 1000, 41.9028, 12.4964)`
+          `INSERT INTO location (name, size, latitude, longitude) VALUES ('Test Head Office', 500, 37.7749, -122.4194)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse A', 1500, 34.0522, -118.2437)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Branch Office', 300, 40.7128, -74.0060)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse B', 2000, 51.5074, -0.1278)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Remote Office', 250, 48.8566, 2.3522)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Warehouse C', 1800, 35.6895, 139.6917)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Sales Office', 400, 52.5200, 13.4050)`,
+          //`INSERT INTO location (name, size, latitude, longitude) VALUES ('Data Center', 1000, 41.9028, 12.4964)`
         ];
         break;
       case 'fixed_asset':

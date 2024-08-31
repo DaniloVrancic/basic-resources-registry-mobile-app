@@ -3,7 +3,7 @@ import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBarWithAdd from '@/components/SearchBarWithAdd';
-import RangeSlider from 'rn-range-slider';
+import RangeSlider from 'crn-range-slider';
 import { SetStateAction, Suspense, useCallback, useEffect, useState } from 'react';
 import { EmployeeSearchCriteria } from '../search_criteria_interfaces/employee-search-criteria';
 import { useThemeColor } from '@/hooks/useThemeColor';

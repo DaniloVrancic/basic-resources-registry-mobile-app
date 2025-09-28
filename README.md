@@ -1,1 +1,1 @@
-# basic-resources-registry-mobile-app !
+# Basic Resources Registry App
